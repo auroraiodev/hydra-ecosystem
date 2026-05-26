@@ -46,7 +46,7 @@ export function useProductDetails(
       languages: languageParam ? { name: languageParam, display_name: languageParam } : undefined,
       foil: foilParam === '1',
       surgeFoil: surgeFoilParam === '1',
-      importationId: id,
+      importationId: id.match(/^(\d+)/)?.[1] || id,
     };
   }, [
     id,
