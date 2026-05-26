@@ -58,7 +58,6 @@ export function ProductGallery({ images, productName, isFoil }: ProductGalleryPr
                         src={img}
                         alt={`${productName} - Vista detallada ${index + 1} de Magic México | Hydra`}
                         fill
-                        unoptimized={img.startsWith('/api/images/external')}
                         sizes="(max-width: 768px) calc(100vw - 96px), (max-width: 1024px) 45vw, 30vw"
                         className={`object-contain transition-opacity duration-500 ${
                           loadedIndices[index] ? 'opacity-100' : 'opacity-0'

@@ -38,7 +38,6 @@ export function ProductThumbs({
                   src={img}
                   alt={`${productName} - Miniatura ${index + 1} | Hydra Collectables`}
                   fill
-                  unoptimized={img.startsWith('/api/images/external')}
                   className="object-contain"
                   sizes="100px"
                 />
