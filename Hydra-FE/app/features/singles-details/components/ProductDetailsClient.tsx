@@ -171,7 +171,7 @@ function ProductDetailsContent({
             {product.expansion && (
               <>
                 <Link
-                  href={`/search?query=${encodeURIComponent(product.expansion)}`}
+                  href={`/singles/search?query=${encodeURIComponent(product.expansion)}`}
                   className="hover:text-teal transition-colors shrink-0"
                 >
                   {product.expansion}

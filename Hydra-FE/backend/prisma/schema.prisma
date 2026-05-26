@@ -310,7 +310,7 @@ model singles {
   cardName            String?       @map("card_name")
   cardNumber          String?
   foil                Boolean       @default(false) @map("is_foil")
-  importationId       String?       @map("hareruya_product_id")
+  importationId       String?       @map("importation_product_id")
   img                 String        @map("image_url")
   isLocalInventory    Boolean       @default(false) @map("is_local_inventory")
   stock               Int           @default(0)

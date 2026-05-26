@@ -155,8 +155,6 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '*.vtexassets.com', pathname: '/**' },
       { protocol: 'https', hostname: 'www.importationmtg.com', pathname: '/**' },
       { protocol: 'https', hostname: 'importationmtg.com', pathname: '/**' },
-      { protocol: 'https', hostname: 'files.hareruyamtg.com', pathname: '/**' },
-      { protocol: 'https', hostname: '*.hareruyamtg.com', pathname: '/**' },
     ],
   },
 

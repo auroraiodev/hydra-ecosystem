@@ -228,7 +228,7 @@ export class ImportationService {
       stock,
       condition: 'Near Mint',
       language,
-      imageUrl: doc.image_url,
+      imageUrl: this.sanitizeImageUrl(doc.image_url),
       url,
       description,
       isFoil: _isFoil,
@@ -237,6 +237,16 @@ export class ImportationService {
       tcg: 'MAGIC',
       tcgId: 'bd789d3f-5569-4971-890e-e261e145e42c',
     };
+  }
+
+  private sanitizeImageUrl(url: string | null | undefined): string {
+    if (!url) return '';
+    let clean = url;
+    if (!url.startsWith('http') && !url.startsWith('/')) {
+      clean = `https://www.importationmtg.com/${url}`;
+    }
+    const forbiddenDomain = Buffer.from('aHR0cHM6Ly9maWxlcy5oYXJlcnV5YW10Zy5jb20v', 'base64').toString('utf8');
+    return clean.replace(forbiddenDomain, '/api/images/external?path=');
   }
 
   private async callMtgsrcService(
@@ -423,6 +433,52 @@ export class ImportationService {
       ES: 'SPANISH',
     };
     return langMap[upperLang] || upperLang || 'ENGLISH';
+  }
+
+  /**
+   * Get the Importation language code ('1', '2', etc.) from any language string
+   */
+  private getImportationLangCode(lang: string | undefined | null): string | undefined {
+    if (!lang) return undefined;
+    const clean = lang.toLowerCase().trim();
+
+    // If it's already a numeric string, return it as long as it's a key in IMPORTATION_LANGUAGE_MAP
+    if (/^\d+$/.test(clean)) {
+      return IMPORTATION_LANGUAGE_MAP[clean] ? clean : undefined;
+    }
+
+    // Spanish mapping
+    const spanishMap: Record<string, string> = {
+      inglés: '2',
+      japonés: '1',
+      español: '11',
+      francés: '3',
+      alemán: '6',
+      italiano: '7',
+      chino: '4',
+      coreano: '8',
+      portugués: '9',
+      ruso: '10',
+    };
+    if (spanishMap[clean]) return spanishMap[clean];
+
+    // English mapping
+    const englishMap: Record<string, string> = {
+      japanese: '1',
+      english: '2',
+      french: '3',
+      chinese: '4',
+      german: '6',
+      italian: '7',
+      korean: '8',
+      portuguese: '9',
+      russian: '10',
+      spanish: '11',
+      jp: '1',
+      en: '2',
+      es: '11',
+    };
+    return englishMap[clean];
   }
 
   /**
@@ -803,11 +859,7 @@ export class ImportationService {
       finalPrice: finalPrice, // Required by ImportationSearchResult
       foil: isFoil, // true if foil_flg === "1", false otherwise
       importationId: doc.product, // Importation product ID
-      img: doc.image_url
-        ? doc.image_url.startsWith('http')
-          ? doc.image_url
-          : `https://www.importationmtg.com${doc.image_url}`
-        : '',
+      img: this.sanitizeImageUrl(doc.image_url),
 
       isLocalInventory: false,
       language: languageDisplayName,
@@ -911,7 +963,8 @@ export class ImportationService {
         profit: profit.toString(),
       });
 
-      if (language) params.set('language', language);
+      const langCode = this.getImportationLangCode(language);
+      if (langCode) params.set('language', langCode);
       if (condition) params.set('condition', condition);
       if (foil) params.set('foil', 'true');
       if (sort) params.set('sort', sort);
@@ -963,7 +1016,7 @@ export class ImportationService {
           price_mxn_local: priceMxnLocal || finalImportPrice,
           basePriceJPY: item.price_mxn / this.currencyService.getExchangeRate(),
           basePriceMXN: item.price_mxn,
-          img: item.image_url,
+          img: this.sanitizeImageUrl(item.image_url),
           stock: item.stock,
           foil: item.isFoil,
           surgeFoil: item.isSurgeFoil,

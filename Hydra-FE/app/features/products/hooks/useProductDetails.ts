@@ -34,7 +34,7 @@ export function useProductDetails(
       stock: 0,
       imageUrl: img,
       img,
-      isLocalInventory: false,
+      isLocalInventory: sp?.get('isLocalInventory') === 'true',
       expansion: sp?.get('expansion') || undefined,
       conditions: condition ? { name: condition, display_name: condition } : undefined,
       languages: language ? { name: language, display_name: language } : undefined,

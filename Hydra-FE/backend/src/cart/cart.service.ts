@@ -560,7 +560,7 @@ export class CartService {
         price_mxn_local,
 
         isLocalInventory: !!localStockMatch,
-        source: localStockMatch ? 'hybrid' : 'hareruya',
+        source: localStockMatch ? 'hybrid' : 'importation',
         immediateDelivery: !!localStockMatch,
         imageUrl: storedData.imageUrl || storedData.img || '',
         language: storedData.language || 'Inglés',
