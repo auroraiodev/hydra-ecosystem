@@ -51,10 +51,60 @@ export function getSearchMetadata({
   const baseCanonical = tcg ? `/${tcg}/singles/search` : '/singles/search';
   const canonical = `${baseCanonical}${canonicalQuery ? `?${canonicalQuery}` : ''}`;
 
+  // Determine if this search page should be indexed to avoid soft 404s and index bloat
+  let robots: Metadata['robots'] = undefined;
+
+  const isTemplateQuery = query?.includes('{search_term_string}');
+  if (isTemplateQuery) {
+    robots = { index: false, follow: false };
+  } else {
+    let indexable = false;
+
+    if (
+      category &&
+      ['SINGLES', 'PRECON_DECK', 'BUNDLE', 'MICAS', 'ACCESSORIES'].includes(
+        category.toUpperCase()
+      )
+    ) {
+      indexable = true;
+    } else if (query) {
+      const allowedKeywords = [
+        'magic mexico',
+        'mtg mexico',
+        'magic the gathering mexico',
+        'cartas magic mexico',
+        'tienda mtg mexico',
+        'comprar magic mexico',
+        'singles mtg',
+        'commander',
+        'modern',
+        'standard',
+        'pioneer',
+        'legacy',
+        'pauper',
+        'cartas sueltas mtg',
+        'sobres magic',
+        'cajas magic',
+        'precon commander',
+        'mtg cdmx',
+        'mtg monterrey',
+        'mtg guadalajara',
+      ];
+      if (allowedKeywords.includes(query.toLowerCase().trim())) {
+        indexable = true;
+      }
+    }
+
+    if (!indexable) {
+      robots = { index: false, follow: true };
+    }
+  }
+
   return {
     title,
     description,
     alternates: { canonical },
     openGraph: { title, description, type: 'website' },
+    robots,
   };
 }

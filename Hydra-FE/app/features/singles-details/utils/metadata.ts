@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
-import { getProductCanonicalPath } from '@/lib/utils/slug';
-import { Product } from '@/lib/api';
+import type { Product } from '@/lib/api';
 
 const PRICE_FORMATTER = new Intl.NumberFormat('es-MX', {
   style: 'currency',
@@ -29,13 +28,13 @@ export function getProductMetadata(
     return {
       title: 'Producto no encontrado | Hydra Collectables',
       description: 'El producto que buscas no está disponible.',
+      robots: { index: false, follow: true },
     };
   }
 
   const productName = product.name || product.cardName || 'Carta Magic';
   const price = PRICE_FORMATTER.format(product.price);
-  const canonicalId = product.id.toString();
-  const canonicalPath = getProductCanonicalPath(canonicalId, productName);
+  const canonicalPath = `/singles/${id}`;
 
   const keywords = [
     productName,

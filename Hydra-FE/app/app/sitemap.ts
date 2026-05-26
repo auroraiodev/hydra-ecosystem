@@ -9,8 +9,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { route: '', priority: 1, changeFrequency: 'daily' as const },
     { route: '/singles', priority: 0.9, changeFrequency: 'daily' as const },
     { route: '/browse', priority: 0.8, changeFrequency: 'daily' as const },
-    { route: '/login', priority: 0.5, changeFrequency: 'monthly' as const },
-    { route: '/signup', priority: 0.5, changeFrequency: 'monthly' as const },
     { route: '/help', priority: 0.4, changeFrequency: 'monthly' as const },
     { route: '/authenticity', priority: 0.4, changeFrequency: 'monthly' as const },
     { route: '/terms', priority: 0.3, changeFrequency: 'yearly' as const },
@@ -27,7 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const categoryRoutes = ['SINGLES', 'PRECON_DECK', 'BUNDLE', 'MICAS', 'ACCESSORIES'].map(
     (cat) => ({
-      url: `${baseUrl}/singles/search?category=${cat}&local=true`.replace(/&/g, '&amp;'),
+      url: `${baseUrl}/singles/search?category=${cat}`.replace(/&/g, '&amp;'),
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
       priority: 0.7,
@@ -62,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { q: 'mtg monterrey', priority: 0.7 },
     { q: 'mtg guadalajara', priority: 0.7 },
   ].map(({ q, priority }) => ({
-    url: `${baseUrl}/singles/search?q=${encodeURIComponent(q)}&local=true`.replace(/&/g, '&amp;'),
+    url: `${baseUrl}/singles/search?q=${encodeURIComponent(q)}`.replace(/&/g, '&amp;'),
     lastModified: new Date(),
     changeFrequency: 'daily' as const,
     priority,

@@ -15,10 +15,12 @@ export default function robots(): MetadataRoute.Robots {
     '/*?*preview=',
   ];
 
-  // Paginated pages beyond page 1 — avoid duplicate content indexing.
-  // Uses both ?page= (standard) and ?pagination=N (custom param) patterns.
+  // Paginated / filtered pages — avoid duplicate content indexing.
+  // Disallow ?pagination=N (page 2+), ?pagination=true (UI flag), and ?page= variants.
   const paginationRoutes = [
     '/*?*page=',
+    '/*?*pagination=true',
+    '/*?*pagination=false',
     ...Array.from({ length: 49 }, (_, i) => `/*?*pagination=${i + 2}`),
   ];
 
