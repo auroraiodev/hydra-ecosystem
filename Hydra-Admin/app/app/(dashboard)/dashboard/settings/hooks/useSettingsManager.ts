@@ -13,6 +13,7 @@ interface AppSettings {
   enableTwoFactor: boolean; importationTax: string | number;
   importationProfit: string | number; importationFixedFee: string | number;
   siteLogo: string; siteLoader: string;
+  platformFee: string | number; mpFeeRate: string | number;
 }
 
 interface SettingsState {
@@ -80,6 +81,7 @@ const initialState: SettingsState = {
     maxProductsPerPage: '20', taxRate: '8', shippingCost: '10', enableNotifications: true,
     enableTwoFactor: false, importationTax: '0.20', importationProfit: '0.20',
     importationFixedFee: '0', siteLogo: '', siteLoader: '',
+    platformFee: '0.12', mpFeeRate: '0.035',
   },
   tcgs: [], loadingTcgs: true, loadingSettings: true, savingSettings: false,
   testNotif: { userId: '', title: '🔔 Test', message: 'Esta es una notificación de prueba.' },
@@ -123,6 +125,8 @@ export function useSettingsManager() {
             importationFixedFee: data.importation_fixed_fee || 0,
             siteLogo: data.site_logo || '',
             siteLoader: data.site_loader || '',
+            platformFee: data.platform_fee || '0.12',
+            mpFeeRate: data.mp_fee_rate || '0.035',
           }});
         }
       } catch { toast.error('No se pudo cargar la configuración.'); }
@@ -154,6 +158,8 @@ export function useSettingsManager() {
         importation_fixed_fee: state.settings.importationFixedFee,
         site_logo: state.settings.siteLogo,
         site_loader: state.settings.siteLoader,
+        platform_fee: state.settings.platformFee,
+        mp_fee_rate: state.settings.mpFeeRate,
       });
       // Re-fetch to confirm persistence
       const raw = await settingsAPI.get();
@@ -174,6 +180,8 @@ export function useSettingsManager() {
           importationFixedFee: saved.importation_fixed_fee || 0,
           siteLogo: saved.site_logo || '',
           siteLoader: saved.site_loader || '',
+          platformFee: saved.platform_fee || '0.12',
+          mpFeeRate: saved.mp_fee_rate || '0.035',
         }});
       }
       toast.success('Configuraciones guardadas');

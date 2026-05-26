@@ -2998,6 +2998,7 @@ export class OrdersService {
           },
         },
         importation_items: true,
+        payments: { select: { payment_method: true } },
       },
     });
 
@@ -3005,12 +3006,12 @@ export class OrdersService {
       throw new NotFoundException(`Order ${orderId} not found during finalization`);
     }
 
-    // 1. Process all local items (stock + balance)
-    // 3. Mark all items as delivered/sold and process seller payments
-    // NOTE: This will also handle individual stock decrements via processOrderItemFinalization
-    // and correctly update the owner balances.
+    const usedMercadoPago = (order.payments ?? []).some((p: any) =>
+      p.payment_method === 'mercadopago' || p.payment_method === 'wallet_plus_mercadopago',
+    );
+
     for (const item of order.items) {
-      await this.processOrderItemFinalization(orderId, item.id, tx);
+      await this.processOrderItemFinalization(orderId, item.id, tx, undefined, usedMercadoPago);
     }
 
     // 2. Mark order as PAID
@@ -3060,6 +3061,7 @@ export class OrdersService {
     itemId: string,
     tx: Prisma.TransactionClient,
     qtyToProcess?: number,
+    usedMercadoPago = false,
   ) {
     const item = await tx.order_items.findUnique({
       where: { id: itemId },
@@ -3128,8 +3130,18 @@ export class OrdersService {
       data: { status: 'SOLD' },
     });
 
-    // 3. Calculate earnings (90%)
-    const earnings = Number(item.unit_price) * qty * 0.9;
+    // 3. Calculate earnings using configurable fee rates from admin_settings
+    const feeRows = await tx.admin_settings.findMany({
+      where: { key: { in: ['platform_fee', 'mp_fee_rate'] } },
+    });
+    const platformFee = parseFloat(
+      (feeRows as any[]).find((r) => r.key === 'platform_fee')?.value ?? '0.12',
+    );
+    const mpFeeRate = parseFloat(
+      (feeRows as any[]).find((r) => r.key === 'mp_fee_rate')?.value ?? '0.035',
+    );
+    const multiplier = 1 - platformFee - (usedMercadoPago ? mpFeeRate : 0);
+    const earnings = Number(item.unit_price) * qty * multiplier;
 
     // 4. Update owner balance
     await tx.users.update({

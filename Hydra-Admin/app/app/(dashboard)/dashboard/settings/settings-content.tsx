@@ -17,6 +17,7 @@ import { SpinnerIos20Regular } from '@fluentui/react-icons';
 
 import { GeneralSettings } from './components/GeneralSettings';
 import { TaxSettings } from './components/TaxSettings';
+import { CommissionSettings } from './components/CommissionSettings';
 import { FeatureSettings } from './components/FeatureSettings';
 import { BrandSettings } from './components/BrandSettings';
 import { TcgSettings } from './components/TcgSettings';
@@ -61,6 +62,7 @@ export default function SettingsContent() {
       <div className="space-y-4 max-w-3xl pb-20">
         <GeneralSettings settings={settings} onUpdate={(u) => dispatch({ type: 'UPDATE_SETTINGS', update: u })} />
         <TaxSettings settings={settings} onUpdate={(u) => dispatch({ type: 'UPDATE_SETTINGS', update: u })} />
+        <CommissionSettings settings={settings} onUpdate={(u) => dispatch({ type: 'UPDATE_SETTINGS', update: u })} />
         <FeatureSettings settings={settings} onUpdate={(u) => dispatch({ type: 'UPDATE_SETTINGS', update: u })} />
         <BrandSettings settings={settings} onUpdate={(u) => dispatch({ type: 'UPDATE_SETTINGS', update: u })} />
         <TcgSettings tcgs={tcgs} loading={loadingTcgs} onAdd={handleTcgAdd} onDelete={handleTcgDelete} />
