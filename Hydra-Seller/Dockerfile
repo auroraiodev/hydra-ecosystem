@@ -1,7 +1,28 @@
 # ============================================================
-# Stage 1: Build backend (NestJS)
+# Dockerfile — Hydra Seller (Next.js + NestJS)
+# Single sequential builder stage to avoid OOM from parallel builds.
 # ============================================================
-FROM oven/bun:1.3 AS backend-builder
+
+# ── Stage 1: Build (sequential) ──────────────────────────────
+FROM oven/bun:1.3 AS builder
+WORKDIR /build
+
+# NEXT_PUBLIC_* vars must be declared as build args — baked into JS bundle.
+ARG NEXT_PUBLIC_SELLER_URL
+ARG NEXT_PUBLIC_FRONTEND_URL
+ARG NEXT_PUBLIC_ADMIN_URL
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_BACKEND_API_URL
+ARG NEXT_PUBLIC_AUTH_SERVICE_URL
+
+ENV NEXT_PUBLIC_SELLER_URL=$NEXT_PUBLIC_SELLER_URL \
+    NEXT_PUBLIC_FRONTEND_URL=$NEXT_PUBLIC_FRONTEND_URL \
+    NEXT_PUBLIC_ADMIN_URL=$NEXT_PUBLIC_ADMIN_URL \
+    NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+    NEXT_PUBLIC_BACKEND_API_URL=$NEXT_PUBLIC_BACKEND_API_URL \
+    NEXT_PUBLIC_AUTH_SERVICE_URL=$NEXT_PUBLIC_AUTH_SERVICE_URL
+
+# ── 1. Backend (NestJS) ───────────────────────────────────────
 WORKDIR /build/backend
 
 COPY backend/package.json backend/bun.lock* ./
@@ -23,40 +44,37 @@ COPY backend/webpack.config.cjs ./
 ENV NODE_OPTIONS="--max-old-space-size=1024"
 RUN bun run build:api:only
 
-# ============================================================
-# Stage 2: Build frontend (Next.js)
-# ============================================================
-FROM oven/bun:1.3 AS frontend-builder
+# ── 2. Frontend (Next.js) — runs after backend finishes ───────
 WORKDIR /build/app
 
 COPY app/package.json app/bun.lock* ./
 RUN bun install
 
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    NODE_OPTIONS="--max-old-space-size=1536" \
+    NEXT_CPUS=1
+
 COPY app/ ./
 RUN bun run build
 
-# ============================================================
-# Stage 3: Production runner
-# ============================================================
+# ── Stage 2: Runner ───────────────────────────────────────────
 FROM oven/bun:1.3 AS runner
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 
-# Copy backend artifacts
-COPY --from=backend-builder /build/backend/dist ./backend/dist
-COPY --from=backend-builder /build/backend/node_modules ./backend/node_modules
-COPY --from=backend-builder /build/backend/package.json ./backend/package.json
-COPY --from=backend-builder /build/backend/prisma ./backend/prisma
-COPY --from=backend-builder /build/backend/scripts ./backend/scripts
-COPY --from=backend-builder /build/backend/docker-entrypoint.sh ./backend/docker-entrypoint.sh
-RUN sed -i 's/\r$//' backend/docker-entrypoint.sh
-RUN chmod +x backend/docker-entrypoint.sh
+COPY --from=builder /build/backend/dist ./backend/dist
+COPY --from=builder /build/backend/node_modules ./backend/node_modules
+COPY --from=builder /build/backend/package.json ./backend/package.json
+COPY --from=builder /build/backend/prisma ./backend/prisma
+COPY --from=builder /build/backend/scripts ./backend/scripts
+COPY --from=builder /build/backend/docker-entrypoint.sh ./backend/docker-entrypoint.sh
+RUN sed -i 's/\r$//' backend/docker-entrypoint.sh && chmod +x backend/docker-entrypoint.sh
 
-# Copy frontend artifacts
-COPY --from=frontend-builder /build/app/.next/standalone ./app
-COPY --from=frontend-builder /build/app/.next/static ./app/.next/static
-COPY --from=frontend-builder /build/app/public ./app/public
+COPY --from=builder /build/app/.next/standalone ./app
+COPY --from=builder /build/app/.next/static ./app/.next/static
+COPY --from=builder /build/app/public ./app/public
 
 ENV NODE_ENV=production
 EXPOSE 3002
