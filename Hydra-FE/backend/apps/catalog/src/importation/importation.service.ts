@@ -245,7 +245,7 @@ export class ImportationService {
     method: string = 'GET',
     body?: any,
   ) {
-    let baseUrl = process.env.MTGSRC_SERVICE_URL || 'http://hydra-mtgsrc:3006';
+    let baseUrl = process.env.MTGSRC_SERVICE_URL || 'http://hydra-mtgsrc';
     baseUrl = baseUrl
       .replace(/\/+$/, '')
       .replace(/\/api$/, '')

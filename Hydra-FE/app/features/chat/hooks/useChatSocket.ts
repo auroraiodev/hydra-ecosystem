@@ -42,11 +42,6 @@ function getWsUrl(): string {
     return (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3002').replace(/\/api$/, '');
   }
 
-  const envUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (envUrl && envUrl.startsWith('http')) {
-    return envUrl.replace(/\/api$/, '');
-  }
-
   const { hostname, protocol } = window.location;
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return `http://${hostname}:3002`;
@@ -59,6 +54,11 @@ function getWsUrl(): string {
       return `${wsProtocol}//qa-api.hydracollect.com`;
     }
     return `${wsProtocol}//api.hydracollect.com`;
+  }
+
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl && envUrl.startsWith('http')) {
+    return envUrl.replace(/\/api$/, '');
   }
 
   return window.location.origin;
