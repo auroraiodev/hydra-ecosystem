@@ -1,0 +1,61 @@
+name: Playwright Tests (Seller)
+
+on:
+  push:
+    branches: [main, master, develop]
+    paths:
+      - 'hydra-seller/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/playwright-e2e.yml'
+  pull_request:
+    branches: [main, master, develop]
+    paths:
+      - 'hydra-seller/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/playwright-e2e.yml'
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hydra-seller
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: .
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: pnpm exec playwright test
+        env:
+          CI: true
+          NEXT_PUBLIC_SELLER_URL: http://localhost:3003
+
+      - name: Upload playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-seller
+          path: hydra-seller/playwright-report/
+          retention-days: 30

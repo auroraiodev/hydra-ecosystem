@@ -1,0 +1,22 @@
+[build]
+  command = "bun run build"
+  publish = "public"
+  functions = "dist-serverless/api"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = [
+    "@mikro-orm/core",
+    "@nestjs/microservices",
+    "@nestjs/typeorm",
+    "@nestjs/mongoose",
+    "@nestjs/sequelize",
+    "class-transformer",
+  ]
+  included_files = ["node_modules/.prisma/client/**"]
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/index"
+  status = 200
+  force = true

@@ -1,0 +1,1849 @@
+{
+  "info": {
+    "name": "Hydra BE - Full Seller Flow E2E",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "F1 — System Health",
+      "item": [
+        {
+          "name": "Health check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Health check",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "  pm.test(\"Has body\", () => pm.expect(resp).to.not.be.undefined);",
+                  "  pm.test(\"Has success\", () => pm.expect(resp.success).to.be.true);",
+                  "  pm.test(\"Has status field\", () => pm.expect(resp.data || resp).to.have.property(\"status\"));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Health ready",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Health ready",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "/health/ready",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health",
+                "ready"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Health live",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Health live",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Any status\", () => pm.expect(pm.response.code).to.be.oneOf([200, 504]));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "/health/live",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health",
+                "live"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "F2 — Auth (Client)",
+      "item": [
+        {
+          "name": "Login as CLIENT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Login as CLIENT",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Login result\", () => {",
+                  "    if (pm.response.code === 200) {",
+                  "      pm.expect(resp).to.have.property(\"accessToken\");",
+                  "      pm.collectionVariables.set(\"clientToken\", resp.accessToken);",
+                  "      console.log(\"Client login OK\");",
+                  "    } else {",
+                  "      console.log(\"Client login failed (expected if no seed data): \" + JSON.stringify(resp));",
+                  "    }",
+                  "  });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{clientEmail}}\",\n  \"password\": \"{{clientPassword}}\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "F3 — Marketplace Search",
+      "item": [
+        {
+          "name": "Search catalog",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Search catalog",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  var results = resp.data?.results || resp.results || [];",
+                  "  pm.test(\"Has results\", () => pm.expect(Array.isArray(results)).to.be.true);",
+                  "  // Duplicate check",
+                  "  var ids = results.map(function(i) { return i.importationId || i.id; }).filter(Boolean);",
+                  "  var uniqueIds = new Set(ids);",
+                  "  pm.test(\"No duplicates in page\", function() {",
+                  "    pm.expect(ids.length).to.eql(uniqueIds.size);",
+                  "  });",
+                  "  console.log(\"Search returned \" + results.length + \" items\");"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "/search/singles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "search",
+                "singles"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Black Lotus"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get local products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Get local products",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  var singles = resp.data || [];",
+                  "  pm.test(\"Is array\", () => pm.expect(Array.isArray(singles)).to.be.true);",
+                  "  if (singles.length > 0) {",
+                  "    pm.collectionVariables.set(\"productId\", singles[0].id);",
+                  "    console.log(\"First single: \" + singles[0].cardName);",
+                  "  }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "/singles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "singles"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "F4 — Cart & Checkout (Client)",
+      "item": [
+        {
+          "name": "Get cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Get cart",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "  console.log(\"Cart items count: \" + (resp.data ? resp.data.length : 0));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add item to cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Add item to cart",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set(\"cartItemId\", resp.data?.id || resp.itemId);",
+                  "    console.log(\"Item added to cart\");",
+                  "  } else {",
+                  "    console.log(\"Add item result: \" + JSON.stringify(resp).slice(0,100));",
+                  "  }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/cart/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "items"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"singleId\": \"{{productId}}\",\n  \"quantity\": 1,\n  \"isImportation\": false\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get cart summary",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Get cart summary",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  if (resp.data) {",
+                  "    pm.test(\"Has subtotal\", () => pm.expect(resp.data).to.have.property(\"subtotal\"));",
+                  "  }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/cart/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "summary"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Checkout (create order)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Checkout (create order)",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  var order = resp.data || resp.order || resp;",
+                  "  if (pm.response.code === 201) {",
+                  "    pm.test(\"Has order ID\", () => pm.expect(order).to.have.property(\"id\"));",
+                  "    pm.collectionVariables.set(\"clientOrderId\", order.id);",
+                  "    console.log(\"Order created: \" + order.id);",
+                  "  } else {",
+                  "    console.log(\"Checkout failed: \" + JSON.stringify(resp).slice(0,200));",
+                  "  }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/orders/checkout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "checkout"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shippingMethod\": \"pickup\",\n  \"paymentMethod\": \"wallet\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "F5 — Order Payment (Client)",
+      "item": [
+        {
+          "name": "Get my orders",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Get my orders",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  var orders = resp.data || resp.orders || [];",
+                  "  if (orders.length > 0) {",
+                  "    pm.collectionVariables.set(\"clientOrderId\", orders[0].id);",
+                  "  }",
+                  "  console.log(\"Orders count: \" + orders.length);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pay with wallet",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Pay with wallet",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  console.log(\"Payment result: \" + JSON.stringify(resp).slice(0,200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/orders/{{clientOrderId}}/pay-with-wallet",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{clientOrderId}}",
+                "pay-with-wallet"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Verify order",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  var ord = resp.data || resp.order || resp;",
+                  "  if (ord) {",
+                  "    console.log(\"Order status: \" + ord.status);",
+                  "    pm.collectionVariables.set(\"paidOrderId\", ord.id);",
+                  "  }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/orders/{{clientOrderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{clientOrderId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "F6 — Auth (Seller)",
+      "item": [
+        {
+          "name": "Login as SELLER",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Login as SELLER",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Login result\", () => {",
+                  "    if (pm.response.code === 200) {",
+                  "      pm.expect(resp).to.have.property(\"accessToken\");",
+                  "      pm.collectionVariables.set(\"sellerToken\", resp.accessToken);",
+                  "      console.log(\"Seller login OK\");",
+                  "    } else {",
+                  "      console.log(\"Seller login: \" + JSON.stringify(resp).slice(0,100));",
+                  "    }",
+                  "  });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "/auth/admin-login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "admin-login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{sellerEmail}}\",\n  \"password\": \"{{sellerPassword}}\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "F7 — Seller Dashboard",
+      "item": [
+        {
+          "name": "Dashboard stats",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Dashboard stats",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  var dash = resp.data || resp;",
+                  "  console.log(\"Dashboard: \" + JSON.stringify(dash).slice(0,200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/seller/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "seller",
+                "dashboard"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Order stats",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Order stats",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/seller/orders/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "seller",
+                "orders",
+                "stats"
+              ],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "30"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Revenue analytics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Revenue analytics",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/seller/analytics/revenue",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "seller",
+                "analytics",
+                "revenue"
+              ],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "30"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Seller orders",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Seller orders",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "  var list = resp.data?.data || resp.orders || [];",
+                  "  pm.test(\"Is array\", () => pm.expect(Array.isArray(list)).to.be.true);",
+                  "  if (list.length > 0) {",
+                  "    pm.collectionVariables.set(\"sellerOrderId\", list[0].id || list[0].orderId);",
+                  "    console.log(\"First order: \" + (list[0].id || \"\").slice(0,8));",
+                  "  }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/seller/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "seller",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "F8 — Seller Wallet & Management",
+      "item": [
+        {
+          "name": "Order detail",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Order detail",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"200 or 404\", () => pm.expect(pm.response.code).to.be.oneOf([200, 404]));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/seller/orders/{{sellerOrderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "seller",
+                "orders",
+                "{{sellerOrderId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Seller wallet",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Seller wallet",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "  var w = resp.data || resp;",
+                  "  if (w.balance !== undefined) {",
+                  "    pm.collectionVariables.set(\"walletBalance\", String(w.balance));",
+                  "  }",
+                  "  console.log(\"Wallet: \" + JSON.stringify(w).slice(0,200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/seller/wallet",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "seller",
+                "wallet"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pending payouts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Pending payouts",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "  console.log(\"Pending: \" + JSON.stringify(resp).slice(0,200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/seller/wallet/pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "seller",
+                "wallet",
+                "pending"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Seller listings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Seller listings",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/listings/my-listings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings",
+                "my-listings"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Request withdrawal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Request withdrawal",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  console.log(\"Withdrawal: \" + JSON.stringify(resp).slice(0,200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/seller/wallet/withdrawal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "seller",
+                "wallet",
+                "withdrawal"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100,\n  \"details\": \"Test withdrawal via Newman E2E\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "F9 — Auth (Admin)",
+      "item": [
+        {
+          "name": "Login as ADMIN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Login as ADMIN",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Login result\", () => {",
+                  "    if (pm.response.code === 200) {",
+                  "      pm.expect(resp).to.have.property(\"accessToken\");",
+                  "      pm.collectionVariables.set(\"adminToken\", resp.accessToken);",
+                  "      console.log(\"Admin login OK\");",
+                  "    }",
+                  "  });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "/auth/admin-login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "admin-login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "F10 — Admin Dashboard",
+      "item": [
+        {
+          "name": "Admin dashboard",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Admin dashboard",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "  console.log(\"Admin dash: \" + JSON.stringify(resp).slice(0,200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/admin/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "dashboard"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin settings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Admin settings",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/admin/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "settings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "All orders (admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // All orders (admin)",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "  var list = resp.data || resp.orders || [];",
+                  "  if (list.length > 0) {",
+                  "    pm.collectionVariables.set(\"adminOrderId\", list[0].id);",
+                  "  }",
+                  "  console.log(\"Total orders: \" + list.length);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "mode",
+                  "value": "admin"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Wallet transactions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Wallet transactions",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/admin/wallet/transactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "wallet",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin notifications",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Admin notifications",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/admin/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Order stats (admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Order stats (admin)",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/admin/orders/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "orders",
+                "stats"
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "All users wallets",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // All users wallets",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "/admin/wallet/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "wallet",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "F11 — Feature Flags & Public",
+      "item": [
+        {
+          "name": "Feature flags",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Feature flags",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "  var flags = resp.data || resp;",
+                  "  pm.test(\"Is array\", () => pm.expect(Array.isArray(flags)).to.be.true);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "/feature-flags",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "feature-flags"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Public listings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Public listings",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "/listings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "F12 — Payments & Integrations",
+      "item": [
+        {
+          "name": "Payment config",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "  // Payment config",
+                  "  try {",
+                  "    var resp = pm.response.json();",
+                  "  } catch(e) {",
+                  "    console.log(\"Non-JSON response: \" + pm.response.text().slice(0,200));",
+                  "  }",
+                  "  pm.expect(pm.response.code).to.be.lessThan(500);",
+                  "  pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "/payments/config",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "config"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

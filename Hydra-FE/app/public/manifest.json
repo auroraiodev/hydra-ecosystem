@@ -1,0 +1,73 @@
+{
+  "name": "Magic Mexico - Hydra Collectables",
+  "short_name": "Magic Mexico",
+  "description": "La tienda #1 de Magic The Gathering en Mexico. +10,000 cartas MTG disponibles.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#148a81",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "es-MX",
+  "categories": ["shopping", "games", "entertainment"],
+  "icons": [
+    {
+      "src": "/android-icon-36x36.png",
+      "sizes": "36x36",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-icon-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Buscar Cartas MTG",
+      "short_name": "Buscar",
+      "description": "Buscar cartas Magic The Gathering",
+      "url": "/singles/search",
+      "icons": [{ "src": "/android-icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Commander",
+      "short_name": "Commander",
+      "description": "Cartas para Commander",
+      "url": "/singles/search?metadata=commander",
+      "icons": [{ "src": "/android-icon-96x96.png", "sizes": "96x96" }]
+    }
+  ]
+}

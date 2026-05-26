@@ -1,0 +1,1 @@
+export { SinglesLandingPage } from './SinglesLandingPage';

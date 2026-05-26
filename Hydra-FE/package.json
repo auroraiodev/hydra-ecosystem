@@ -1,0 +1,22 @@
+{
+  "name": "hydra-fe",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names \"FE,BE\" --prefix-colors \"green,blue\" \"bun run dev:fe\" \"bun run dev:be\"",
+    "dev:fe": "bun --cwd app dev",
+    "dev:be": "bun --cwd backend dev",
+    "build": "bun run build:fe && bun run build:be",
+    "build:fe": "bun --cwd app build",
+    "build:be": "bun --cwd backend build",
+    "start": "concurrently \"bun run start:fe\" \"bun run start:be\"",
+    "start:fe": "bun --cwd app start",
+    "start:be": "bun --cwd backend start:prod",
+    "lint": "bun --cwd app lint && bun --cwd backend lint",
+    "type-check": "bun --cwd app type-check && bun --cwd backend type-check",
+    "test": "bun --cwd app test && bun --cwd backend test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

@@ -1,0 +1,56 @@
+# Project Architecture Rules
+
+## Component Organization
+
+1. **Shared UI Components** → `components/ui/`
+   - Primitive, reusable components (Button, Input, etc.)
+   - Export via barrel file (`index.ts`)
+   - Use forwardRef for ref forwarding
+   - No business logic
+
+2. **Layout Components** → `components/layout/`
+   - Shared layout components (Navbar, Header, Footer)
+   - Used across multiple pages
+
+3. **Page-Specific Components** → `app/[page]/components/`
+   - Components only used in a specific route
+
+## Import Rules
+
+- Use barrel exports: `import { Button, Input } from '@/components/ui'`
+- Absolute imports with `@/` alias
+- Group imports: external → internal → relative
+
+## Code Style
+
+- Components: PascalCase with forwardRef
+- Utilities: camelCase
+- Constants: UPPER_SNAKE_CASE
+- Use TypeScript strictly (no `any`)
+- 'use client' directive for client components
+
+## State Management
+
+- Redux Toolkit for global state
+- React useState for local state
+- Feature-based slices in `lib/store/slices/`
+
+## Architecture Principles
+
+1. **DRY**: Extract shared code to components/utils
+2. **Single Responsibility**: One component = one purpose
+3. **Composition**: Build complex from simple components
+4. **Type Safety**: All code must be typed
+5. **Consistency**: Follow established patterns
+
+## When Creating New Code
+
+- Is it UI? → `components/ui/` or `components/layout/`
+- Is it shared? → `components/`
+- Is it page-specific? → `app/[page]/components/`
+- Is it logic? → `lib/utils/` or custom hook
+- Is it API? → `lib/api/`
+- Is it state? → `lib/store/slices/`
+
+
+

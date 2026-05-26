@@ -1,0 +1,22 @@
+﻿
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-be\src\admin\admin.service.ts
+    70:27  warning  'filter' is defined but never used. Allowed unused args must match /^_/u             @typescript-eslint/no-unused-vars
+   799:11  warning  'cacheKey' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   861:11  warning  'cacheKey' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  1177:11  warning  'cacheKey' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-be\src\assistant\assistant.service.ts
+  4:47  warning  'Content' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-be\src\auth\auth.service.ts
+  4:3  warning  'NotFoundException' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-be\src\banners\banners.service.ts
+  28:11  warning  'cacheKey' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-be\src\cart\cart.service.ts
+  530:13  warning  'importFeeMXN' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  626:20  warning  'owner' is assigned a value but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+
+Γ£û 9 problems (0 errors, 9 warnings)
+

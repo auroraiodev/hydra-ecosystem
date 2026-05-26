@@ -1,0 +1,16 @@
+name: Deploy Hydra Seller
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via Coolify webhook
+        run: |
+          curl -X POST "${{ secrets.COOLIFY_DEPLOY_WEBHOOK }}" \
+            -H "Content-Type: application/json" \
+            --fail-with-body

@@ -1,0 +1,54 @@
+{
+  "compilerOptions": {
+    "module": "node16",
+    "moduleResolution": "node16",
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "ignoreDeprecations": "5.0",
+    "paths": {
+      "@hydra/database": ["libs/database/src/index.ts"],
+      "@hydra/database/*": ["libs/database/src/*"],
+      "@hydra/common": ["libs/common/src/index.ts"],
+      "@hydra/common/*": ["libs/common/src/*"],
+      "@hydra/queue": ["libs/queue/src/index.ts"],
+      "@hydra/queue/*": ["libs/queue/src/*"],
+      "@hydra/auth": ["libs/auth/src/index.ts"],
+      "@hydra/auth/*": ["libs/auth/src/*"],
+    },
+    "esModuleInterop": true,
+    "isolatedModules": false,
+    "declaration": false,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false,
+    "strict": false,
+    "types": [
+      "node",
+      "jest"
+    ]
+  },
+  "include": [
+    "src/**/*",
+    "test/**/*",
+    "apps/**/*",
+    "libs/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

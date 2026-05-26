@@ -1,0 +1,22 @@
+{
+  "name": "hydra-seller",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names \"SELLER,BE\" --prefix-colors \"magenta,blue\" \"bun run dev:seller\" \"bun run dev:be\"",
+    "dev:seller": "bun --cwd app dev",
+    "dev:be": "bun --cwd backend dev",
+    "build": "bun run build:seller && bun run build:be",
+    "build:seller": "bun --cwd app build",
+    "build:be": "bun --cwd backend build",
+    "start": "concurrently \"bun run start:seller\" \"bun run start:be\"",
+    "start:seller": "bun --cwd app start",
+    "start:be": "bun --cwd backend start:prod",
+    "lint": "bun --cwd app lint && bun --cwd backend lint",
+    "type-check": "bun --cwd app type-check && bun --cwd backend type-check",
+    "test": "bun --cwd app test && bun --cwd backend test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

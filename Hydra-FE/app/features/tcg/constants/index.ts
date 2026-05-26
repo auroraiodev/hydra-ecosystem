@@ -1,0 +1,1 @@
+export { TCG_COLOR_FALLBACK } from './TCG_FALLBACK';

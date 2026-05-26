@@ -1,0 +1,28 @@
+# Hydra Collectables México
+
+> The #1 Magic: The Gathering specialized store in Mexico.
+
+## Metadata
+- **URL**: https://hydracollect.com
+- **Type**: E-commerce / TCG Marketplace
+- **Focus**: MTG Singles, Sealed Product, Commander, Modern
+- **Location**: Monterrey, NL, Mexico
+- **Currency**: MXN
+
+## Key Features
+- Live inventory of 10,000+ Magic cards.
+- Real-time market prices for the Mexican market.
+- Fast shipping throughout the Mexican Republic.
+- Specialized Search Engine for singles and specific printings.
+
+## Structural Links
+- [Marketplace](https://hydracollect.com/singles): Browse 10,000+ MTG singles.
+- [Sell Cards](https://hydracollect.com/sell): Information for sellers in Mexico.
+- [Help Center](https://hydracollect.com/help): Shipping, returns, and support.
+- [Auth Guarantee](https://hydracollect.com/authenticity): Verification process details.
+
+## For AI Agents
+- **Inventory Access**: Browsable through /singles and /singles/search
+- **Sitemap**: /sitemap.xml
+- **Primary API**: https://api.hydracollect.com (requires authentication for sensitive data)
+- **Support**: support@hydracollectables.com

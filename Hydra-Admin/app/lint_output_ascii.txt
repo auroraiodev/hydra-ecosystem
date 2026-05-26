@@ -1,0 +1,175 @@
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\analytics\page.tsx
+   4:10  warning  'Card' is defined but never used. Allowed unused vars must match /^_/u                     @typescript-eslint/no-unused-vars
+   4:16  warning  'CardContent' is defined but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+   4:29  warning  'CardHeader' is defined but never used. Allowed unused vars must match /^_/u               @typescript-eslint/no-unused-vars
+   4:41  warning  'CardTitle' is defined but never used. Allowed unused vars must match /^_/u                @typescript-eslint/no-unused-vars
+   4:52  warning  'CardDescription' is defined but never used. Allowed unused vars must match /^_/u          @typescript-eslint/no-unused-vars
+   5:10  warning  'Skeleton' is defined but never used. Allowed unused vars must match /^_/u                 @typescript-eslint/no-unused-vars
+   6:10  warning  'Badge' is defined but never used. Allowed unused vars must match /^_/u                    @typescript-eslint/no-unused-vars
+  18:3   warning  'People24Regular' is defined but never used. Allowed unused vars must match /^_/u          @typescript-eslint/no-unused-vars
+  19:3   warning  'ShoppingBag24Regular' is defined but never used. Allowed unused vars must match /^_/u     @typescript-eslint/no-unused-vars
+  20:3   warning  'ArrowRepeatAll24Regular' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  21:3   warning  'ArrowTrending24Regular' is defined but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+  49:10  warning  'fmtMXN' is defined but never used. Allowed unused vars must match /^_/u                   @typescript-eslint/no-unused-vars
+  57:7   warning  'CHART_COLORS' is assigned a value but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\banners\banners-content.tsx
+   70:14  warning  'error' is defined but never used         @typescript-eslint/no-unused-vars
+  120:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  133:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  143:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\carts\carts-content.tsx
+  271:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\categories\categories-content.tsx
+  169:51  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  189:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\historial\page.tsx
+  219:18  error  'ArrowTrending24Regular' is not defined      react/jsx-no-undef
+  233:18  error  'ArrowTrendingDown24Regular' is not defined  react/jsx-no-undef
+  247:18  error  'History24Regular' is not defined            react/jsx-no-undef
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\imports\page.tsx
+   72:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   72:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   85:33  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   94:41  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  114:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\inventario\inventario-content.tsx
+    6:10  warning  'Skeleton' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   91:19  error    Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  108:19  error    Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\orders\create-order-dialog.tsx
+    3:10  warning  'useEffect' is defined but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+    3:33  warning  'useCallback' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  145:11  error    'usersList' is never reassigned. Use 'const' instead                           prefer-const
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\orders\orders-content.tsx
+   37:57  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   38:87  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   57:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  184:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  346:59  error  'Spinner' is not defined                  react/jsx-no-undef
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\products\[id]\edit\page.tsx
+   60:62  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   81:24  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  102:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  161:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  176:77  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\products\product-form-dialog.tsx
+  107:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\products\products-content.tsx
+   3:10  warning  'useState' is defined but never used. Allowed unused vars must match /^_/u                @typescript-eslint/no-unused-vars
+   3:64  warning  'useMemo' is defined but never used. Allowed unused vars must match /^_/u                 @typescript-eslint/no-unused-vars
+   9:3   warning  'conditionsAPI' is defined but never used. Allowed unused vars must match /^_/u           @typescript-eslint/no-unused-vars
+  10:3   warning  'usersAPI' is defined but never used. Allowed unused vars must match /^_/u                @typescript-eslint/no-unused-vars
+  11:3   warning  'languagesAPI' is defined but never used. Allowed unused vars must match /^_/u            @typescript-eslint/no-unused-vars
+  12:3   warning  'categoriesAPI' is defined but never used. Allowed unused vars must match /^_/u           @typescript-eslint/no-unused-vars
+  13:3   warning  'tcgsAPI' is defined but never used. Allowed unused vars must match /^_/u                 @typescript-eslint/no-unused-vars
+  19:10  warning  'Badge' is defined but never used. Allowed unused vars must match /^_/u                   @typescript-eslint/no-unused-vars
+  20:10  warning  'cn' is defined but never used. Allowed unused vars must match /^_/u                      @typescript-eslint/no-unused-vars
+  30:8   warning  'ProductsResponse' is defined but never used. Allowed unused vars must match /^_/u        @typescript-eslint/no-unused-vars
+  31:3   warning  'mapApiProductToProduct' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\products\useProductsData.ts
+   6:40  error    Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+   6:55  error    Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+   8:5   warning  'searchTerm' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  35:19  error    Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  45:55  error    Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  50:55  error    Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  55:55  error    Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  60:24  error    Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  70:54  error    Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  71:69  error    Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\settings\components\BrandSettings.tsx
+  14:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\settings\components\FeatureSettings.tsx
+  14:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\settings\components\GeneralSettings.tsx
+  17:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\settings\components\NotificationTest.tsx
+  32:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\settings\components\TaxSettings.tsx
+  15:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\users\components\UserTable.tsx
+  32:3  warning  'total' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\app\(dashboard)\dashboard\users\users-content.tsx
+  116:62  warning  'isLoadingUser' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  131:11  error    'usersArray' is never reassigned. Use 'const' instead                                     prefer-const
+  234:14  warning  'err' is defined but never used                                                           @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\components\cart\cart-management-dialog.tsx
+   32:12  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   38:37  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   68:16  warning  'err' is defined but never used           @typescript-eslint/no-unused-vars
+   95:43  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  118:19  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\components\cart\components\CartSearch.tsx
+  14:12  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  16:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\components\cart\components\CartSearchItem.tsx
+  18:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\components\oauth-handler.tsx
+  28:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  78:24  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\components\orders\user-autocomplete.tsx
+   34:10  error    Unexpected any. Specify a different type                                                                               @typescript-eslint/no-explicit-any
+   35:17  error    Unexpected any. Specify a different type                                                                               @typescript-eslint/no-explicit-any
+   42:33  error    Unexpected any. Specify a different type                                                                               @typescript-eslint/no-explicit-any
+   43:40  error    Unexpected any. Specify a different type                                                                               @typescript-eslint/no-explicit-any
+   90:23  error    Unexpected any. Specify a different type                                                                               @typescript-eslint/no-explicit-any
+  123:6   warning  React Hook React.useEffect has a missing dependency: 'selectedUser'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\hooks\useProductMetadata.ts
+  75:14  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\lib\features\add-product\SinglesProductForm.tsx
+    3:61   warning  'useMemo' is defined but never used. Allowed unused vars must match /^_/u                                             @typescript-eslint/no-unused-vars
+   13:31   warning  'FormControl' is defined but never used. Allowed unused vars must match /^_/u                                         @typescript-eslint/no-unused-vars
+   19:3    warning  'Condition' is defined but never used. Allowed unused vars must match /^_/u                                           @typescript-eslint/no-unused-vars
+   20:3    warning  'Language' is defined but never used. Allowed unused vars must match /^_/u                                            @typescript-eslint/no-unused-vars
+  126:20   error    Unexpected any. Specify a different type                                                                              @typescript-eslint/no-explicit-any
+  142:3    warning  'selectedTcg' is defined but never used. Allowed unused args must match /^_/u                                         @typescript-eslint/no-unused-vars
+  145:103  warning  'isLoadingTags' is assigned a value but never used. Allowed unused vars must match /^_/u                              @typescript-eslint/no-unused-vars
+  184:48   warning  'selectedSuggestion' is assigned a value but never used. Allowed unused vars must match /^_/u                         @typescript-eslint/no-unused-vars
+  199:9    warning  'setShowCamera' is assigned a value but never used. Allowed unused vars must match /^_/u                              @typescript-eslint/no-unused-vars
+  214:9    warning  'autocompleteRef' is assigned a value but never used. Allowed unused vars must match /^_/u                            @typescript-eslint/no-unused-vars
+  233:40   error    Unexpected any. Specify a different type                                                                              @typescript-eslint/no-explicit-any
+  281:16   error    Unexpected any. Specify a different type                                                                              @typescript-eslint/no-explicit-any
+  282:38   error    Unexpected any. Specify a different type                                                                              @typescript-eslint/no-explicit-any
+  303:6    warning  React Hook useCallback has a missing dependency: 'setShowDropdown'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  348:14   warning  'err' is defined but never used                                                                                       @typescript-eslint/no-unused-vars
+  395:60   error    Unexpected any. Specify a different type                                                                              @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\lib\features\add-product\components\SinglesBasicInfo.tsx
+   51:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   82:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  106:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-admin\lib\features\add-product\components\singles-form-parts\SinglesBasicInfoCard.tsx
+  8:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  9:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+? 113 problems (67 errors, 46 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+

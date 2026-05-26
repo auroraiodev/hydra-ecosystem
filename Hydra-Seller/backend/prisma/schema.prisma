@@ -1,0 +1,473 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../node_modules/.prisma/client"
+  binaryTargets = ["native", "rhel-openssl-1.0.x", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model admin_settings {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key        String   @unique
+  value      String
+  updated_at DateTime @default(now())
+}
+
+model banners {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title         String
+  subtitle      String?
+  description   String?
+  desktop_image String
+  mobile_image  String?
+  button_text   String?
+  button_link   String?
+  is_active     Boolean  @default(true)
+  order         Int      @default(0)
+  tcg_id        String?  @db.Uuid
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  tcgs          tcgs?    @relation(fields: [tcg_id], references: [id])
+
+  @@index([tcg_id, is_active])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model cart_items {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cart_id        String   @db.Uuid
+  quantity       Int
+  single_id      String?  @db.Uuid
+  product_data   Json?
+  unit_price     Decimal? @db.Decimal(10, 2)
+  importation_id String?
+  is_importation Boolean  @default(false)
+  tcg_id         String?  @db.Uuid
+  cart           carts    @relation(fields: [cart_id], references: [id])
+  singles        singles? @relation(fields: [single_id], references: [id])
+  tcgs           tcgs?    @relation(fields: [tcg_id], references: [id])
+
+  @@index([cart_id, single_id])
+  @@index([tcg_id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model carts {
+  id      String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id String       @unique @db.Uuid
+  items   cart_items[]
+  user    users        @relation(fields: [user_id], references: [id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model categories {
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                 String    @unique
+  order                Int
+  created_at           DateTime  @default(now())
+  description          String?
+  display_name         String
+  is_active            Boolean   @default(true)
+  updated_at           DateTime  @updatedAt
+  form_config          Json?     @default("{}")
+  tcg_display_names    Json?     @default("{}")
+  image_url            String?
+  singles              singles[]
+  tcgs                 tcgs[]    @relation("CategoryTcgs")
+  tcgs_categories_tcgs tcgs[]    @relation("categories_tcgs")
+}
+
+model chat_messages {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String   @db.Uuid
+  content    String
+  sender     String
+  is_read    Boolean  @default(false)
+  created_at DateTime @default(now())
+  user       users    @relation(fields: [user_id], references: [id])
+
+  @@index([user_id, created_at])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model conditions {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String    @unique
+  code         String    @unique
+  display_name String
+  discount     Int       @default(0)
+  singles      singles[]
+}
+
+model config {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model feature_flags {
+  key        String   @id
+  enabled    Boolean  @default(true)
+  label      String   @default("")
+  updated_at DateTime @default(now()) @updatedAt
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model languages {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String    @unique
+  code         String    @unique
+  display_name String
+  singles      singles[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model listings {
+  id        String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id   String              @db.Uuid
+  status    listing_status_enum
+  single_id String              @db.Uuid
+  singles   singles             @relation(fields: [single_id], references: [id])
+  users     users               @relation(fields: [user_id], references: [id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model notifications {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String   @db.Uuid
+  type       String
+  title      String
+  message    String
+  data       Json?
+  is_read    Boolean  @default(false)
+  created_at DateTime @default(now())
+  user       users    @relation(fields: [user_id], references: [id])
+
+  @@index([user_id, created_at])
+  @@index([user_id, is_read])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model order_items {
+  id                 String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id           String  @db.Uuid
+  quantity           Int
+  unit_price         Decimal @db.Decimal(10, 2)
+  single_id          String  @db.Uuid
+  is_delivered       Boolean @default(false)
+  delivered_quantity Int     @default(0)
+  delivery_status    String  @default("pending")
+  order              orders  @relation(fields: [order_id], references: [id])
+  singles            singles @relation(fields: [single_id], references: [id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model order_items_importation {
+  id                 String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id           String  @db.Uuid
+  importation_id     String
+  quantity           Int
+  unit_price         Decimal @db.Decimal(10, 2)
+  product_data       Json
+  is_delivered       Boolean @default(false)
+  delivered_quantity Int     @default(0)
+  delivery_status    String  @default("pending")
+  order              orders  @relation(fields: [order_id], references: [id], onDelete: Cascade)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model order_shipping {
+  id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id           String           @unique @db.Uuid
+  shipping_method_id String           @db.Uuid
+  address_id         String           @db.Uuid
+  user_addresses     user_addresses   @relation(fields: [address_id], references: [id])
+  order              orders           @relation(fields: [order_id], references: [id])
+  shipping_methods   shipping_methods @relation(fields: [shipping_method_id], references: [id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model orders {
+  id                    String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id               String                    @db.Uuid
+  status                order_status_enum
+  created_at            DateTime                  @default(now())
+  import_fee            Decimal?                  @db.Decimal(10, 2)
+  notes                 String?
+  arrived_at            DateTime?
+  delivered_at          DateTime?
+  estimated_delivery_at DateTime?
+  review_requested      Boolean                   @default(false)
+  import_ordered_at     DateTime?
+  internal_order_number String?
+  tracking_entries      Json?
+  items                 order_items[]
+  importation_items     order_items_importation[]
+  shipping              order_shipping?
+  users                 users                     @relation(fields: [user_id], references: [id])
+  payments              payments[]
+  reviews               reviews[]
+  wallet_transactions   wallet_transactions[]
+
+  @@index([user_id, status])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model payments {
+  id                        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id                  String   @db.Uuid
+  payment_method            String
+  mercadopago_payment_id    String?
+  mercadopago_preference_id String?
+  payment_data              Json?
+  status                    String
+  created_at                DateTime @default(now())
+  updated_at                DateTime @updatedAt
+  orders                    orders   @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+  @@index([mercadopago_payment_id])
+  @@index([order_id])
+}
+
+model push_subscriptions {
+  id                                       String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  admin_id                                 String?  @db.Uuid
+  endpoint                                 String   @unique
+  p256dh                                   String
+  auth                                     String
+  created_at                               DateTime @default(now())
+  user_id                                  String?  @db.Uuid
+  users_push_subscriptions_admin_idTousers users?   @relation("push_subscriptions_admin_idTousers", fields: [admin_id], references: [id])
+  users_push_subscriptions_user_idTousers  users?   @relation("push_subscriptions_user_idTousers", fields: [user_id], references: [id])
+
+  @@index([admin_id])
+  @@index([user_id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model refresh_tokens {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String    @db.Uuid
+  token_hash String    @unique
+  family_id  String    @db.Uuid
+  expires_at DateTime
+  revoked_at DateTime?
+  created_at DateTime  @default(now())
+  user       users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([family_id])
+  @@index([user_id])
+}
+
+model reviews {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id     String   @db.Uuid
+  order_id    String?  @db.Uuid
+  rating      Int
+  comment     String
+  is_approved Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  order       orders?  @relation(fields: [order_id], references: [id])
+  user        users    @relation(fields: [user_id], references: [id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model roles {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         role_type @unique
+  display_name String
+  users        users[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model shipping_methods {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String           @unique
+  order_shipping order_shipping[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model single_tags {
+  single_id String  @db.Uuid
+  tag_id    String  @db.Uuid
+  single    singles @relation(fields: [single_id], references: [id])
+  tags      tags    @relation(fields: [tag_id], references: [id])
+
+  @@id([single_id, tag_id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model singles {
+  id                  String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  category_id         String        @db.Uuid
+  condition_id        String?       @db.Uuid
+  language_id         String?       @db.Uuid
+  owner_id            String        @db.Uuid
+  borderless          Boolean       @default(false) @map("borderless")
+  cardName            String?       @map("card_name")
+  cardNumber          String?
+  foil                Boolean       @default(false) @map("is_foil")
+  importationId       String?       @map("hareruya_product_id")
+  img                 String        @map("image_url")
+  isLocalInventory    Boolean       @default(false) @map("is_local_inventory")
+  stock               Int           @default(0)
+  surgeFoil           Boolean       @default(false) @map("surge_foil")
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @updatedAt
+  tcg_id              String?       @db.Uuid
+  expansionCode       String?       @map("expansion_code")
+  extendedArt         Boolean       @default(false) @map("extended_art")
+  isAlternateFrame    Boolean       @default(false) @map("is_alternate_frame")
+  prerelease          Boolean       @default(false) @map("is_prerelease")
+  isSerialized        Boolean       @default(false) @map("is_serialized")
+  isShowcase          Boolean       @default(false) @map("is_showcase")
+  language            String?
+  price               Decimal       @map("price_mxn") @db.Decimal(10, 2)
+  priceMxnImportation Decimal?      @map("price_mxn_importation") @db.Decimal(10, 2)
+  priceMxnLocal       Decimal?      @map("price_mxn_local") @db.Decimal(10, 2)
+  rawCondition        String?       @map("raw_condition")
+  expansion           String?       @map("set")
+  cart_items          cart_items[]
+  listings            listings[]
+  order_items         order_items[]
+  tags                single_tags[]
+  categories          categories    @relation(fields: [category_id], references: [id])
+  conditions          conditions?   @relation(fields: [condition_id], references: [id])
+  languages           languages?    @relation(fields: [language_id], references: [id])
+  owner               users         @relation(fields: [owner_id], references: [id])
+  tcgs                tcgs?         @relation(fields: [tcg_id], references: [id])
+
+  @@index([importationId, language_id, foil])
+  @@index([owner_id, category_id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model tags {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String        @unique
+  created_at   DateTime      @default(now())
+  display_name String?
+  is_active    Boolean       @default(true)
+  is_default   Boolean       @default(false)
+  updated_at   DateTime      @updatedAt
+  singles      single_tags[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model tcgs {
+  id                         String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                       String       @unique
+  display_name               String
+  is_active                  Boolean      @default(true)
+  created_at                 DateTime     @default(now())
+  updated_at                 DateTime     @updatedAt
+  icon_url                   String?
+  logo_url                   String?
+  order                      Int          @default(0)
+  loader_url                 String?
+  banners                    banners[]
+  cart_items                 cart_items[]
+  singles                    singles[]
+  categories                 categories[] @relation("CategoryTcgs")
+  categories_categories_tcgs categories[] @relation("categories_tcgs")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user_addresses {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id        String           @db.Uuid
+  street         String
+  city           String
+  state          String
+  zip_code       String
+  country        String
+  is_default     Boolean          @default(false)
+  receiver_name  String?
+  order_shipping order_shipping[]
+  users          users            @relation(fields: [user_id], references: [id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model users {
+  id                       String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                    String                @unique
+  username                 String                @unique
+  password                 String?
+  role_id                  String                @db.Uuid
+  first_name               String
+  last_name                String
+  is_active                Boolean               @default(true)
+  avatar_url               String?
+  phone                    String?
+  created_at               DateTime              @default(now())
+  updated_at               DateTime              @default(now()) @updatedAt
+  balance                  Decimal               @default(0) @db.Decimal(10, 2)
+  email_verified           Boolean               @default(false)
+  has_seen_modal           Boolean               @default(false)
+  failed_login_attempts    Int                   @default(0)
+  locked_until             DateTime?
+  store_name               String?
+  rfc                      String?
+  store_logo_url           String?
+  is_hydra_alias           Boolean?              @default(false)
+  carts                    carts?
+  chat_messages            chat_messages[]
+  listings                 listings[]
+  notifications            notifications[]
+  orders                   orders[]
+  admin_push_subscriptions push_subscriptions[]  @relation("push_subscriptions_admin_idTousers")
+  user_push_subscriptions  push_subscriptions[]  @relation("push_subscriptions_user_idTousers")
+  refresh_tokens           refresh_tokens[]
+  reviews                  reviews[]
+  singles                  singles[]
+  user_addresses           user_addresses[]
+  roles                    roles                 @relation(fields: [role_id], references: [id])
+  wallet_transactions      wallet_transactions[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model wallet_transactions {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id     String           @db.Uuid
+  amount      Decimal          @db.Decimal(10, 2)
+  type        transaction_type
+  description String?
+  order_id    String?          @db.Uuid
+  created_at  DateTime         @default(now())
+  orders      orders?          @relation(fields: [order_id], references: [id])
+  user        users            @relation(fields: [user_id], references: [id])
+}
+
+enum listing_status_enum {
+  ACTIVE
+  SOLD
+  DISABLED
+  IN_TRANSIT
+  IN_MEXICO
+}
+
+enum order_status_enum {
+  PENDING
+  PAID
+  SHIPPED
+  COMPLETED
+  CANCELLED
+  PROCESSING
+}
+
+enum role_type {
+  ADMIN
+  CLIENT
+  SELLER
+}
+
+enum transaction_type {
+  SALE_PROCEEDS
+  WITHDRAWAL
+  PURCHASE
+  ORDER_REFUND
+  ADJUSTMENT
+}

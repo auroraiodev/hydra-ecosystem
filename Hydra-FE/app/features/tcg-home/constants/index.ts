@@ -1,0 +1,1 @@
+export const CAROUSEL_AUTOPLAY_DELAY = 6000;

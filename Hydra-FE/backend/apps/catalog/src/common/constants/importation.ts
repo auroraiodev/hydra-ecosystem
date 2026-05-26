@@ -1,0 +1,53 @@
+export const IMPORTATION_LANGUAGE_CODES = {
+  JAPANESE: '1',
+  ENGLISH: '2',
+  FRENCH: '3',
+  CHINESE: '4',
+  GERMAN: '6',
+  ITALIAN: '7',
+  KOREAN: '8',
+  PORTUGUESE: '9',
+  RUSSIAN: '10',
+  SPANISH: '11',
+} as const;
+
+export const IMPORTATION_LANGUAGE_MAP: Record<string, string> = {
+  '1': 'JAPANESE',
+  '2': 'ENGLISH',
+  '3': 'FRENCH',
+  '4': 'CHINESE',
+  '5': 'FRENCH',
+  '6': 'GERMAN',
+  '7': 'ITALIAN',
+  '8': 'KOREAN',
+  '9': 'PORTUGUESE',
+  '10': 'RUSSIAN',
+  '11': 'SPANISH',
+  '12': 'ENGLISH',
+};
+
+export const IMPORTATION_DISPLAY_NAMES: Record<string, string> = {
+  JAPANESE: 'Japonés',
+  ENGLISH: 'Inglés',
+  FRENCH: 'Francés',
+  CHINESE: 'Chino',
+  GERMAN: 'Alemán',
+  ITALIAN: 'Italiano',
+  KOREAN: 'Coreano',
+  PORTUGUESE: 'Portugués',
+  RUSSIAN: 'Ruso',
+  SPANISH: 'Español',
+};
+
+export const IMPORTATION_SEARCH_LANG_MAP: Record<string, string> = {
+  inglés: IMPORTATION_LANGUAGE_CODES.ENGLISH,
+  japonés: IMPORTATION_LANGUAGE_CODES.JAPANESE,
+  español: IMPORTATION_LANGUAGE_CODES.SPANISH,
+  francés: IMPORTATION_LANGUAGE_CODES.FRENCH,
+  alemán: IMPORTATION_LANGUAGE_CODES.GERMAN,
+  italiano: IMPORTATION_LANGUAGE_CODES.ITALIAN,
+  chino: IMPORTATION_LANGUAGE_CODES.CHINESE,
+  coreano: IMPORTATION_LANGUAGE_CODES.KOREAN,
+  portugués: IMPORTATION_LANGUAGE_CODES.PORTUGUESE,
+  ruso: IMPORTATION_LANGUAGE_CODES.RUSSIAN,
+};

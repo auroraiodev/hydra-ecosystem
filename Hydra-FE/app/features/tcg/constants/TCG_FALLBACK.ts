@@ -1,0 +1,18 @@
+export const TCG_COLOR_FALLBACK: Record<string, string> = {
+  magic: '#14b8a6',
+  mtg: '#14b8a6',
+  pokemon: '#fbbf24',
+  yugioh: '#c084fc',
+  'yu-gi-oh': '#c084fc',
+  lorcana: '#818cf8',
+  'one-piece': '#fb923c',
+  onepiece: '#fb923c',
+  'dragon-ball-super': '#facc15',
+  'dragon-ball': '#facc15',
+  digimon: '#f97316',
+  'flesh-and-blood': '#a3e635',
+  fleshandblood: '#a3e635',
+  'star-wars-unlimited': '#38bdf8',
+  starwars: '#38bdf8',
+  'weiss-schwarz': '#f472b6',
+};

@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./dist-serverless",
+    "declaration": false,
+    "sourceMap": false,
+    "incremental": false,
+    "strictNullChecks": false
+  },
+  "include": ["src/**/*", "libs/**/*", "api/**/*", "apps/**/*"],
+  "exclude": ["node_modules", "dist", "dist-serverless"]
+}

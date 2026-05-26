@@ -1,0 +1,84 @@
+import {
+  Controller,
+  Get,
+  Patch,
+  Param,
+  UseGuards,
+  Query,
+  Sse,
+  MessageEvent,
+  UnauthorizedException,
+  Logger,
+} from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
+import { JwtService } from '@nestjs/jwt';
+import type { Observable } from 'rxjs';
+import { NotificationsService } from './notifications.service.js';
+import { JwtAuthGuard, Public } from '../auth/guards/jwt-auth.guard.js';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
+import { UsersService } from '../users/users.service.js';
+import type { UserWithRole } from '../users/interfaces/user.interface.js';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+
+@ApiTags('notifications')
+@Controller('notifications')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth('JWT-auth')
+export class NotificationsController {
+  private readonly logger = new Logger(NotificationsController.name);
+
+  constructor(
+    private readonly notificationsService: NotificationsService,
+    private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
+  ) {}
+
+  @Get()
+  @ApiOperation({ summary: 'Get user notifications' })
+  async getNotifications(@CurrentUser() user: UserWithRole, @Query('limit') limit = 20) {
+    return this.notificationsService.getNotifications(user.id, Number(limit));
+  }
+
+  /**
+   * SSE endpoint — bypasses JwtAuthGuard because EventSource cannot send
+   * Authorization headers. Token is verified manually from the ?token= query param.
+   */
+  @Sse('stream')
+  @Public()
+  @SkipThrottle()
+  @ApiOperation({ summary: 'SSE stream of real-time notifications (token via query param)' })
+  async stream(@Query('token') token: string): Promise<Observable<MessageEvent>> {
+    if (!token) {
+      throw new UnauthorizedException('Missing token');
+    }
+
+    let payload: { sub: string };
+    try {
+      payload = this.jwtService.verify<{ sub: string }>(token);
+    } catch {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+
+    const user = await this.usersService.findById(payload.sub);
+    if (!user || !user.is_active) {
+      throw new UnauthorizedException('User not found or inactive');
+    }
+
+    this.logger.log(`SSE stream opened for user ${user.id}`);
+
+    // getStream() returns Observable<MessageEvent> and handles cleanup via finalize()
+    return this.notificationsService.getStream(user.id);
+  }
+
+  @Patch(':id/read')
+  @ApiOperation({ summary: 'Mark a notification as read' })
+  async markAsRead(@Param('id') id: string, @CurrentUser() user: UserWithRole) {
+    return this.notificationsService.markAsRead(id, user.id);
+  }
+
+  @Patch('read-all')
+  @ApiOperation({ summary: 'Mark all notifications as read' })
+  async markAllAsRead(@CurrentUser() user: UserWithRole) {
+    return this.notificationsService.markAllAsRead(user.id);
+  }
+}

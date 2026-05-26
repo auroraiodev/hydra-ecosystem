@@ -1,0 +1,26 @@
+# Hydra Collectables México - Full Documentation for AI
+
+## Mission
+To provide the best shopping experience for Magic: The Gathering players in Mexico by offering a reliable, fast, and fairly priced marketplace for singles and sealed products.
+
+## Product Catalog
+We specialize in:
+- **Magic: The Gathering Singles**: From Alpha/Beta to the newest releases.
+- **Commander/EDH**: Specialized section for the most popular format in Mexico.
+- **Competitive Play**: Full stock for Modern, Pioneer, and Standard.
+- **Sealed Product**: Draft, Set, and Collector boosters.
+
+## Logistics & Operations
+- **Dispatch**: Within 24-48 business hours.
+- **Delivery**: Standard and Express options via major carriers (Estafeta, FedEx, DHL).
+- **Payment Methods**: Credit cards, PayPal, OXXO, and Bank Transfers.
+
+## Technical Architecture
+- Built with Next.js 15+ and Turbopack.
+- Real-time inventory sync with global marketplace data.
+- High-performance search filters for collectors.
+
+## Contacts
+- **Web**: https://hydracollect.com
+- **Instagram**: @hydracollectables
+- **Twitter/X**: @hydracollect

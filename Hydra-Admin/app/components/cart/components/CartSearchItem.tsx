@@ -1,0 +1,91 @@
+'use client';
+
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { SafeImg } from '@/components/ui/safe-img';
+import {
+  Add24Regular,
+  ArrowSync24Regular,
+  Cart24Regular,
+} from '@fluentui/react-icons';
+import { resolveLanguageName } from '@/lib/format';
+import type { MinimalProduct } from '@/components/cart/types';
+
+interface CartSearchItemProps {
+  product: MinimalProduct;
+  isAdding: boolean;
+  onAdd: (product: MinimalProduct) => void;
+}
+
+export function CartSearchItem({ product, isAdding, onAdd }: CartSearchItemProps) {
+  return (
+    <div className="flex items-center justify-between p-2 hover:bg-muted/50 text-sm">
+      <div className="flex gap-3 flex-1 min-w-0">
+        <SafeImg
+          src={product.img || product.imageUrl}
+          alt=""
+          className="h-20 w-15 object-cover rounded border shrink-0"
+          fallback={
+            <div className="h-20 w-15 bg-muted rounded border shrink-0 flex items-center justify-center">
+              <Cart24Regular className="size-6 text-muted-foreground opacity-20" />
+            </div>
+          }
+        />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-0.5">
+            <p className="font-medium truncate">
+              {product.name || product.cardName || product.title}
+            </p>
+            {(product.foil || product.isFoil) && (
+              <Badge className="text-[10px] px-1.5 py-0 bg-yellow-400 text-yellow-950 border-none font-bold shrink-0">
+                FOIL
+              </Badge>
+            )}
+            {(product.language || product.lang) && (
+              <Badge
+                variant="outline"
+                className="text-[10px] px-1.5 py-0 bg-zinc-100 text-zinc-700 border-zinc-200 uppercase font-bold shrink-0"
+              >
+                {resolveLanguageName(product.language || product.lang)}
+              </Badge>
+            )}
+          </div>
+          <div className="text-xs text-muted-foreground truncate flex items-center gap-1">
+            {product.expansion && <span>{product.expansion}</span>}
+            {product.cardNumber && <span>#{product.cardNumber}</span>}
+            {product.variant && product.variant !== product.expansion && (
+              <>
+                <span className="mx-0.5">•</span>
+                <span>{product.variant}</span>
+              </>
+            )}
+            {product.price && (
+              <>
+                <span className="mx-0.5">•</span>
+                <span className="font-semibold text-foreground">
+                  {typeof product.price === 'number'
+                    ? `$${product.price.toFixed(2)}`
+                    : product.price}
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+      <Button
+        size="sm"
+        variant="ghost"
+        className="h-7 shrink-0"
+        disabled={isAdding}
+        onClick={() => onAdd(product)}
+      >
+        {isAdding ? (
+          <ArrowSync24Regular className="size-3.5 animate-spin" />
+        ) : (
+          <Add24Regular className="size-3.5" />
+        )}
+      </Button>
+    </div>
+  );
+}
