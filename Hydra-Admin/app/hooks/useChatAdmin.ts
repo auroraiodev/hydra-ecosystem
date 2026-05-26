@@ -175,7 +175,32 @@ interface UseChatAdminReturn {
   isLoading: boolean;
 }
 
-const WS_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3002').replace(/\/api$/, '');
+function getWsUrl(): string {
+  if (typeof window === 'undefined') {
+    return (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3002').replace(/\/api$/, '');
+  }
+
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl && envUrl.startsWith('http')) {
+    return envUrl.replace(/\/api$/, '');
+  }
+
+  const { hostname, protocol } = window.location;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return `http://${hostname}:3002`;
+  }
+
+  const wsProtocol = protocol === 'https:' ? 'https:' : 'http:';
+
+  if (hostname.endsWith('hydracollect.com')) {
+    if (hostname.startsWith('qa.')) {
+      return `${wsProtocol}//qa-api.hydracollect.com`;
+    }
+    return `${wsProtocol}//api.hydracollect.com`;
+  }
+
+  return window.location.origin;
+}
 
 /** Fetch the real JWT from the httpOnly cookie via server-side route */
 async function getWsToken(): Promise<string | null> {
@@ -285,7 +310,7 @@ export function useChatAdmin(): UseChatAdminReturn {
       const token = await getWsToken();
       if (!token || !isEffectActive) return;
 
-      const s = io(`${WS_URL}/chat`, {
+      const s = io(`${getWsUrl()}/chat`, {
         auth: { token },
         transports: ['websocket'],
         reconnection: true,

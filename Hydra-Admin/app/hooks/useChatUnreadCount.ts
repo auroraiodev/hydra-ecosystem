@@ -3,7 +3,32 @@
 import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-const WS_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3002').replace(/\/api$/, '');
+function getWsUrl(): string {
+  if (typeof window === 'undefined') {
+    return (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3002').replace(/\/api$/, '');
+  }
+
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl && envUrl.startsWith('http')) {
+    return envUrl.replace(/\/api$/, '');
+  }
+
+  const { hostname, protocol } = window.location;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return `http://${hostname}:3002`;
+  }
+
+  const wsProtocol = protocol === 'https:' ? 'https:' : 'http:';
+
+  if (hostname.endsWith('hydracollect.com')) {
+    if (hostname.startsWith('qa.')) {
+      return `${wsProtocol}//qa-api.hydracollect.com`;
+    }
+    return `${wsProtocol}//api.hydracollect.com`;
+  }
+
+  return window.location.origin;
+}
 
 async function getWsToken(): Promise<string | null> {
   try {
@@ -61,7 +86,7 @@ export function useChatUnreadCount(): number {
       const token = await getWsToken();
       if (!token) return;
 
-      socket = io(`${WS_URL}/chat`, {
+      socket = io(`${getWsUrl()}/chat`, {
         auth: { token },
         transports: ['websocket'],
         reconnection: true,

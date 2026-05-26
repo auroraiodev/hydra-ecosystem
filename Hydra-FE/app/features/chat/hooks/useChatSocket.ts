@@ -37,8 +37,32 @@ function playNotificationSound() {
 
 import { API_URL } from '@/lib/constants/api';
 
-// WS connects to base URL (no /api prefix) — socket.io namespace is /chat
-const WS_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3002').replace(/\/api$/, '');
+function getWsUrl(): string {
+  if (typeof window === 'undefined') {
+    return (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3002').replace(/\/api$/, '');
+  }
+
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl && envUrl.startsWith('http')) {
+    return envUrl.replace(/\/api$/, '');
+  }
+
+  const { hostname, protocol } = window.location;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return `http://${hostname}:3002`;
+  }
+
+  const wsProtocol = protocol === 'https:' ? 'https:' : 'http:';
+
+  if (hostname.endsWith('hydracollect.com')) {
+    if (hostname.startsWith('qa.')) {
+      return `${wsProtocol}//qa-api.hydracollect.com`;
+    }
+    return `${wsProtocol}//api.hydracollect.com`;
+  }
+
+  return window.location.origin;
+}
 
 interface ChatState {
   messages: ChatMessage[];
@@ -161,7 +185,7 @@ export function useChatSocket(open: boolean): UseChatSocketReturn {
     void import('socket.io-client').then(({ io }) => {
       if (cancelled) return;
 
-      const socket = io(`${WS_URL}/chat`, {
+      const socket = io(`${getWsUrl()}/chat`, {
         auth: { token },
         transports: ['websocket'], // Use only websocket to avoid sid mismatches in polling across multiple backend instances
         reconnection: true,
