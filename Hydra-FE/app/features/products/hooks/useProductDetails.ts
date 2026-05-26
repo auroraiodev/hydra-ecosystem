@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useReducer } from 'react';
+import { useState, useEffect, useCallback, useReducer, useMemo, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { useAppSelector } from '@/lib/store/hooks';
 import { getProduct, getAlternativeVersions, fetchValuedPrice, type Product } from '../utils';
@@ -19,30 +19,48 @@ export function useProductDetails(
   const id = params?.id as string;
   const selectedCard = useAppSelector((state) => state.selectedProduct.card);
 
-  const productFromParams: Product | null = (() => {
+  const nameParam = sp?.get('name');
+  const priceParam = sp?.get('price');
+  const conditionParam = sp?.get('condition');
+  const languageParam = sp?.get('language');
+  const imgParam = sp?.get('img');
+  const isLocalInventoryParam = sp?.get('isLocalInventory');
+  const expansionParam = sp?.get('expansion');
+  const foilParam = sp?.get('foil');
+  const surgeFoilParam = sp?.get('surgeFoil');
+
+  const productFromParams: Product | null = useMemo(() => {
     if (typeof window === 'undefined') return null;
-    const nameParam = sp?.get('name');
     if (!nameParam || initialProduct) return null;
-    const condition = sp?.get('condition');
-    const language = sp?.get('language');
-    const img = sp?.get('img') || undefined;
     return {
       id,
       name: nameParam,
       cardName: nameParam,
-      price: parseFloat(sp?.get('price') || '0') || 0,
+      price: parseFloat(priceParam || '0') || 0,
       stock: 0,
-      imageUrl: img,
-      img,
-      isLocalInventory: sp?.get('isLocalInventory') === 'true',
-      expansion: sp?.get('expansion') || undefined,
-      conditions: condition ? { name: condition, display_name: condition } : undefined,
-      languages: language ? { name: language, display_name: language } : undefined,
-      foil: sp?.get('foil') === '1',
-      surgeFoil: sp?.get('surgeFoil') === '1',
+      imageUrl: imgParam || undefined,
+      img: imgParam || undefined,
+      isLocalInventory: isLocalInventoryParam === 'true',
+      expansion: expansionParam || undefined,
+      conditions: conditionParam ? { name: conditionParam, display_name: conditionParam } : undefined,
+      languages: languageParam ? { name: languageParam, display_name: languageParam } : undefined,
+      foil: foilParam === '1',
+      surgeFoil: surgeFoilParam === '1',
       importationId: id,
     };
-  })();
+  }, [
+    id,
+    initialProduct,
+    nameParam,
+    priceParam,
+    conditionParam,
+    languageParam,
+    imgParam,
+    isLocalInventoryParam,
+    expansionParam,
+    foilParam,
+    surgeFoilParam,
+  ]);
 
   type ProductAction =
     | { type: 'SET_PRODUCT'; payload: Product | null }
@@ -158,11 +176,22 @@ export function useProductDetails(
     }
   }, [product, sp, buildShareUrl]);
 
+  const isFetched = useRef(false);
+  const livePriceFetchedFor = useRef<string | null>(null);
+
+  useEffect(() => {
+    isFetched.current = false;
+    livePriceFetchedFor.current = null;
+  }, [id]);
+
   useEffect(() => {
     if (initialProduct && product && product.price > 0) {
       return;
     }
+    if (isFetched.current) return;
+
     const fetchProduct = async () => {
+      isFetched.current = true;
       try {
         let realId = id;
         const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
@@ -268,12 +297,15 @@ export function useProductDetails(
   // Fetch live price for importation products
   useEffect(() => {
     if (!product || !product.importationId) return;
+    if (livePriceFetchedFor.current === product.id) return;
 
     const cardName = product.cardName || product.name;
     const language = product.languages?.name || product.languages?.display_name || 'ENGLISH';
     const isFoil = product.foil === true;
 
     if (!cardName) return;
+
+    livePriceFetchedFor.current = product.id;
 
     getImportationPrice(product.importationId, cardName, isFoil, language).then((variant) => {
       if (!variant) return;
@@ -287,7 +319,7 @@ export function useProductDetails(
         });
       }
     });
-  }, [product, product?.importationId]);
+  }, [product]);
 
   return { product, loading, error, alternativeVersions, relatedProducts, buildShareUrl };
 }

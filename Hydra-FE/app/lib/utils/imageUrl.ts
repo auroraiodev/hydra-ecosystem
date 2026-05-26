@@ -13,6 +13,13 @@ export function resolveImageUrl(url: string | null | undefined): string {
     return url;
   }
 
+  // Intercept and rewrite legacy supplier URLs to the clean local proxy
+  if (url.includes('hareruyamtg.com')) {
+    const parts = url.split('hareruyamtg.com/');
+    const path = parts[parts.length - 1];
+    return `/api/images/external?path=${encodeURIComponent(path)}`;
+  }
+
   // 2. Handle legacy or admin-generated proxy paths
   if (url.startsWith('/api/proxy/')) {
     // Convert admin's /api/proxy/ to FE's /api/

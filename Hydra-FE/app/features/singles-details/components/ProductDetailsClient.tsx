@@ -13,6 +13,7 @@ import { FadeUp } from '@/features/shared/components/Animations';
 import { useProductDetails } from '@/features/products/hooks';
 import type { AltItem } from '@/features/products/hooks/useProductDetails';
 import { normalizePrice, resolveLanguageName } from '@/lib/utils/transformers';
+import { resolveImageUrl } from '@/lib/utils/imageUrl';
 import { ProductGallery, ProductInfo } from '@/features/products/components';
 
 const EMPTY_ALT_ITEMS: AltItem[] = [];
@@ -146,7 +147,9 @@ function ProductDetailsContent({
     product.images && product.images.length > 0
       ? product.images
       : [product.imageUrl || product.img || ''];
-  const validImages = allImages.filter((img: string) => img && img.length > 0);
+  const validImages = allImages
+    .filter((img: string) => img && img.length > 0)
+    .map((img: string) => resolveImageUrl(img));
 
   return (
     <div className="min-h-screen bg-vault-bg text-white antialiased relative overflow-hidden font-display pb-24 lg:pb-0 -mt-14 pt-14">
