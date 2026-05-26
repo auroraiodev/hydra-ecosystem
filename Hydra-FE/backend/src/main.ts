@@ -103,7 +103,8 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(process.env.PORT ?? 3002, '0.0.0.0');
-  logger.log(`Hydra Backend running on: http://0.0.0.0:${process.env.PORT ?? 3002}`);
+  const port = process.env.BACKEND_PORT ?? process.env.PORT ?? 3002;
+  await app.listen(port, '0.0.0.0');
+  logger.log(`Hydra Backend running on: http://0.0.0.0:${port}`);
 }
 void bootstrap();
