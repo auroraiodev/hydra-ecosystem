@@ -111,7 +111,7 @@ function WithdrawModal({
           />
         </div>
         <div className="bg-amber-50 p-4 rounded-xl flex gap-3">
-          <div className="text-amber-500 text-xl shrink-0">âš ï¸</div>
+          <div className="text-amber-500 text-xl shrink-0">š ï¸</div>
           <p className="text-[11px] text-amber-700">
             Asegúrate de que tus datos sean correctos. Hydra no se hace responsable por
             transferencias a cuentas erróneas proporcionadas por el usuario.

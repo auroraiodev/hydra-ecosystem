@@ -71,7 +71,7 @@ export function RatingStars({ rating, reviewCount }: { rating?: number; reviewCo
   );
 }
 
-// Compute finalHref â€” for importation (non-UUID) products, embed the card name and language
+// Compute finalHref ” for importation (non-UUID) products, embed the card name and language
 // in the URL so that the backend can do a keyword search (?name=) and the detail page
 // can pre-select the correct language variant (?language=).
 // Local inventory products (UUID ids) use plain href since they resolve via local DB.

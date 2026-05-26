@@ -108,7 +108,7 @@ export function SearchModal({
               </div>
               <h3 className="text-xl font-semibold text-text-muted/50 mb-2">Hydra Collectables</h3>
               <p className="text-lg font-medium text-text-muted/40">
-                Encuentra tus cartas favoritasâ€¦
+                Encuentra tus cartas favoritas
               </p>
             </div>
           )}

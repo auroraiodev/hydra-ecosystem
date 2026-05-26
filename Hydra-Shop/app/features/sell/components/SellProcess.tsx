@@ -17,7 +17,7 @@ export function SellProcess() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl sm:text-6xl font-semibold mb-6 tracking-tight uppercase text-teal">
-              Â¿Cómo funciona?
+              ¿Cómo funciona?
             </h2>
             <div className="h-2 w-32 bg-gold/80 mx-auto rounded-full shadow-[0_0_20px_rgba(var(--color-gold),0.3)]" />
             <p className="mt-8 text-vault-text-muted text-lg font-medium max-w-2xl mx-auto">

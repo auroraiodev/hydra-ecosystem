@@ -108,7 +108,7 @@ export function HomeSEOContent({
               Centro de Vendedores
             </span>
             <h2 className="text-3xl lg:text-5xl font-semibold text-white mb-6 tracking-tighter leading-tight uppercase">
-              Â¿Tienes cartas que <br />
+              ¿Tienes cartas que <br />
               <span className="text-teal">no usas?</span>
             </h2>
             <p className="text-vault-text-muted text-lg font-medium leading-relaxed mb-8 max-w-xl">

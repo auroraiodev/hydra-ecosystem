@@ -50,7 +50,7 @@ export function ImportWarningModal({ open, onConfirm, onCancel }: ImportWarningM
           dependiendo del tiempo en aduana.
           <br />
           <br />
-          Â¿Deseas continuar con la compra?
+          ¿Deseas continuar con la compra?
         </p>
 
         {/* Actions */}

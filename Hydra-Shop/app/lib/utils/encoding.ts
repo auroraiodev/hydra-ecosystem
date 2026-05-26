@@ -5,7 +5,7 @@
 export function fixEncoding(str: string | null | undefined): string {
   if (!str) return str || '';
   try {
-    const mojibakePatterns = ['Ã', 'â€', 'Â'];
+    const mojibakePatterns = ['Ã', '', ''];
     const hasMojibake = mojibakePatterns.some((p) => str.includes(p));
 
     if (hasMojibake) {

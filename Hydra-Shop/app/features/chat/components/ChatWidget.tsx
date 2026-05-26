@@ -93,9 +93,8 @@ export function ChatWidget() {
     <>
       {/* Mobile backdrop */}
       <div
-        className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-sm sm:hidden transition-opacity duration-300 ${
-          open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-sm sm:hidden transition-opacity duration-300 ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
         onClick={() => setOpen(false)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -113,9 +112,8 @@ export function ChatWidget() {
         id="chat-widget-fab"
         onClick={openChat}
         aria-label="Abrir chat con soporte"
-        className={`fixed ${
-          isFloatingBarPage ? 'bottom-60' : 'bottom-20'
-        } right-5 sm:bottom-8 sm:right-8 z-50 size-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 bg-gradient-to-br from-teal to-teal/80 border border-white/20`}
+        className={`fixed ${isFloatingBarPage ? 'bottom-60' : 'bottom-20'
+          } right-5 sm:bottom-8 sm:right-8 z-50 size-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 bg-gradient-to-br from-teal to-teal/80 border border-white/20`}
         style={{
           boxShadow: '0 0 30px rgba(var(--glow-teal-rgb) / 0.4), inset 0 0 10px rgba(255,255,255,0.2)',
         }}
@@ -135,10 +133,9 @@ export function ChatWidget() {
           top-0 left-0 right-0 bottom-0 rounded-none bg-vault-bg
           sm:top-auto sm:left-auto sm:bottom-24 sm:right-8 sm:w-[420px] sm:h-[650px] sm:max-h-[calc(100vh-140px)] sm:rounded-3xl sm:origin-bottom-right
           vault-glass-panel
-          ${
-            open
-              ? 'translate-y-0 opacity-100 pointer-events-auto sm:scale-100'
-              : 'translate-y-full opacity-0 pointer-events-none sm:translate-y-4 sm:scale-95'
+          ${open
+            ? 'translate-y-0 opacity-100 pointer-events-auto sm:scale-100'
+            : 'translate-y-full opacity-0 pointer-events-none sm:translate-y-4 sm:scale-95'
           }`}
         style={{
           boxShadow: '0 25px 80px rgba(0, 0, 0, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.04)',
@@ -210,7 +207,7 @@ export function ChatWidget() {
                 <div className="flex justify-center py-6">
                   <div className="flex items-center gap-2 text-white/20 text-sm">
                     <div className="size-4 border-2 border-teal border-t-transparent rounded-full animate-spin" />
-                    Cargando mensajesâ€¦
+                    Cargando mensajes
                   </div>
                 </div>
               )}

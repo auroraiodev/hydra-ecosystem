@@ -49,7 +49,7 @@ export function ReviewModal({ orderId, isOpen, onClose, onSuccess }: ReviewModal
       );
 
       if (result.success) {
-        showSuccess('Â¡Gracias! Tu reseña ha sido enviada para moderación.');
+        showSuccess('¡Gracias! Tu reseña ha sido enviada para moderación.');
         onSuccess();
         onClose();
       } else {
@@ -106,7 +106,7 @@ export function ReviewModal({ orderId, isOpen, onClose, onSuccess }: ReviewModal
               Tu Experiencia <span className="text-primary">Importa</span>
             </h2>
             <p className="text-zinc-500 text-sm mt-2">
-              Â¿Cómo fue tu experiencia con esta orden? Tus palabras ayudan a otros coleccionistas.
+              ¿Cómo fue tu experiencia con esta orden? Tus palabras ayudan a otros coleccionistas.
             </p>
           </div>
 
@@ -126,11 +126,10 @@ export function ReviewModal({ orderId, isOpen, onClose, onSuccess }: ReviewModal
                     onMouseLeave={() => setHover(0)}
                   >
                     <Star
-                      className={`size-10 transition-colors ${
-                        star <= (hover || rating)
+                      className={`size-10 transition-colors ${star <= (hover || rating)
                           ? 'fill-gold text-gold scale-110'
                           : 'text-zinc-200'
-                      }`}
+                        }`}
                     />
                   </button>
                 ))}

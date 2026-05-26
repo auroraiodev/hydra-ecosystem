@@ -44,7 +44,7 @@ export function CardPicker({ query, onSelect, onClose, dark = false }: CardPicke
         {loading && (
           <div className={`flex items-center justify-center gap-2 py-4 text-sm ${mutedColor}`}>
             <Loader2 className="size-4 animate-spin" />
-            Buscandoâ€¦
+            Buscando
           </div>
         )}
         {!loading && cards.length === 0 && query.length >= 2 && (

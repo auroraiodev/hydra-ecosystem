@@ -32,7 +32,7 @@ export function ChatHeader({
             </>
           ) : (
             <>
-              <Loader2 className="size-3 animate-spin" /> Conectandoâ€¦
+              <Loader2 className="size-3 animate-spin" /> Conectando
             </>
           )}
         </p>
