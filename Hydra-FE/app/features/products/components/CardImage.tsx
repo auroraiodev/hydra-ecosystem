@@ -16,8 +16,9 @@ export function CardImage({
   priority = false,
 }: CardImageProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
-  if (!imageUrl) {
+  if (!imageUrl || hasError) {
     return (
       <div
         className={`${aspectRatio} flex items-center justify-center text-vault-text-muted text-sm bg-black/40 rounded-lg`}
@@ -48,6 +49,7 @@ export function CardImage({
           priority={priority}
           fetchPriority={priority ? 'high' : 'auto'}
           onLoad={() => setIsLoading(false)}
+          onError={() => { setIsLoading(false); setHasError(true); }}
         />
       </div>
       {foil === true && !isLoading && <ShaderAnimation />}
