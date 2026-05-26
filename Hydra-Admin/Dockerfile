@@ -7,7 +7,7 @@
 FROM oven/bun:1.3 AS deps
 WORKDIR /app
 
-COPY package.json bun.lock ./
+COPY package.json bun.lock* ./
 COPY app/package.json app/
 COPY backend/package.json backend/
 COPY backend/prisma/ backend/prisma/

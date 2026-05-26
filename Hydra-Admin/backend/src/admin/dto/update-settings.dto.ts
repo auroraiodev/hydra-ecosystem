@@ -61,4 +61,12 @@ export class UpdateSettingsDto {
   @ApiPropertyOptional()
   @IsOptional()
   marketplace_name?: any;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  platform_fee?: any;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  mp_fee_rate?: any;
 }
