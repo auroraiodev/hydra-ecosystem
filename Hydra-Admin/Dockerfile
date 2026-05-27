@@ -38,6 +38,10 @@ RUN bun install --frozen-lockfile && \
 # Copy the rest of the source files
 COPY . .
 
+# Bun copies path-based deps (arcane-vault-ui: ../theme) at install time, but only
+# theme/package.json existed then. Sync the full source so Next.js can resolve it.
+RUN cp -r theme/. app/node_modules/arcane-vault-ui/
+
 # 1. Backend (NestJS)
 WORKDIR /app/backend
 RUN bun run prisma:generate

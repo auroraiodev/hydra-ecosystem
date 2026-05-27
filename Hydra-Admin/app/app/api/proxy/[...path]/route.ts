@@ -103,12 +103,11 @@ async function proxyRequest(
   throw lastError ?? new Error('Proxy fetch failed');
 }
 
-type RouteContext = { params: Promise<{ path: string[] }> | { path: string[] } };
+type RouteContext = { params: Promise<{ path: string[] }> };
 
 const handler = async (request: NextRequest, context: RouteContext) => {
   try {
-    // Support both Next.js 14 (sync) and 15+ (async) params
-    const params = context.params instanceof Promise ? await context.params : context.params;
+    const params = await context.params;
 
     // DEBUG LOGGING
     try {

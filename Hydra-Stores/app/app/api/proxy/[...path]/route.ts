@@ -82,12 +82,11 @@ async function proxyRequest(
   });
 }
 
-type RouteContext = { params: Promise<{ path: string[] }> | { path: string[] } };
+type RouteContext = { params: Promise<{ path: string[] }> };
 
 const handler = async (request: NextRequest, context: RouteContext) => {
   try {
-    // Support both Next.js 14 (sync) and 15+ (async) params
-    const params = context.params instanceof Promise ? await context.params : context.params;
+    const params = await context.params;
     return await proxyRequest(request, params);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
