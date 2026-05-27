@@ -54,9 +54,9 @@ RUN bun run build:api:only
 WORKDIR /app/app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
-    NODE_OPTIONS="--max-old-space-size=1536" \
-    NEXT_CPUS=1
-RUN bun run build -- --webpack
+    NODE_OPTIONS="--max-old-space-size=2048"
+
+RUN bunx next build --no-turbopack
 
 # ── Stage 2: Runner ───────────────────────────────────────────
 FROM oven/bun:1.3-slim AS runner

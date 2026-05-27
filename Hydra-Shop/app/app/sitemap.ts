@@ -4,6 +4,12 @@ import { generateSlug } from '@/lib/utils/slug';
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://hydracollect.com';
 
+export const dynamic = 'force-static';
+
+function xmlEscape(url: string): string {
+  return url.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     { route: '', priority: 1, changeFrequency: 'daily' as const },
@@ -25,7 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const categoryRoutes = ['SINGLES', 'PRECON_DECK', 'BUNDLE', 'MICAS', 'ACCESSORIES'].map(
     (cat) => ({
-      url: `${baseUrl}/singles/search?category=${cat}`.replace(/&/g, '&amp;'),
+      url: xmlEscape(`${baseUrl}/singles/search?category=${cat}`),
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
       priority: 0.7,
@@ -60,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { q: 'mtg monterrey', priority: 0.7 },
     { q: 'mtg guadalajara', priority: 0.7 },
   ].map(({ q, priority }) => ({
-    url: `${baseUrl}/singles/search?q=${encodeURIComponent(q)}`.replace(/&/g, '&amp;'),
+    url: xmlEscape(`${baseUrl}/singles/search?q=${encodeURIComponent(q)}`),
     lastModified: new Date(),
     changeFrequency: 'daily' as const,
     priority,
@@ -76,14 +82,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
 
     [expansionRes, productRes] = await Promise.all([
-      fetch(`${API_URL}/singles/expansions`, {
-        cache: 'no-store',
-        signal: controller.signal,
-      }),
-      fetch(`${API_URL}/singles?limit=5000&fields=id,cardName,updatedAt`, {
-        cache: 'no-store',
-        signal: controller.signal,
-      }),
+      fetch(`${API_URL}/singles/expansions`, { signal: controller.signal }),
+      fetch(`${API_URL}/singles?limit=5000&fields=id,cardName,updatedAt`, { signal: controller.signal }),
     ]);
 
     clearTimeout(timeoutId);
@@ -97,7 +97,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const data = await expansionRes.json();
       const expansions: string[] = Array.isArray(data) ? data : data.data || [];
       expansionRoutes = expansions.map((exp) => ({
-        url: `${baseUrl}/singles/set/${encodeURIComponent(exp)}`,
+        url: xmlEscape(`${baseUrl}/singles/set/${encodeURIComponent(exp)}`),
         lastModified: new Date(),
         changeFrequency: 'daily' as const,
         priority: 0.8,
@@ -121,7 +121,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const productUrl = `${baseUrl}/singles/${product.id}${slug ? `-${slug}` : ''}`;
 
         acc.push({
-          url: productUrl,
+          url: xmlEscape(productUrl),
           lastModified: product.updatedAt ? new Date(product.updatedAt) : new Date(),
           changeFrequency: 'weekly' as const,
           priority: 0.7,
