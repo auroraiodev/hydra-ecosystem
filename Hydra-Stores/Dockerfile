@@ -56,7 +56,7 @@ ENV NODE_ENV=production \
     NEXT_CPUS=1
 
 COPY app/ ./
-RUN bun run build
+RUN bun run build -- --webpack
 
 # ── Stage 2: Runner ───────────────────────────────────────────
 FROM oven/bun:1.3 AS runner

@@ -426,6 +426,14 @@ model users {
   user_addresses           user_addresses[]
   roles                    roles                 @relation(fields: [role_id], references: [id])
   wallet_transactions      wallet_transactions[]
+  user_sessions            user_sessions?
+}
+
+model user_sessions {
+  user_id      String   @id @db.Uuid
+  last_seen    DateTime @default(now())
+  current_page String?
+  users        users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.

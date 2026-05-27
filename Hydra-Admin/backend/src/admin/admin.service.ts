@@ -153,6 +153,27 @@ export class AdminService {
     }
   }
 
+  async getOnlineUsers() {
+    const cutoff = new Date(Date.now() - 2 * 60 * 1000);
+    return this.prismaService.user_sessions.findMany({
+      where: { last_seen: { gte: cutoff } },
+      include: {
+        users: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            username: true,
+            avatar_url: true,
+            roles: { select: { name: true } },
+          },
+        },
+      },
+      orderBy: { last_seen: 'desc' },
+    });
+  }
+
   // Users management
   async getTotalUsers(): Promise<number> {
     return this.prismaService.users.count();

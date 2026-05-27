@@ -717,6 +717,10 @@ export const uploadAPI = {
   },
 };
 
+export const presenceAPI = {
+  getOnline: () => apiCall('/admin/presence/online'),
+};
+
 export const bannersAPI = {
   list: () => apiCall('/banners'),
   active: (tcgId?: string) => {

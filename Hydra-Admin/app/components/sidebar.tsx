@@ -29,6 +29,7 @@ import {
   Games24Regular,
   Chat24Regular,
   Image24Regular,
+  EyeTracking24Regular,
 } from '@fluentui/react-icons';
 import { cn } from '@/lib/utils';
 import NotificationDropdown from './notifications/NotificationDropdown';
@@ -64,6 +65,7 @@ const navSections = [
     label: 'Users & Finance',
     items: [
       { href: '/dashboard/users', label: 'Users', icon: People24Regular },
+      { href: '/dashboard/presence', label: 'Conectados', icon: EyeTracking24Regular },
       { href: '/dashboard/chat', label: 'Support Chat', icon: Chat24Regular },
       { href: '/dashboard/wallet', label: 'Wallet', icon: Wallet24Regular },
       { href: '/dashboard/carts', label: 'Carts', icon: Cart24Regular },

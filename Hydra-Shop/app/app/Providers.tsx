@@ -17,6 +17,14 @@ const EMPTY_TCGS: Tcg[] = [];
 const EMPTY_CATEGORIES: Record<string, Category[]> = {};
 const EMPTY_BANNERS: Record<string, Banner[]> = {};
 
+const PresenceWatcher = dynamic(
+  () =>
+    import('@/features/shared/components/PresenceWatcher').then((m) => ({
+      default: m.PresenceWatcher,
+    })),
+  { ssr: false }
+);
+
 /* Lazy-load heavy/conditional providers to reduce initial JS bundle */
 const WelcomeModal = dynamic(
   () =>
@@ -53,6 +61,7 @@ export default function Providers({
 
   return (
     <AppProviders>
+      <PresenceWatcher />
       <ReduxHydrator
         tcgs={memoizedTcgs}
         categories={memoizedCategories}

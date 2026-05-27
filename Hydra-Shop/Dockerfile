@@ -42,7 +42,7 @@ ENV NODE_ENV=production \
     NODE_OPTIONS="--max-old-space-size=1536" \
     NEXT_CPUS=1
 
-RUN rm -rf .next && bun run build
+RUN rm -rf .next && bun run build -- --webpack
 
 # ── 3. Backend (NestJS) — runs after frontend finishes ────────
 WORKDIR /app

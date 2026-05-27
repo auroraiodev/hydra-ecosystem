@@ -38,4 +38,13 @@ export class AdminDashboardController {
     if (status) filter.status = status;
     return this.adminService.getDashboardStats(filter);
   }
+
+  @Get('presence/online')
+  @Roles('ADMIN')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get users currently browsing the store' })
+  @ApiResponse({ status: 200, description: 'List of online users' })
+  async getOnlineUsers() {
+    return this.adminService.getOnlineUsers();
+  }
 }
