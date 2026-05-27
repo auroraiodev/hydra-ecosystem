@@ -56,7 +56,7 @@ ENV NODE_ENV=production \
     NODE_OPTIONS="--max-old-space-size=2048"
 
 COPY app/ ./
-RUN bunx next build --no-turbopack
+RUN bunx next build
 
 # ── Stage 2: Runner ───────────────────────────────────────────
 FROM oven/bun:1.3 AS runner

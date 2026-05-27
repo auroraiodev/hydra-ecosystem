@@ -56,7 +56,7 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     NODE_OPTIONS="--max-old-space-size=2048"
 
-RUN bunx next build --no-turbopack
+RUN bunx next build
 
 # ── Stage 2: Runner ───────────────────────────────────────────
 FROM oven/bun:1.3-slim AS runner

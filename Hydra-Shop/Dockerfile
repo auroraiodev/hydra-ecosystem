@@ -41,11 +41,10 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     NODE_OPTIONS="--max-old-space-size=2048"
 
-# Run build steps explicitly so --no-turbopack reaches `next build`, not the cleanup script.
 # NEXT_CPUS=1 was removed — single-threaded builds took 20+ min and hit Coolify's exec timeout.
 RUN rm -rf .next && \
     node -e "require('fs').rmSync('.next/dev/types',{recursive:true,force:true})" && \
-    bunx next build --no-turbopack && \
+    bunx next build && \
     node scripts/cleanup-maps.mjs
 
 # ── 3. Backend (NestJS) — runs after frontend finishes ────────
