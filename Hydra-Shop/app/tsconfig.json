@@ -21,9 +21,6 @@
     "paths": {
       "@/*": ["./*"],
       "arcane-vault-ui": ["../theme/src/index.ts"],
-      "react": ["./node_modules/@types/react/index.d.ts"],
-      "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime.d.ts"],
-      "react-dom": ["./node_modules/@types/react-dom/index.d.ts"],
       "clsx": ["./node_modules/clsx"],
       "tailwind-merge": ["./node_modules/tailwind-merge"],
       "class-variance-authority": ["./node_modules/class-variance-authority"],

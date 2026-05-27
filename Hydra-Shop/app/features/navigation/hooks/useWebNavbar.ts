@@ -9,7 +9,7 @@ import { usePublicSettings } from '@/features/shared';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { setSelectedTcg, fetchActiveTcgs } from '@/lib/store/slices/gameSlice';
 import type { Tcg } from '@/lib/types/tcg';
-import { getCategoriesWithProducts, type Category } from '@/lib/api';
+import { getCategoriesWithProducts, type Category } from '@/lib/api/categories';
 import { categoriesCache } from '@/lib/api/cache';
 import { tcgNameToSlug } from '@/lib/utils/tcgSlug';
 import { CATEGORY_NAME_MAP, CATEGORY_TO_PATH } from '@/features/search-filters/constants';

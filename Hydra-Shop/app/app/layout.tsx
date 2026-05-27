@@ -7,12 +7,9 @@ import { ScrollToTop } from '@/features/shared/ui/ScrollToTop';
 import { SharedNavbar, SharedFooter } from '@/features/navigation';
 import { PageLoadingOverlay } from '@/features/shared/components';
 import { getPublicSettings } from '@/lib/api/settings';
-import {
-  getActiveTCGs,
-  getActiveBanners,
-  getCategoriesWithProducts,
-  type Category,
-} from '@/lib/api';
+import { getActiveTCGs } from '@/lib/api/tcgs';
+import { getActiveBanners } from '@/lib/api/banners';
+import { getCategoriesWithProducts, type Category } from '@/lib/api/categories';
 import { baseMetadata, baseViewport, SOCIAL_LINKS } from '@/lib/metadata';
 import { RootScripts } from './RootScripts';
 
