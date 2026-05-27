@@ -654,60 +654,6 @@ export class CartService {
   }
 
   /**
-   * Normalize language for comparison (same as in SearchService)
-   */
-  private normalizeLanguageForComparison(lang: string | undefined | null): string {
-    if (!lang) return 'ENGLISH';
-    const upperLang = lang.toUpperCase().trim();
-
-    // Map language codes and names to normalized English names
-    const languageMap: Record<string, string> = {
-      EN: 'ENGLISH',
-      ENGLISH: 'ENGLISH',
-      INGLÉS: 'ENGLISH',
-      INGLES: 'ENGLISH',
-      ES: 'SPANISH',
-      SPANISH: 'SPANISH',
-      ESPAÑOL: 'SPANISH',
-      ESPANOL: 'SPANISH',
-      JP: 'JAPANESE',
-      JA: 'JAPANESE',
-      JAPANESE: 'JAPANESE',
-      JAPONÉS: 'JAPANESE',
-      JAPONES: 'JAPANESE',
-      FR: 'FRENCH',
-      FRENCH: 'FRENCH',
-      FRANCÉS: 'FRENCH',
-      FRANCES: 'FRENCH',
-      DE: 'GERMAN',
-      GERMAN: 'GERMAN',
-      ALEMÁN: 'GERMAN',
-      ALEMAN: 'GERMAN',
-      IT: 'ITALIAN',
-      ITALIAN: 'ITALIAN',
-      ITALIANO: 'ITALIAN',
-      PT: 'PORTUGUESE',
-      PORTUGUESE: 'PORTUGUESE',
-      PORTUGUÉS: 'PORTUGUESE',
-      PORTUGUES: 'PORTUGUESE',
-      ZH: 'CHINESE',
-      CHINESE: 'CHINESE',
-      CHINO: 'CHINESE',
-      KO: 'KOREAN',
-      KOREAN: 'KOREAN',
-      COREANO: 'KOREAN',
-      RU: 'RUSSIAN',
-      RUSSIAN: 'RUSSIAN',
-      RUSO: 'RUSSIAN',
-    };
-
-    if (Object.prototype.hasOwnProperty.call(languageMap, upperLang)) {
-      return languageMap[upperLang];
-    }
-    return 'ENGLISH';
-  }
-
-  /**
    * Extract minimal required data for cart persistence
    */
   private extractMinimalProductData(productData: Record<string, unknown>): Record<string, unknown> {
@@ -743,33 +689,6 @@ export class CartService {
       condition: productData.condition,
       price_mxn_importation: productData.price_mxn_importation,
       price_mxn_local: productData.price_mxn_local,
-    };
-  }
-
-  /**
-   * Transform local product to match frontend format
-   */
-  private transformLocalProduct(single: any) {
-    if (!single) return null;
-
-    return {
-      id: single.id,
-      title: single.name,
-      cardName: single.cardName || single.name,
-      price: `$${Number(single.finalPrice || single.price).toFixed(2)} MXN`,
-      imageUrl: single.img,
-      stock: single.stock,
-      expansion: single.expansion,
-      variant: single.variant,
-      condition: single.conditions?.display_name || single.conditions?.name || 'Near Mint',
-      language: single.languages?.display_name || single.languages?.name || 'Inglés',
-      immediateDelivery: single.isLocalInventory,
-      isLocalInventory: single.isLocalInventory,
-      foil: single.foil,
-      metadata: single.metadata || [],
-
-      importationId: single.importationId,
-      category: single.categories?.name || 'SINGLES',
     };
   }
 
