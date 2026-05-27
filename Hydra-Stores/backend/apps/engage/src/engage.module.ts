@@ -41,6 +41,6 @@ import { ChatModule } from './chat/chat.module.js';
 })
 export class EngageModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ApiVersioningMiddleware).forRoutes('*');
+    consumer.apply(ApiVersioningMiddleware).forRoutes('*path');
   }
 }

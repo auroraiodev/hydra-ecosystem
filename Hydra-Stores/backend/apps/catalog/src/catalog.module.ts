@@ -51,6 +51,6 @@ import * as path from 'path';
 })
 export class CatalogModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ApiVersioningMiddleware).forRoutes('*');
+    consumer.apply(ApiVersioningMiddleware).forRoutes('*path');
   }
 }

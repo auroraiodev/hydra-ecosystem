@@ -39,6 +39,6 @@ import { NotifyClientModule } from './notify-client/notify-client.module.js';
 })
 export class CommerceModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ApiVersioningMiddleware).forRoutes('*');
+    consumer.apply(ApiVersioningMiddleware).forRoutes('*path');
   }
 }

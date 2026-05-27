@@ -51,6 +51,6 @@ import { ImagesModule } from './images/images.module.js';
 })
 export class AdminSvcModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ApiVersioningMiddleware).forRoutes('*');
+    consumer.apply(ApiVersioningMiddleware).forRoutes('*path');
   }
 }

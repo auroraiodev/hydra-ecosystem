@@ -26,9 +26,13 @@ export function resolveImageUrl(url: string | null | undefined | unknown): strin
   const backendBase = apiUrl.replace(/\/api\/?$/, '').replace(/\/$/, '');
 
   // 4. Handle paths that include the API proxy marker
-  const proxyMarker = '/api/v1/images/';
-  if (url.includes(proxyMarker)) {
-    const parts = url.split(proxyMarker);
+  if (url.includes('/api/v1/images/')) {
+    const parts = url.split('/api/v1/images/');
+    const key = parts[parts.length - 1];
+    return `/api/proxy/images/${key}`;
+  }
+  if (url.includes('/api/images/')) {
+    const parts = url.split('/api/images/');
     const key = parts[parts.length - 1];
     return `/api/proxy/images/${key}`;
   }

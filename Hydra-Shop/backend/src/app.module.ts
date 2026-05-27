@@ -125,6 +125,6 @@ export class AppModule implements NestModule {
         ApiVersioningMiddleware,
         GlobalErrorHandlerMiddleware,
       )
-      .forRoutes('*');
+      .forRoutes('*path');
   }
 }

@@ -70,7 +70,7 @@ const nextConfig = {
       "font-src 'self'",
       "img-src 'self' data: blob: http://localhost:3002 http://127.0.0.1:3002 https://api.hydracollect.com https://*.hydracollect.com https://lh3.googleusercontent.com https://*.googleusercontent.com https://*.supabase.co https://*.scryfall.com https://*.scryfall.io https://*.media-amazon.com https://*.importationmtg.com https://importationmtg.com https://*.sslip.io",
       // Allow connections to the backend API (env-derived so QA/prod/dev all work)
-      `connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.scryfall.com ${apiOrigin} ${apiWssOrigin} ${isDev ? 'http://localhost:* ws://localhost:* http://127.0.0.1:* ws://127.0.0.1:*' : ''}`.trim(),
+      `connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.scryfall.com https://*.hydracollect.com wss://*.hydracollect.com ${apiOrigin} ${apiWssOrigin} ${isDev ? 'http://localhost:* ws://localhost:* http://127.0.0.1:* ws://127.0.0.1:*' : ''}`.trim(),
       "frame-src 'none'",
       "frame-ancestors 'none'",
       "object-src 'none'",

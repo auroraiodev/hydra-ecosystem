@@ -7,6 +7,18 @@ const S3_PUBLIC_URL_PATTERN = /https:\/\/web-[^/]+\.sslip\.io\/(?:hydra\/)?(.+)/
 export function resolveImageUrl(url: string | null | undefined): string {
   if (!url) return '';
 
+  // Handle paths that include the API proxy marker or external image paths first
+  if (url.includes('/api/v1/images/')) {
+    const parts = url.split('/api/v1/images/');
+    const key = parts[parts.length - 1];
+    return `/api/proxy/images/${key}`;
+  }
+  if (url.includes('/api/images/')) {
+    const parts = url.split('/api/images/');
+    const key = parts[parts.length - 1];
+    return `/api/proxy/images/${key}`;
+  }
+
   // 1. If it's already a relative path or data URL, pass through
   if (url.startsWith('/') || url.startsWith('data:')) {
     return url;
