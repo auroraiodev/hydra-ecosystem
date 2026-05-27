@@ -51,6 +51,11 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
     private readonly prisma: PrismaService,
   ) {}
 
+  private extractIp(client: Socket): string {
+    const forwarded = client.handshake.headers['x-forwarded-for'] as string | undefined;
+    return forwarded?.split(',')[0]?.trim() || client.handshake.address;
+  }
+
   async handleConnection(client: AuthenticatedSocket) {
     try {
       const token =
@@ -59,6 +64,15 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
 
       if (!token) throw new UnauthorizedException('No token');
 
+      const ip = this.extractIp(client);
+
+      if (await this.presenceService.isIpBlocked(ip)) {
+        this.logger.warn(`Blocked IP attempted connection: ${ip}`);
+        client.emit('ip_blocked', { ip });
+        client.disconnect();
+        return;
+      }
+
       const payload = this.jwtService.verify(token);
       client.userId = payload.sub ?? payload.userId;
       const rawRole = payload.role ?? payload.roleName ?? '';
@@ -66,20 +80,25 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
         typeof rawRole === 'string' ? rawRole : (rawRole?.name ?? 'CLIENT')
       ).toUpperCase();
 
+      if (await this.presenceService.isUserBlocked(client.userId!)) {
+        this.logger.warn(`Blocked user attempted connection: ${client.userId}`);
+        client.emit('ip_blocked', { userId: client.userId });
+        client.disconnect();
+        return;
+      }
+
       await client.join(`user_${client.userId}`);
 
       if (client.userRole === 'ADMIN') {
         await client.join('admin_room');
-        // Send current online snapshot to the newly connected admin
         const online = await this.presenceService.getOnline();
         client.emit('presence_snapshot', online);
         this.logger.log(`Admin joined presence room: ${client.userId}`);
         return;
       }
 
-      // Regular user — record presence
       const page = client.handshake.query?.page as string | undefined;
-      await this.presenceService.join(client.userId!, page);
+      await this.presenceService.join(client.userId!, page, ip);
 
       const user = await this.prisma.users.findUnique({
         where: { id: client.userId },
@@ -96,10 +115,11 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
       this.server.to('admin_room').emit('user_connected', {
         ...user,
         current_page: page ?? null,
+        ip_address: ip,
         last_seen: new Date().toISOString(),
       });
 
-      this.logger.log(`User presence: ${client.userId} on ${page ?? '/'}`);
+      this.logger.log(`User presence: ${client.userId} on ${page ?? '/'} from ${ip}`);
     } catch (err) {
       this.logger.warn(`Presence auth failed: ${err.message}`);
       client.disconnect();
@@ -119,7 +139,8 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
     @MessageBody() payload: { page: string },
   ) {
     if (!client.userId || !payload?.page) return;
-    await this.presenceService.join(client.userId, payload.page);
+    const ip = this.extractIp(client);
+    await this.presenceService.join(client.userId, payload.page, ip);
     this.server.to('admin_room').emit('user_page_changed', {
       userId: client.userId,
       current_page: payload.page,

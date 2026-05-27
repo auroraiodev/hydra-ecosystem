@@ -719,6 +719,35 @@ export const uploadAPI = {
 
 export const presenceAPI = {
   getOnline: () => apiCall('/admin/presence/online'),
+  getHistory: (params: {
+    userId?: string;
+    page?: string;
+    ip?: string;
+    from?: string;
+    to?: string;
+    limit?: number;
+    offset?: number;
+  }) => {
+    const q = new URLSearchParams();
+    if (params.userId) q.set('userId', params.userId);
+    if (params.page) q.set('page', params.page);
+    if (params.ip) q.set('ip', params.ip);
+    if (params.from) q.set('from', params.from);
+    if (params.to) q.set('to', params.to);
+    if (params.limit != null) q.set('limit', String(params.limit));
+    if (params.offset != null) q.set('offset', String(params.offset));
+    return apiCall(`/admin/presence/history?${q.toString()}`);
+  },
+  getBlockedIps: () => apiCall('/admin/presence/blocked-ips'),
+  blockIp: (data: { ip: string; reason?: string }) =>
+    apiCall('/admin/presence/block-ip', { method: 'POST', body: JSON.stringify(data) }),
+  unblockIp: (ip: string) =>
+    apiCall(`/admin/presence/block-ip/${encodeURIComponent(ip)}`, { method: 'DELETE' }),
+  getBlockedUsers: () => apiCall('/admin/presence/blocked-users'),
+  blockUser: (data: { userId: string; reason?: string }) =>
+    apiCall('/admin/presence/block-user', { method: 'POST', body: JSON.stringify(data) }),
+  unblockUser: (userId: string) =>
+    apiCall(`/admin/presence/block-user/${encodeURIComponent(userId)}`, { method: 'DELETE' }),
 };
 
 export const bannersAPI = {

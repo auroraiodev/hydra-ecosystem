@@ -427,13 +427,45 @@ model users {
   roles                    roles                 @relation(fields: [role_id], references: [id])
   wallet_transactions      wallet_transactions[]
   user_sessions            user_sessions?
+  user_page_visits         user_page_visits[]
+  blocked_users            blocked_users?
 }
 
 model user_sessions {
   user_id      String   @id @db.Uuid
   last_seen    DateTime @default(now())
   current_page String?
+  ip_address   String?
   users        users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model user_page_visits {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String   @db.Uuid
+  page       String
+  ip_address String?
+  visited_at DateTime @default(now())
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, visited_at(sort: Desc)])
+  @@index([ip_address])
+}
+
+model blocked_ips {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ip_address String   @unique
+  reason     String?
+  blocked_by String?  @db.Uuid
+  created_at DateTime @default(now())
+}
+
+model blocked_users {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String   @unique @db.Uuid
+  reason     String?
+  blocked_by String?  @db.Uuid
+  created_at DateTime @default(now())
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.

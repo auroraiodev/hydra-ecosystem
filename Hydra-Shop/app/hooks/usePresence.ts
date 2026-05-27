@@ -39,6 +39,11 @@ export function usePresence() {
         reconnectionAttempts: 5,
       });
       socketRef.current = socket;
+
+      socket.on('ip_blocked', () => {
+        socket.disconnect();
+        window.location.replace('/maintenance');
+      });
     });
 
     return () => {

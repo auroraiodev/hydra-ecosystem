@@ -174,6 +174,101 @@ export class AdminService {
     });
   }
 
+  async getPresenceHistory(filters: {
+    userId?: string;
+    page?: string;
+    ip?: string;
+    from?: string;
+    to?: string;
+    limit?: number;
+    offset?: number;
+  }) {
+    const where: any = {};
+    if (filters.userId) where.user_id = filters.userId;
+    if (filters.page) where.page = { contains: filters.page, mode: 'insensitive' };
+    if (filters.ip) where.ip_address = { contains: filters.ip };
+    if (filters.from || filters.to) {
+      where.visited_at = {};
+      if (filters.from) where.visited_at.gte = new Date(filters.from);
+      if (filters.to) where.visited_at.lte = new Date(filters.to);
+    }
+
+    const [total, visits] = await Promise.all([
+      this.prismaService.user_page_visits.count({ where }),
+      this.prismaService.user_page_visits.findMany({
+        where,
+        include: {
+          users: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              email: true,
+              username: true,
+              avatar_url: true,
+              roles: { select: { name: true } },
+            },
+          },
+        },
+        orderBy: { visited_at: 'desc' },
+        take: filters.limit ?? 50,
+        skip: filters.offset ?? 0,
+      }),
+    ]);
+
+    return { total, visits };
+  }
+
+  async blockIp(ip: string, reason?: string, blockedBy?: string) {
+    return this.prismaService.blocked_ips.upsert({
+      where: { ip_address: ip },
+      create: { ip_address: ip, reason: reason ?? null, blocked_by: blockedBy ?? null },
+      update: { reason: reason ?? null },
+    });
+  }
+
+  async unblockIp(ip: string) {
+    await this.prismaService.blocked_ips
+      .delete({ where: { ip_address: ip } })
+      .catch(() => {});
+  }
+
+  async getBlockedIps() {
+    return this.prismaService.blocked_ips.findMany({ orderBy: { created_at: 'desc' } });
+  }
+
+  async blockUser(userId: string, reason?: string, blockedBy?: string) {
+    return this.prismaService.blocked_users.upsert({
+      where: { user_id: userId },
+      create: { user_id: userId, reason: reason ?? null, blocked_by: blockedBy ?? null },
+      update: { reason: reason ?? null },
+    });
+  }
+
+  async unblockUser(userId: string) {
+    await this.prismaService.blocked_users
+      .delete({ where: { user_id: userId } })
+      .catch(() => {});
+  }
+
+  async getBlockedUsers() {
+    return this.prismaService.blocked_users.findMany({
+      orderBy: { created_at: 'desc' },
+      include: {
+        users: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            username: true,
+            avatar_url: true,
+          },
+        },
+      },
+    });
+  }
+
   // Users management
   async getTotalUsers(): Promise<number> {
     return this.prismaService.users.count();

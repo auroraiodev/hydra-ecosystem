@@ -32,26 +32,20 @@ function main() {
   const realClientDir = fs.realpathSync(prismaClientDir);
   const prismaLinkPath = path.join(realClientDir, '.prisma');
 
-  // Remove any stale symlink left by a previous build (absolute symlinks are
-  // broken at runtime because /opt/build/... does not exist in /var/task/).
+  // Always remove the destination directory/symlink to ensure it is not stale
   try {
-    if (fs.lstatSync(prismaLinkPath).isSymbolicLink()) {
+    if (fs.existsSync(prismaLinkPath)) {
       fs.rmSync(prismaLinkPath, { recursive: true, force: true });
-      console.log(`[FIX] Removed old symlink at ${prismaLinkPath}`);
+      console.log(`[FIX] Removed old .prisma directory/symlink at ${prismaLinkPath}`);
     }
   } catch {
     // Path doesn't exist yet — nothing to remove.
   }
 
   // Physically copy .prisma into the real @prisma/client dir so the files are
-  // present in the Netlify function deployment package (symlinks are not
-  // followed when the Lambda ZIP is assembled).
-  if (!fs.existsSync(prismaLinkPath)) {
-    fs.cpSync(targetPrismaDir, prismaLinkPath, { recursive: true, dereference: true });
-    console.log(`[FIX] Copied .prisma to ${prismaLinkPath}`);
-  } else {
-    console.log(`[FIX] .prisma already exists at ${prismaLinkPath}`);
-  }
+  // present in the deployment function package.
+  fs.cpSync(targetPrismaDir, prismaLinkPath, { recursive: true, dereference: true });
+  console.log(`[FIX] Copied fresh .prisma to ${prismaLinkPath}`);
 
   // Update files to use relative path instead of bare specifier
   const files = ['default.d.ts', 'default.js', 'index.d.ts', 'index.js'];
