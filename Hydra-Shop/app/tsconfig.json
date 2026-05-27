@@ -23,9 +23,17 @@
       "arcane-vault-ui": ["../theme/src/index.ts"],
       "react": ["./node_modules/@types/react/index.d.ts"],
       "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime.d.ts"],
-      "react-dom": ["./node_modules/@types/react-dom/index.d.ts"]
+      "react-dom": ["./node_modules/@types/react-dom/index.d.ts"],
+      "clsx": ["./node_modules/clsx"],
+      "tailwind-merge": ["./node_modules/tailwind-merge"],
+      "class-variance-authority": ["./node_modules/class-variance-authority"],
+      "lucide-react": ["./node_modules/lucide-react"],
+      "cmdk": ["./node_modules/cmdk"],
+      "embla-carousel-react": ["./node_modules/embla-carousel-react"],
+      "@radix-ui/*": ["./node_modules/@radix-ui/*"]
     },
-    "types": ["node"]
+    "types": ["node"],
+    "typeRoots": ["./node_modules/.ignored/@types", "./node_modules/@types"]
   },
   "include": [
     "next-env.d.ts",

@@ -1,0 +1,129 @@
+﻿bun : $ eslint
+At line:1 char:1
++ bun lint > lint_output.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ($ eslint:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\app\(marketplace)\cart\page.tsx
+   28:31  warning  'CartSummaryResponse' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   51:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\app\(marketplace)\cart\page.tsx:51:5
+  49 |   
+  50 |   useEffect(() => {
+> 51 |     setMounted(true);
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  52 |   }, []);
+  53 |
+  54 |   useEffect(() => {  react-hooks/set-state-in-effect
+  436:21  warning  'showImportacionBadge' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\app\(marketplace)\checkout\page.tsx
+  28:10  warning  'useAuth' is defined but never used                @typescript-eslint/no-unused-vars
+  53:5   warning  'summaryError' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\app\(marketplace)\profile\seller-wallet\page.tsx
+   12:3   warning  'Eye' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+   13:3   warning  'EyeOff' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   90:12  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\app\(marketplace)\profile\seller-wallet\page.tsx:90:12
+  88 |   useEffect(() => {
+  89 |     if (isSeller) {
+> 90 |       void fetchData();
+     |            ^^^^^^^^^ Avoid calling setState() directly within an effect
+  91 |     } else {
+  92 |       setIsLoading(false);
+  93 |     }  react-hooks/set-state-in-effect
+   94:6   warning  React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/exhaustive-deps
+  350:49  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           @typescript-eslint/no-explicit-any
+  351:50  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           @typescript-eslint/no-explicit-any
+  355:31  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @next/next/no-img-element
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\app\api\[...path]\route.ts
+  69:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\app\auth\callback\page.tsx
+  41:6  warning  React Hook useEffect has missing dependencies: 'dispatch', 'router', and 'searchParams'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\app\opengraph-image.tsx
+  33:7  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\auth\hooks\useGoogleAuth.ts
+  18:13  warning  'callbackUrl' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  19:13  warning  'redirectParam' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\cart\hooks\useCartActions.ts
+  41:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\cart\hooks\useCartSync.ts
+  45:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\checkout\components\OrderSummaryItemRow.tsx
+  21:9  warning  'showImportBadge' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\checkout\components\PaymentMethodOption.tsx
+  14:3  warning  'theme' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\checkout\hooks\useCheckout.ts
+   33:10  warning  'isLoadingAddresses' is assigned a value but never used                                                   @typescript-eslint/no-unused-vars
+  190:6   warning  React Hook useEffect has a missing dependency: 'token'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\checkout\types\index.ts
+   93:10  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  112:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  129:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\products\components\Card.tsx
+  13:10  warning  'CONDITION_DISPLAY_MAP' is defined but never used          @typescript-eslint/no-unused-vars
+  89:11  warning  'showImportacionBadge' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\products\components\EnhancedCardGrid.tsx
+   9:3   warning  'getConditionDisplay' is defined but never used  @typescript-eslint/no-unused-vars
+  15:10  warning  'ConditionChip' is defined but never used        @typescript-eslint/no-unused-vars
+  15:25  warning  'VaultBadge' is defined but never used           @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\products\components\EnhancedCardSingles.tsx
+   9:3   warning  'getConditionDisplay' is defined but never used  @typescript-eslint/no-unused-vars
+  16:10  warning  'ConditionChip' is defined but never used        @typescript-eslint/no-unused-vars
+  16:25  warning  'VaultBadge' is defined but never used           @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\products\components\QuickViewModal.tsx
+  13:36  warning  'getConditionDisplay' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\products\components\VaultProductCard.tsx
+  10:10  warning  'ConditionChip' is defined but never used  @typescript-eslint/no-unused-vars
+  10:25  warning  'VaultBadge' is defined but never used     @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\profile\components\ProfileMobileView.tsx
+  19:3  warning  'ArrowLeft' is defined but never used        @typescript-eslint/no-unused-vars
+  34:9  warning  'router' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\search-filters\utils\api.ts
+  174:27   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  199:89   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  199:128  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  200:85   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  200:123  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe\features\singles-search\components\SearchClient.tsx
+  51:5  warning  'counts' is assigned a value but never used                                                                       @typescript-eslint/no-unused-vars
+  83:5  warning  React Hook useCallback has a missing dependency: 'searchRoute'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Γ£û 46 problems (15 errors, 31 warnings)
+
+error: script "lint" exited with code 1

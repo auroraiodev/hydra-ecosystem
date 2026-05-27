@@ -1,0 +1,71 @@
+﻿react-doctor v0.1.6
+
+[32m✔[39m Select projects to scan [2m›[22m hydra-fe
+[2mScanning C:\Users\demis\OneDrive\Documents\Hydra\hydra-fe...[22m
+
+
+
+  [31m✗[39m [31mTS/1016                                                  [39m [90m×2[39m
+[90m      A required parameter cannot follow an optional parameter.[39m
+[90m      features/singles-search/hooks/useSinglesSearch.ts:19[39m
+[90m      features/products/hooks/useProductDetails.ts:14[39m
+
+  [33m⚠[39m [33mknip/exports                                             [39m [90m×81[39m
+[90m      Unused export: DesktopPageContainer[39m
+[90m      features\shared\components\index.tsx[39m
+[90m      features\shared\ui\index.ts[39m
+[90m      lib\api\orders.ts[39m
+[90m      lib\api\client.ts[39m
+[90m      features\search-filters\components\index.tsx[39m
+[90m      features\products\components\index.tsx[39m
+[90m      features\checkout\components\index.tsx[39m
+[90m      features\singles-landing\components\index.tsx[39m
+[90m      features\tcg-home\components\index.tsx[39m
+[90m      lib\validations\listing.ts[39m
+[90m      features\singles-search\components\index.tsx[39m
+[90m      features\singles-details\components\index.tsx[39m
+[90m      lib\validations\search.ts[39m
+[90m      lib\validations\cart.ts[39m
+[90m      features\checkout\components\ShippingSection.tsx[39m
+[90m      features\checkout\components\PaymentSection.tsx[39m
+
+  [33m⚠[39m [33mreact-doctor/no-array-index-as-key                       [39m [90m×8[39m
+[90m      Array index "idx" used as key — causes bugs when list is reordered or filtered[39m
+[90m      → Use a stable unique identifier: `key={item.id}` or `key={item.slug}` — index keys break on reorder/filter[39m
+[90m      features/shared/ui/CardSkeleton.tsx:25[39m
+[90m      features/shared/ui/CardSkeleton.tsx:58[39m
+[90m      features/products/components/VirtualProductGrid.tsx:175[39m
+[90m      features/products/utils/CardUtils.tsx:58[39m
+[90m      app/(marketplace)/profile/orders/[id]/loading.tsx:13[39m
+[90m      app/(marketplace)/profile/seller-wallet/page.tsx:203[39m
+[90m      app/(marketplace)/profile/seller-wallet/page.tsx:410[39m
+[90m      app/(marketplace)/profile/seller-wallet/page.tsx:487[39m
+
+  [33m⚠[39m [33mreact-doctor/nextjs-no-img-element                       [39m [90m×2[39m
+[90m      Use next/image instead of <img> — provides automatic optimization, lazy loading, and responsive srcset[39m
+[90m      → `import Image from 'next/image'` — provides automatic WebP/AVIF, lazy loading, and responsive srcset[39m
+[90m      app/api/og/route.tsx:82[39m
+[90m      app/opengraph-image.tsx:56[39m
+
+  [33m⚠[39m [33mreact-doctor/nextjs-no-use-search-params-without-suspense[39m [90m×2[39m
+[90m      useSearchParams() requires a <Suspense> boundary — without one, the entire page bails out to client-side rendering[39m
+[90m      → Wrap the component using useSearchParams: `<Suspense fallback={<Skeleton />}><SearchComponent /></Suspense>`[39m
+[90m      features/search-filters/contexts/SearchLoadingContext.tsx:27[39m
+[90m      features/navigation/components/WebNavbar.tsx:40[39m
+
+  [33m⚠[39m [33mreact-doctor/no-effect-event-handler                     [39m [90m×2[39m
+[90m      useEffect simulating an event handler — move logic to an actual event handler instead[39m
+[90m      → Move the conditional logic into onClick, onChange, or onSubmit handlers directly[39m
+[90m      features/tcg-home/components/TCGStateSync.tsx:14[39m
+[90m      app/(marketplace)/profile/seller-wallet/page.tsx:572[39m
+
+  [32m┌─────┐[39m  [32m95[39m [2m/ 100[22m [32mGreat[39m
+  [32m│ ◠ ◠ │[39m  [32m████████████████████████████████████████████████[39m[2m░░[22m
+  [32m│  ▽  │[39m  React Doctor [2m(www.react.doctor)[22m
+  [32m└─────┘[39m
+
+  [31m97 issues[39m [2macross 28/477 files  in 22.0s[22m
+[90m  Full diagnostics written to C:\Users\demis\AppData\Local\Temp\react-doctor-f06e56e9-49d0-4e21-9065-032e35e8fc39[39m
+
+  [1m→ Share your results:[22m [36mhttps://www.react.doctor/share?p=hydra-fe&s=95&e=2&w=95&f=28[39m
+
