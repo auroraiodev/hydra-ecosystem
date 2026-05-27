@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
-import { getActiveTCGs } from '@/lib/api';
+import { getActiveTCGs } from '@/lib/api/tcgs';
 import { tcgNameToSlug, tcgSlugToName } from '@/lib/utils/tcgSlug';
 import { VALID_TCG_SLUGS, SearchDataLoader, SearchSkeleton } from '@/features/singles-search';
 import type { Tcg } from '@/lib/types/tcg';

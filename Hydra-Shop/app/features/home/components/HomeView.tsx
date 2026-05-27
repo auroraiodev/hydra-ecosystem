@@ -1,5 +1,5 @@
 import { getApprovedReviews } from '@/lib/api/reviews';
-import { getActiveTCGs } from '@/lib/api';
+import { getActiveTCGs } from '@/lib/api/tcgs';
 import { HomeSEOContent } from '@/features/shared/components/HomeSEOContent';
 import { HeroSection } from '@/features/landing/components';
 import { HeroCarouselClient } from './HeroCarouselClient';

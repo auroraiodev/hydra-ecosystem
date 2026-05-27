@@ -7,7 +7,7 @@ import { FlowButton } from '@/features/shared/ui/flow-button';
 import { ShaderAnimation } from '@/features/shared/ui/shader-animation';
 import { VaultProductBadges } from '@/features/shared/ui';
 import { VersionPicker } from '@/features/products/components';
-import type { AlternativeVersion } from '@/lib/api';
+import type { AlternativeVersion } from '@/features/products/types';
 import { resolveLanguageName } from '@/lib/utils/transformers';
 import { WISHLIST_TEXT } from '../constants';
 import type { WishlistItemProps, WishlistProduct } from '../types';

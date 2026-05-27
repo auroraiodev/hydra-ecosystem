@@ -3,7 +3,7 @@ import { generateProductJsonLd } from '../utils/jsonld';
 import { getProductCanonicalPath } from '@/lib/utils/slug';
 import { JsonLd } from '@/features/shared/components/JsonLd';
 import { ProductDetailsClient } from './ProductDetailsClient';
-import type { Product, AlternativeVersion } from '@/lib/api';
+import type { Product, AlternativeVersion } from '@/features/products/types';
 import type { AltItem } from '@/features/products/hooks/useProductDetails';
 
 interface ProductDetailsLoaderProps {

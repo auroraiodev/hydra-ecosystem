@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { SearchClient, type HybridSearchResult } from '@/features/singles-search';
 import { CardSkeleton } from '@/features/shared/ui';
 import type { SearchPagination } from '@/lib/types';
-import { searchLocal } from '@/lib/api';
+import { searchLocal } from '@/features/search-filters/utils/api';
 
 type Props = {
   params: Promise<{ expansion: string }>;

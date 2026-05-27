@@ -1,4 +1,4 @@
-import { getProduct } from '@/lib/api';
+import { getProduct } from '@/features/products/utils/api';
 
 export async function fetchProductData(id: string, cardName?: string, language?: string) {
   try {

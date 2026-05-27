@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { signup } from '@/lib/api';
+import { signup } from '@/features/auth/utils/api';
 import { useToastContext } from '@/features/shared/components/ToastProvider';
 
 export function useSignupForm() {

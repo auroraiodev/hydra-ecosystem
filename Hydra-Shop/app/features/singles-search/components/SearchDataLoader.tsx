@@ -1,4 +1,4 @@
-import { searchLocal, searchHybrid } from '@/lib/api';
+import { searchLocal, searchHybrid } from '@/features/search-filters/utils/api';
 import { SearchClient } from './SearchClient';
 import type { HybridSearchResult, SearchDataLoaderProps } from '../types';
 import type { SearchPagination } from '@/lib/types';

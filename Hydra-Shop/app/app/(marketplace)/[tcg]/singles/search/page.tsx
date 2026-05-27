@@ -7,7 +7,7 @@ import {
   getSearchMetadata,
   VALID_TCG_SLUGS,
 } from '@/features/singles-search';
-import { getActiveTCGs } from '@/lib/api';
+import { getActiveTCGs } from '@/lib/api/tcgs';
 import { tcgSlugToName, tcgNameToSlug } from '@/lib/utils/tcgSlug';
 import type { Tcg } from '@/lib/types/tcg';
 

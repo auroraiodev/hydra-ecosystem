@@ -1,10 +1,3 @@
-// Feature APIs
-export * from '@/features/auth/utils';
-export * from '@/features/cart/utils';
-export * from '@/features/products/utils';
-export * from '@/features/search-filters/utils';
-export type { AlternativeVersion, Product } from '@/features/products/types';
-
 // Global/Core APIs
 export * from './importation';
 export * from './categories';

@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { SearchDataLoader, SearchSkeleton, VALID_TCG_SLUGS } from '@/features/singles-search';
 import { tcgSlugToName } from '@/lib/utils/tcgSlug';
-import { getActiveTCGs } from '@/lib/api';
+import { getActiveTCGs } from '@/lib/api/tcgs';
 import type { Tcg } from '@/lib/types/tcg';
 
 type Props = {

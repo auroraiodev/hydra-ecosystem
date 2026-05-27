@@ -3,7 +3,7 @@
 import { useEffect, useRef, useReducer, Suspense, useId, useState } from 'react';
 import { useSearchParams, usePathname, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { getActiveCategories, type Category } from '@/lib/api';
+import { getActiveCategories, type Category } from '@/lib/api/categories';
 import { useAppSelector } from '@/lib/store/hooks';
 import { Skeleton } from '@/features/shared/ui/skeleton';
 import { cn } from '@/lib/utils';

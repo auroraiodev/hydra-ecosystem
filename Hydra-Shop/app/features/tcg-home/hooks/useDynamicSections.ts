@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'react';
 import { getActiveCategories } from '@/lib/api/categories';
-import { searchLocal } from '@/lib/api';
+import { searchLocal } from '@/features/search-filters/utils/api';
 import { searchResultsToCardData } from '@/lib/utils/transformers';
 import type { CardData } from '@/features/products/types';
 import { logger } from '@/lib/utils/logger';

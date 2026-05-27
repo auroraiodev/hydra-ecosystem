@@ -1,5 +1,5 @@
 import type { Tcg } from '@/lib/types/tcg';
-import type { Category } from '@/lib/api';
+import type { Category } from '@/lib/api/categories';
 
 interface User {
   id: string;

@@ -1,4 +1,4 @@
-import { type Product } from '@/lib/api';
+import { type Product } from '@/features/products/types';
 import { type CarouselApi } from '@/features/shared/ui/carousel';
 
 export interface ProductGalleryProps {

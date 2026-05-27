@@ -1,4 +1,4 @@
-import { searchLocal } from '@/lib/api';
+import { searchLocal } from '@/features/search-filters/utils/api';
 import { SinglesLandingClient } from './SinglesLandingClient';
 import { SearchResult } from '@/lib/types';
 

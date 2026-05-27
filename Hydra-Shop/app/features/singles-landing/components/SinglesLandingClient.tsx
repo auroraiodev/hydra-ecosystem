@@ -9,7 +9,7 @@ import { SearchModal } from '@/features/search-filters';
 import { QuickViewModal, ProductSection, LandsSection } from '@/features/products/components';
 import { SearchInput } from '@/features/shared/ui';
 import type { SearchResult } from '@/lib/types';
-import { searchLocal } from '@/lib/api';
+import { searchLocal } from '@/features/search-filters/utils/api';
 import { searchResultsToCardData } from '@/lib/utils/transformers';
 import type { CardData } from '@/features/products/types';
 import type { SinglesLandingClientProps } from '../types';

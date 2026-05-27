@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getApprovedReviews } from '@/lib/api/reviews';
-import { searchLocal } from '@/lib/api';
+import { searchLocal } from '@/features/search-filters/utils/api';
 import { searchResultsToCardData } from '@/lib/utils/transformers';
 import { tcgSlugToName, tcgNameToSlug } from '@/lib/utils/tcgSlug';
-import { getActiveTCGs } from '@/lib/api';
+import { getActiveTCGs } from '@/lib/api/tcgs';
 import type { Tcg } from '@/lib/types/tcg';
 import type { SearchResult } from '@/lib/types';
 import { TCGHomeView, TCGStateSync } from '@/features/tcg-home';

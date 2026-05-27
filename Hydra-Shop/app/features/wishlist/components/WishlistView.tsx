@@ -10,7 +10,7 @@ import { useToastContext } from '@/features/shared/components/ToastProvider';
 import { FlowButton } from '@/features/shared/ui/flow-button';
 import { CardSkeleton } from '@/features/shared/ui/CardSkeleton';
 import { LoadingOverlay } from '@/features/shared/components';
-import { getBatchSingles } from '@/lib/api';
+import { getBatchSingles } from '@/features/search-filters/utils/api';
 import { WISHLIST_TEXT } from '../constants';
 import { WishlistItemCard } from './WishlistItemCard';
 import { WishlistItemCardDesktop } from './WishlistItemCardDesktop';

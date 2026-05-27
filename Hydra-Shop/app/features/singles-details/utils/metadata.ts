@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import type { Product } from '@/lib/api';
+import type { Product } from '@/features/products/types';
 
 const PRICE_FORMATTER = new Intl.NumberFormat('es-MX', {
   style: 'currency',

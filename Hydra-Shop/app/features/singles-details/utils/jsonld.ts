@@ -1,4 +1,4 @@
-import { Product, AlternativeVersion } from '@/lib/api';
+import type { Product, AlternativeVersion } from '@/features/products/types';
 import { getProductCanonicalPath } from '@/lib/utils/slug';
 import { mapConditionToSchema, getPriceValidUntil } from './product';
 
