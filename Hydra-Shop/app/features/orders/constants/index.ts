@@ -60,3 +60,11 @@ export const PAYMENT_STATUS_MAP: Record<string, string> = {
   refunded: 'Reembolsado',
   charged_back: 'Contracargo',
 };
+
+export const ORDER_TEXT = {
+  PRODUCTS: 'Productos',
+  ITEMS_IN_ORDER: 'artículos en esta orden',
+  NO_IMAGE: 'Sin imagen',
+  DELIVERED: 'Entregado',
+  PIECES: 'piezas',
+} as const;

@@ -1,5 +1,7 @@
 import React, { memo, useCallback } from 'react';
 import Image from 'next/image';
+import { resolveImageUrl } from '@/lib/utils/imageUrl';
+import { CART_TEXT } from '../constants';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Trash2, Plus, Minus, Heart, Package, AlertCircle, ArrowRightLeft } from 'lucide-react';
@@ -48,6 +50,7 @@ export const CartDesktopItem = memo(function CartDesktopItem({
 }: CartItemProps) {
   const router = useRouter();
   const displayTitle = item.cardName || item.title;
+  const imageSrc = resolveImageUrl(item.imageUrl);
   const displaySubtitle =
     item.subtitle ||
     (item.expansion && item.variant && item.variant !== item.expansion
@@ -70,9 +73,10 @@ export const CartDesktopItem = memo(function CartDesktopItem({
           {item.imageUrl ? (
             <>
               <Image
-                src={item.imageUrl}
+                src={imageSrc}
                 alt={displayTitle}
                 fill
+                unoptimized={imageSrc.startsWith('/api/images/external')}
                 className="object-contain transition-transform group-hover:scale-105"
                 sizes="112px"
                 quality={80}
@@ -112,7 +116,7 @@ export const CartDesktopItem = memo(function CartDesktopItem({
             <div className="mb-4 flex flex-col gap-y-2.5">
               <div className="flex items-center gap-2 px-3 py-2.5 bg-red-500/10 border border-red-500/20 rounded-lg">
                 <AlertCircle className="size-4 text-red-400 flex-shrink-0" />
-                <p className="text-sm font-semibold text-red-400">Sin stock disponible</p>
+                <p className="text-sm font-semibold text-red-400">{CART_TEXT.OUT_OF_STOCK}</p>
               </div>
               <button
                 onClick={() => {
@@ -122,7 +126,7 @@ export const CartDesktopItem = memo(function CartDesktopItem({
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-lg hover:bg-blue-500/20 transition-colors"
               >
                 <ArrowRightLeft className="size-3.5" aria-hidden="true" />
-                Buscar otra versión
+                {CART_TEXT.SEARCH_ANOTHER_VERSION}
               </button>
             </div>
           )}
@@ -153,9 +157,9 @@ export const CartDesktopItem = memo(function CartDesktopItem({
                   onClick={() => {
                     if (!isInWishlist(item.id)) {
                       addToWishlist(item.id, item as CardDataType);
-                      success(`${displayTitle} agregado a favoritos`);
+                      success(`"${displayTitle}" ${CART_TEXT.ADDED_TO_FAVORITES}`);
                     } else {
-                      success(`${displayTitle} ya está en favoritos`);
+                      success(`"${displayTitle}" ${CART_TEXT.ALREADY_IN_FAVORITES}`);
                     }
                   }}
                   variant="ghost"
@@ -165,7 +169,7 @@ export const CartDesktopItem = memo(function CartDesktopItem({
                   <Heart
                     className={`size-4 mr-1.5 ${isInWishlist(item.id) ? 'fill-current' : ''}`}
                   />
-                  Favoritos
+                  {CART_TEXT.FAVORITES}
                 </FlowButton>
               )}
               <FlowButton
@@ -175,7 +179,7 @@ export const CartDesktopItem = memo(function CartDesktopItem({
                 className="text-vault-text-muted hover:text-red-500"
               >
                 <Trash2 className="size-4 mr-1.5" />
-                Eliminar
+                {CART_TEXT.DELETE}
               </FlowButton>
             </div>
           </div>

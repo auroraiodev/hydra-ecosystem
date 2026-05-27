@@ -1,6 +1,8 @@
 import React, { memo, useCallback } from 'react';
 import Image from 'next/image';
+import { resolveImageUrl } from '@/lib/utils/imageUrl';
 import Link from 'next/link';
+import { CART_TEXT } from '../constants';
 import { useRouter } from 'next/navigation';
 import { Trash2, Plus, Minus, Heart, Package, AlertCircle, ArrowRightLeft } from 'lucide-react';
 import { ShaderAnimation } from '@/features/shared/ui/shader-animation';
@@ -48,6 +50,7 @@ export const CartMobileItem = memo(function CartMobileItem({
 }: CartItemProps) {
   const router = useRouter();
   const displayTitle = item.cardName || item.title;
+  const imageSrc = resolveImageUrl(item.imageUrl);
   const displaySubtitle =
     item.subtitle ||
     (item.expansion && item.variant && item.variant !== item.expansion
@@ -71,9 +74,10 @@ export const CartMobileItem = memo(function CartMobileItem({
             {item.imageUrl ? (
               <>
                 <Image
-                  src={item.imageUrl}
+                  src={imageSrc}
                   alt={displayTitle}
                   fill
+                  unoptimized={imageSrc.startsWith('/api/images/external')}
                   className="object-contain p-1 transition-transform group-hover:scale-105"
                   sizes="80px"
                   quality={75}
@@ -100,7 +104,7 @@ export const CartMobileItem = memo(function CartMobileItem({
                     onClick={() => {
                       if (!isInWishlist(item.id)) {
                         addToWishlist(item.id, item as CardData);
-                        success(`${displayTitle} agregado a favoritos`);
+                        success(`"${displayTitle}" ${CART_TEXT.ADDED_TO_FAVORITES}`);
                       }
                     }}
                     className={`size-8 flex items-center justify-center rounded-lg transition-colors ${
@@ -160,7 +164,7 @@ export const CartMobileItem = memo(function CartMobileItem({
           <div className="mt-4 flex flex-col gap-y-2.5">
             <div className="flex items-center gap-2 px-3 py-2.5 bg-red-500/10 border border-red-500/20 rounded-xl">
               <AlertCircle className="size-3.5 text-red-400 flex-shrink-0" />
-              <p className="text-xs font-semibold text-red-400">Sin stock disponible</p>
+              <p className="text-xs font-semibold text-red-400">{CART_TEXT.OUT_OF_STOCK}</p>
             </div>
             <button
               onClick={() => {
@@ -170,7 +174,7 @@ export const CartMobileItem = memo(function CartMobileItem({
               className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-xl hover:bg-blue-500/20 transition-colors w-full"
             >
               <ArrowRightLeft className="size-3.5" aria-hidden="true" />
-              Buscar otra versión
+              {CART_TEXT.SEARCH_ANOTHER_VERSION}
             </button>
           </div>
         )}

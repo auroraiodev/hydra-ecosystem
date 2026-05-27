@@ -1,7 +1,8 @@
 import Image from 'next/image';
+import { resolveImageUrl } from '@/lib/utils/imageUrl';
 import { CheckCircle2, Package } from 'lucide-react';
 import { ShaderAnimation } from '@/features/shared/ui/shader-animation';
-import { CONDITION_MAP } from '../constants';
+import { CONDITION_MAP, ORDER_TEXT } from '../constants';
 import { ConditionChip } from '@/features/shared/ui';
 import type { OrderItemsProps, OrderItem } from '../types';
 
@@ -32,8 +33,8 @@ export function OrderItems({
             <Package className="size-5 text-primary" />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-text-body">Productos</h2>
-            <p className="text-xs text-text-muted">{allItems.length} artículos en esta orden</p>
+            <h2 className="text-base font-semibold text-text-body">{ORDER_TEXT.PRODUCTS}</h2>
+            <p className="text-xs text-text-muted">{allItems.length} {ORDER_TEXT.ITEMS_IN_ORDER}</p>
           </div>
         </div>
       </div>
@@ -45,6 +46,7 @@ export function OrderItems({
             productData.cardName || productData.name || productData.title || 'Producto'
           );
           const imageUrl = String(productData.imageUrl || productData.img || '');
+          const imageSrc = resolveImageUrl(imageUrl);
           const rawCondition = productData.condition;
           const condition = rawCondition ? (CONDITION_MAP[rawCondition] ?? rawCondition) : null;
 
@@ -53,12 +55,19 @@ export function OrderItems({
               <div className="relative w-24 h-32 bg-surface-low rounded-xl overflow-hidden border border-border-subtle shrink-0 shadow-sm group-hover:border-primary/30 transition-colors">
                 {imageUrl ? (
                   <>
-                    <Image src={imageUrl} alt={title} fill sizes="96px" className="object-cover" />
+                    <Image
+                      src={imageSrc}
+                      alt={title}
+                      fill
+                      unoptimized={imageSrc.startsWith('/api/images/external')}
+                      sizes="96px"
+                      className="object-cover"
+                    />
                     {!!productData.foil && <ShaderAnimation />}
                   </>
                 ) : (
                   <div className="size-full flex items-center justify-center text-text-muted text-xs font-semibold">
-                    Sin imagen
+                    {ORDER_TEXT.NO_IMAGE}
                   </div>
                 )}
               </div>
@@ -69,7 +78,7 @@ export function OrderItems({
                   </h3>
                   {item.isDelivered && (
                     <span className="shrink-0 bg-green-50 dark:bg-green-950/30 text-green-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-green-100 dark:border-green-900 flex items-center gap-1">
-                      <CheckCircle2 className="size-3" /> Entregado
+                      <CheckCircle2 className="size-3" /> {ORDER_TEXT.DELIVERED}
                     </span>
                   )}
                 </div>
@@ -80,7 +89,7 @@ export function OrderItems({
                       <span className="size-1 rounded-full bg-text-muted/30"></span>
                     </>
                   )}
-                  <span>{item.quantity} piezas</span>
+                  <span>{item.quantity} {ORDER_TEXT.PIECES}</span>
                 </p>
                 <p className="text-xl font-bold text-primary mt-3 tabular-nums">
                   {formatPrice(item.unitPrice)}

@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { resolveImageUrl } from '@/lib/utils/imageUrl';
 import { ShaderAnimation } from '@/features/shared/ui/shader-animation';
 import type { OrderSummaryItemRowProps } from '../types';
 
@@ -33,9 +34,19 @@ export function OrderSummaryItemRow({
         </div>
       )}
       <div className="relative w-14 h-18 bg-black/40 rounded-lg overflow-hidden border border-white/10 shrink-0 shadow-inner">
-        {item.imageUrl && (
-          <Image src={item.imageUrl} alt={item.title} fill sizes="64px" className="object-cover" />
-        )}
+        {item.imageUrl && (() => {
+          const imageSrc = resolveImageUrl(item.imageUrl);
+          return (
+            <Image
+              src={imageSrc}
+              alt={item.title}
+              fill
+              unoptimized={imageSrc.startsWith('/api/images/external')}
+              sizes="64px"
+              className="object-cover"
+            />
+          );
+        })()}
         {item.foil && <ShaderAnimation />}
         <span className="absolute top-0 right-0 m-0.5 min-size-[18px] px-1 bg-teal text-black text-[10px] font-black flex items-center justify-center rounded-full z-10 shadow-lg">
           {item.quantity}

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { resolveImageUrl } from '@/lib/utils/imageUrl';
 import { Trash2, ShoppingCart, Heart } from 'lucide-react';
 import { FlowButton } from '@/features/shared/ui/flow-button';
 import { ShaderAnimation } from '@/features/shared/ui/shader-animation';
@@ -23,6 +24,7 @@ export function WishlistItemCardDesktop({
   onVersionSelect,
 }: WishlistItemProps) {
   const displayTitle = product.cardName || product.title;
+  const imageSrc = resolveImageUrl(product.imageUrl);
   const displaySubtitle = product.expansion || product.variant;
   const outOfStock = product.stock !== undefined && product.stock <= 0;
 
@@ -37,9 +39,10 @@ export function WishlistItemCardDesktop({
           {product.imageUrl ? (
             <>
               <Image
-                src={product.imageUrl}
+                src={imageSrc}
                 alt={displayTitle || 'Carta'}
                 fill
+                unoptimized={imageSrc.startsWith('/api/images/external')}
                 className="object-contain transition-transform duration-500 group-hover:scale-110"
                 sizes="128px"
                 quality={80}

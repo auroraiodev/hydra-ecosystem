@@ -1,0 +1,17 @@
+export const CART_TEXT = {
+  OUT_OF_STOCK: 'Sin stock disponible',
+  SEARCH_ANOTHER_VERSION: 'Buscar otra versión',
+  FAVORITES: 'Favoritos',
+  DELETE: 'Eliminar',
+  ADDED_TO_FAVORITES: 'agregado a favoritos',
+  ALREADY_IN_FAVORITES: 'ya está en favoritos',
+  VACATE: 'Vaciar',
+  VACATE_CART: 'Vaciar carrito',
+  SHOPPING_CART: 'Carrito de Compras',
+  CARRITO: 'Carrito',
+  PRODUCT: 'producto',
+  PRODUCTS: 'productos',
+  IN_YOUR_CART: 'en tu carrito',
+  SAVE_ALL_FAVORITES: 'Guardar todo en favoritos',
+  ALL_SAVED_FAVORITES: 'Todos los productos guardados en favoritos',
+} as const;
