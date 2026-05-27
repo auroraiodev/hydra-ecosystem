@@ -51,9 +51,9 @@ function getWsUrl(): string {
 
   if (hostname.endsWith('hydracollect.com')) {
     if (hostname.startsWith('qa.')) {
-      return `${wsProtocol}//qa.hydracollect.com`;
+      return `${wsProtocol}//qa-api.hydracollect.com`;
     }
-    return `${wsProtocol}//${hostname}`;
+    return `${wsProtocol}//api.hydracollect.com`;
   }
 
   const envUrl = process.env.NEXT_PUBLIC_API_URL;

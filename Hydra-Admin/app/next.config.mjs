@@ -46,6 +46,8 @@ const nextConfig = {
       { protocol: 'https', hostname: '*.hydracollect.com', pathname: '/**' },
       { protocol: 'https', hostname: '*.importationmtg.com', pathname: '/**' },
       { protocol: 'https', hostname: 'importationmtg.com', pathname: '/**' },
+      { protocol: 'https', hostname: '*.scryfall.io', pathname: '/**' },
+      { protocol: 'https', hostname: '*.scryfall.com', pathname: '/**' },
     ],
   },
 

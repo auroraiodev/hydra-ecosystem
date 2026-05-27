@@ -117,13 +117,17 @@ export async function proxy(request: NextRequest) {
     ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' https:`
     : `script-src 'self' 'unsafe-inline' 'unsafe-eval' https:`;
 
-  const backendOrigin = (() => {
-    try { return new URL(BACKEND_URL).origin; } catch { return BACKEND_URL; }
+  // Use NEXT_PUBLIC_API_URL for the CSP origin — it's the public-facing URL.
+  // BACKEND_URL may be an internal Docker hostname (e.g. http://hydra-backend:3002)
+  // that browsers cannot reach, so it must not appear in the browser CSP.
+  const publicApiOrigin = (() => {
+    const url = process.env.NEXT_PUBLIC_API_URL || BACKEND_URL;
+    try { return new URL(url).origin; } catch { return url; }
   })();
 
   const connectSrc = isDev
     ? `connect-src 'self' https://*.sentry.io https://sentry.io https://*.mercadopago.com https://*.mercadopago.com.mx https://*.mercadolibre.com https://api.scryfall.com http://localhost:* ws://localhost:* http://127.0.0.1:* ws://127.0.0.1:*`
-    : `connect-src 'self' https://*.sentry.io https://sentry.io https://*.mercadopago.com https://*.mercadopago.com.mx https://*.mercadolibre.com https://api.scryfall.com ${backendOrigin} ${backendOrigin.replace(/^http/, 'ws')}`;
+    : `connect-src 'self' https://*.sentry.io https://sentry.io https://*.mercadopago.com https://*.mercadopago.com.mx https://*.mercadolibre.com https://api.scryfall.com ${publicApiOrigin} ${publicApiOrigin.replace(/^http/, 'ws')}`;
 
   const cspHeader = `
     default-src 'self';
