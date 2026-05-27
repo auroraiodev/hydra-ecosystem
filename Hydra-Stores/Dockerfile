@@ -84,4 +84,4 @@ EXPOSE 3003
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
   CMD curl -f http://localhost:3002/api/v1/health || exit 1
 
-CMD ["sh", "-c", "cd /app/backend && ./docker-entrypoint.sh & cd /app/app && node server.js"]
+CMD ["sh", "-c", "cd /app/backend && PORT=3002 ./docker-entrypoint.sh & cd /app/app && PORT=3000 HOSTNAME=0.0.0.0 node server.js"]

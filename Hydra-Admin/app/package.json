@@ -10,7 +10,7 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "start": "next start -p 3001",
+    "start": "PORT=3001 HOSTNAME=0.0.0.0 node server.js",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:ui": "vitest --ui",
