@@ -1,8 +1,8 @@
 async function main() {
   const url = 'http://127.0.0.1:3002/api/v1/auth/admin-login';
   const body = {
-    email: 'darmfma@gmail.com',
-    password: 'De71ka82.',
+    email: process.env.ADMIN_EMAIL ?? '',
+    password: process.env.ADMIN_PASSWORD ?? '',
   };
 
   console.log('Sending request to:', url);

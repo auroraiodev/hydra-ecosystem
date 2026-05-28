@@ -58,3 +58,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 /src/generated
 /prisma/client
 
+# Local debugging / throwaway scripts — never commit (may contain credentials)
+/scratch
+/scratch_*
+

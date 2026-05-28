@@ -1,15 +1,16 @@
 import { JwtService } from '@nestjs/jwt';
 
+// Secrets are read from the environment — never hardcode production values here.
 const SECRETS = [
-  'UfrhQFT9/92CozWoOi/f0KrO1hNh/hGHqsM+dTz0Mzx0rNLj5R3aVOIWfKU0ZiHia3HO8iJXJTpGRwdow3Q4eA==',
-  'dev-jwt-secret-hydra-local-development-only'
-];
+  process.env.JWT_SECRET,
+  'dev-jwt-secret-hydra-local-development-only',
+].filter((s): s is string => Boolean(s));
 
 async function main() {
   const url = 'http://127.0.0.1:3002/api/v1/auth/admin-login';
   const body = {
-    email: 'darmfma@gmail.com',
-    password: 'De71ka82.',
+    email: process.env.ADMIN_EMAIL ?? '',
+    password: process.env.ADMIN_PASSWORD ?? '',
   };
 
   console.log('Logging in to get JWT...');
