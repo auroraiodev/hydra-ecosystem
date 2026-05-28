@@ -7,7 +7,7 @@ interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'vault';
 }
 
-function Skeleton({ className = '', vault = false, variant = 'vault', ...props }: SkeletonProps) {
+function Skeleton({ className = '', vault = false, variant = 'vault' }: SkeletonProps) {
   const isVault = vault || variant === 'vault';
 
   return (
@@ -17,7 +17,6 @@ function Skeleton({ className = '', vault = false, variant = 'vault', ...props }
         isVault ? 'vault-skeleton-shimmer' : 'skeleton-shimmer',
         className
       )}
-      {...props}
     />
   );
 }

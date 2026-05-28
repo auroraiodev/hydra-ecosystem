@@ -48,7 +48,8 @@ const Carousel = ({
   className,
   children,
   ref,
-  ...props
+  id,
+  style,
 }: React.HTMLAttributes<HTMLDivElement> & CarouselProps & { ref?: React.Ref<HTMLDivElement> }) => {
   const [carouselRef, api] = useEmblaCarousel(
     {
@@ -139,7 +140,8 @@ const Carousel = ({
         className={cn('relative', className)}
         role="region"
         aria-roledescription="carousel"
-        {...props}
+        id={id}
+        style={style}
       >
         {children}
       </div>
@@ -150,7 +152,8 @@ const Carousel = ({
 const CarouselContent = ({
   className,
   ref,
-  ...props
+  id,
+  style,
 }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) => {
   const { carouselRef, orientation } = useCarousel();
 
@@ -159,7 +162,8 @@ const CarouselContent = ({
       <div
         ref={ref}
         className={cn('flex', orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col', className)}
-        {...props}
+        id={id}
+        style={style}
       />
     </div>
   );
@@ -168,7 +172,8 @@ const CarouselContent = ({
 const CarouselItem = ({
   className,
   ref,
-  ...props
+  id,
+  style,
 }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) => {
   const { orientation } = useCarousel();
 
@@ -182,7 +187,8 @@ const CarouselItem = ({
         orientation === 'horizontal' ? 'pl-4' : 'pt-4',
         className
       )}
-      {...props}
+      id={id}
+      style={style}
     />
   );
 };

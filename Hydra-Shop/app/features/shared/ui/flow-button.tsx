@@ -58,7 +58,17 @@ const FlowButton = ({
   showArrows = false,
   simple = false,
   ref,
-  ...props
+  onClick,
+  type,
+  autoFocus,
+  form,
+  name,
+  value,
+  'aria-label': ariaLabel,
+  title,
+  tabIndex,
+  style,
+  id,
 }: FlowButtonProps & { ref?: React.Ref<HTMLButtonElement> }) => {
   const Comp = asChild ? Slot : 'button';
   const buttonText = text || children;
@@ -86,7 +96,17 @@ const FlowButton = ({
         className={cn(flowButtonVariants({ variant, size, className }), fullWidth && 'w-full')}
         ref={ref}
         disabled={disabled}
-        {...props}
+        onClick={onClick}
+        type={type}
+        autoFocus={autoFocus}
+        form={form}
+        name={name}
+        value={value}
+        aria-label={ariaLabel}
+        title={title}
+        tabIndex={tabIndex}
+        style={style}
+        id={id}
       >
         {buttonText}
       </Comp>
@@ -109,7 +129,17 @@ const FlowButton = ({
         className={cn(flowButtonVariants({ variant, size, className }), fullWidth && 'w-full')}
         ref={ref}
         disabled={disabled}
-        {...props}
+        onClick={onClick}
+        type={type}
+        autoFocus={autoFocus}
+        form={form}
+        name={name}
+        value={value}
+        aria-label={ariaLabel}
+        title={title}
+        tabIndex={tabIndex}
+        style={style}
+        id={id}
       >
         {React.cloneElement(child, {
           className: cn(child.props.className, 'relative'),
@@ -157,7 +187,17 @@ const FlowButton = ({
       className={cn(flowButtonVariants({ variant, size, className }), fullWidth && 'w-full')}
       ref={ref}
       disabled={disabled}
-      {...props}
+      onClick={onClick}
+      type={type}
+      autoFocus={autoFocus}
+      form={form}
+      name={name}
+      value={value}
+      aria-label={ariaLabel}
+      title={title}
+      tabIndex={tabIndex}
+      style={style}
+      id={id}
     >
       {/* Text + arrow inline so arrow is always visible */}
       <span

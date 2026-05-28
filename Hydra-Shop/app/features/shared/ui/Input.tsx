@@ -33,7 +33,25 @@ export const Input = ({
   className = '',
   type,
   ref,
-  ...props
+  placeholder,
+  required,
+  disabled,
+  readOnly,
+  autoComplete,
+  name,
+  id,
+  autoFocus,
+  value,
+  defaultValue,
+  onChange,
+  onBlur,
+  onFocus,
+  onKeyDown,
+  maxLength,
+  min,
+  max,
+  step,
+  pattern,
 }: InputProps & { ref?: React.Ref<HTMLInputElement> }) => {
   const isPassword = type === 'password';
   const inputType =
@@ -61,7 +79,25 @@ export const Input = ({
             ${error ? 'border-red-500/50 ring-red-500/10' : ''}
             ${className}
           `}
-          {...props}
+          placeholder={placeholder}
+          required={required}
+          disabled={disabled}
+          readOnly={readOnly}
+          autoComplete={autoComplete}
+          name={name}
+          id={id}
+          autoFocus={autoFocus}
+          value={value}
+          defaultValue={defaultValue}
+          onChange={onChange}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          onKeyDown={onKeyDown}
+          maxLength={maxLength}
+          min={min}
+          max={max}
+          step={step}
+          pattern={pattern}
         />
 
         {showPasswordToggle && onTogglePassword && (
