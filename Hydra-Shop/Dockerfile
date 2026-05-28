@@ -54,7 +54,7 @@ COPY backend/package.json backend/bun.lock* ./backend/
 COPY backend/ ./backend/
 
 WORKDIR /app/backend
-RUN bun install
+RUN bun install --frozen-lockfile --ignore-scripts
 RUN bunx prisma generate && bun scripts/fix-prisma-client-resolution.cjs || true
 
 ENV NODE_OPTIONS="--max-old-space-size=1024"
