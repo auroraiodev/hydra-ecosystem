@@ -187,11 +187,11 @@ export class CartService {
       const transformed = transformedItems[i];
       if (!transformed?.productData) continue;
 
-      // Always trust the fresh price from productData (updated during transformation)
-      // This includes local condition discounts if they were applied in getLocalProductDetails
-      let unitPrice = Number(transformed.productData.finalPrice) || 0;
+      // Use extractPriceFromProductData so it correctly reads finalPrice, price_mxn, etc.
+      // getImportationProductDetails now includes a finalPrice field, so this resolves correctly.
+      let unitPrice = this.extractPriceFromProductData(transformed.productData);
 
-      // Resiliency fallback for local products if finalPrice is missing
+      // Resiliency fallback for local products if all price fields are missing
       if (unitPrice === 0 && !raw.is_importation && raw.singles) {
         const single = raw.singles;
         const basePrice = Number(single.price) || Number(single.finalPrice) || 0;
@@ -206,13 +206,22 @@ export class CartService {
           : null;
 
       if (storedPrice !== unitPrice) {
+        // Also persist fresh prices into product_data JSON so the fallback stays current
+        // when mtgsrc is temporarily unavailable on the next request.
+        const freshProductData = {
+          ...(raw.product_data as object || {}),
+          finalPrice: unitPrice,
+          price_mxn_importation: transformed.productData.price_mxn_importation || unitPrice,
+          price_mxn_local: transformed.productData.price_mxn_local || unitPrice,
+          price: `$${unitPrice.toFixed(2)} MXN`,
+        };
         updates.push(
           this.prisma.cart_items.update({
             where: { id: raw.id },
-            data: { unit_price: unitPrice },
+            data: { unit_price: unitPrice, product_data: freshProductData },
           }),
         );
-        // Also update the returned productData so the frontend gets the fresh price
+        // Update in-memory productData so the current response reflects the correct price
         transformed.productData.finalPrice = unitPrice;
         transformed.productData.price = `$${unitPrice.toFixed(2)} MXN`;
       }
@@ -537,18 +546,21 @@ export class CartService {
         },
       });
 
-      const price_mxn_importation =
-        Number(freshPricing?.price_mxn_importation) ||
-        Number(storedData.price_mxn_importation) ||
-        basePriceMXN;
-      const price_mxn_local =
-        Number(freshPricing?.price_mxn_local) || Number(storedData.price_mxn_local) || finalPrice;
+      // When freshPricing is available, never fall back to stale storedData values —
+      // storedData fields like price_mxn_importation can be outdated from when the item was added.
+      const price_mxn_importation = freshPricing
+        ? Number(freshPricing.price_mxn_importation) || basePriceMXN
+        : Number(storedData.price_mxn_importation) || basePriceMXN;
+      const price_mxn_local = freshPricing
+        ? Number(freshPricing.price_mxn_local) || finalPrice
+        : Number(storedData.price_mxn_local) || finalPrice;
 
       return {
         importationId,
         name: cardName,
         cardName,
         price: priceString,
+        finalPrice,
         // Standardized numeric prices from mtgsrc
         price_mxn: finalPrice,
         price_mxn_importation,

@@ -10,8 +10,6 @@ import { AddCartItemDto } from './dto/add-cart-item.dto.js';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto.js';
 import { SearchService } from '../../apps/catalog/src/search/search.service.js';
 import { ImportationService } from '../../apps/catalog/src/importation/importation.service.js';
-import { CurrencyService } from '../../apps/catalog/src/importation/currency.service.js';
-
 @Injectable()
 export class CartService {
   private readonly logger = new Logger(CartService.name);
@@ -21,7 +19,6 @@ export class CartService {
     private readonly prisma: PrismaService,
     private readonly searchService: SearchService,
     private readonly importationService: ImportationService,
-    private readonly currencyService: CurrencyService,
   ) {}
 
   /**
@@ -157,7 +154,7 @@ export class CartService {
           });
           this.logger.log(`Fetched fresh pricing for ${freshPricingMap.size} importation items`);
         } catch (priceError) {
-          this.logger.warn(`Failed to fetch fresh pricing for cart items: ${priceError.message}`);
+          this.logger.warn(`Failed to fetch fresh pricing for cart items: ${(priceError as Error).message}`);
         }
       }
 
@@ -209,13 +206,22 @@ export class CartService {
           : null;
 
       if (storedPrice !== unitPrice) {
+        // Also persist fresh prices into product_data JSON so the fallback stays current
+        // when mtgsrc is temporarily unavailable on the next request.
+        const freshProductData = {
+          ...(raw.product_data as object || {}),
+          finalPrice: unitPrice,
+          price_mxn_importation: transformed.productData.price_mxn_importation || unitPrice,
+          price_mxn_local: transformed.productData.price_mxn_local || unitPrice,
+          price: `$${unitPrice.toFixed(2)} MXN`,
+        };
         updates.push(
           this.prisma.cart_items.update({
             where: { id: raw.id },
-            data: { unit_price: unitPrice },
+            data: { unit_price: unitPrice, product_data: freshProductData },
           }),
         );
-        // Also update the returned productData so the frontend gets the fresh price
+        // Update in-memory productData so the current response reflects the correct price
         transformed.productData.finalPrice = unitPrice;
         transformed.productData.price = `$${unitPrice.toFixed(2)} MXN`;
       }
@@ -531,8 +537,6 @@ export class CartService {
 
       const basePriceMXN =
         Number(freshPricing?.basePriceMXN) || Number(storedData.basePriceMXN) || finalPrice;
-      const _importFeeMXN =
-        Number(freshPricing?.importFeeMXN) || Number(storedData.importFeeMXN) || 0;
 
       const localStockMatch = await this.prisma.singles.findFirst({
         where: {
@@ -542,12 +546,14 @@ export class CartService {
         },
       });
 
-      const price_mxn_importation =
-        Number(freshPricing?.price_mxn_importation) ||
-        Number(storedData.price_mxn_importation) ||
-        basePriceMXN;
-      const price_mxn_local =
-        Number(freshPricing?.price_mxn_local) || Number(storedData.price_mxn_local) || finalPrice;
+      // When freshPricing is available, never fall back to stale storedData values —
+      // storedData fields like price_mxn_importation can be outdated from when the item was added.
+      const price_mxn_importation = freshPricing
+        ? Number(freshPricing.price_mxn_importation) || basePriceMXN
+        : Number(storedData.price_mxn_importation) || basePriceMXN;
+      const price_mxn_local = freshPricing
+        ? Number(freshPricing.price_mxn_local) || finalPrice
+        : Number(storedData.price_mxn_local) || finalPrice;
 
       return {
         importationId,
@@ -660,60 +666,6 @@ export class CartService {
   }
 
   /**
-   * Normalize language for comparison (same as in SearchService)
-   */
-  private normalizeLanguageForComparison(lang: string | undefined | null): string {
-    if (!lang) return 'ENGLISH';
-    const upperLang = lang.toUpperCase().trim();
-
-    // Map language codes and names to normalized English names
-    const languageMap: Record<string, string> = {
-      EN: 'ENGLISH',
-      ENGLISH: 'ENGLISH',
-      INGLÉS: 'ENGLISH',
-      INGLES: 'ENGLISH',
-      ES: 'SPANISH',
-      SPANISH: 'SPANISH',
-      ESPAÑOL: 'SPANISH',
-      ESPANOL: 'SPANISH',
-      JP: 'JAPANESE',
-      JA: 'JAPANESE',
-      JAPANESE: 'JAPANESE',
-      JAPONÉS: 'JAPANESE',
-      JAPONES: 'JAPANESE',
-      FR: 'FRENCH',
-      FRENCH: 'FRENCH',
-      FRANCÉS: 'FRENCH',
-      FRANCES: 'FRENCH',
-      DE: 'GERMAN',
-      GERMAN: 'GERMAN',
-      ALEMÁN: 'GERMAN',
-      ALEMAN: 'GERMAN',
-      IT: 'ITALIAN',
-      ITALIAN: 'ITALIAN',
-      ITALIANO: 'ITALIAN',
-      PT: 'PORTUGUESE',
-      PORTUGUESE: 'PORTUGUESE',
-      PORTUGUÉS: 'PORTUGUESE',
-      PORTUGUES: 'PORTUGUESE',
-      ZH: 'CHINESE',
-      CHINESE: 'CHINESE',
-      CHINO: 'CHINESE',
-      KO: 'KOREAN',
-      KOREAN: 'KOREAN',
-      COREANO: 'KOREAN',
-      RU: 'RUSSIAN',
-      RUSSIAN: 'RUSSIAN',
-      RUSO: 'RUSSIAN',
-    };
-
-    if (Object.prototype.hasOwnProperty.call(languageMap, upperLang)) {
-      return languageMap[upperLang];
-    }
-    return 'ENGLISH';
-  }
-
-  /**
    * Extract minimal required data for cart persistence
    */
   private extractMinimalProductData(productData: Record<string, unknown>): Record<string, unknown> {
@@ -749,33 +701,6 @@ export class CartService {
       condition: productData.condition,
       price_mxn_importation: productData.price_mxn_importation,
       price_mxn_local: productData.price_mxn_local,
-    };
-  }
-
-  /**
-   * Transform local product to match frontend format
-   */
-  private transformLocalProduct(single: any) {
-    if (!single) return null;
-
-    return {
-      id: single.id,
-      title: single.name,
-      cardName: single.cardName || single.name,
-      price: `$${Number(single.finalPrice || single.price).toFixed(2)} MXN`,
-      imageUrl: single.img,
-      stock: single.stock,
-      expansion: single.expansion,
-      variant: single.variant,
-      condition: single.conditions?.display_name || single.conditions?.name || 'Near Mint',
-      language: single.languages?.display_name || single.languages?.name || 'Inglés',
-      immediateDelivery: single.isLocalInventory,
-      isLocalInventory: single.isLocalInventory,
-      foil: single.foil,
-      metadata: single.metadata || [],
-
-      importationId: single.importationId,
-      category: single.categories?.name || 'SINGLES',
     };
   }
 
