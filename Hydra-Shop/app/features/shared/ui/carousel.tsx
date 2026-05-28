@@ -154,6 +154,7 @@ const CarouselContent = ({
   ref,
   id,
   style,
+  children,
 }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) => {
   const { carouselRef, orientation } = useCarousel();
 
@@ -164,7 +165,9 @@ const CarouselContent = ({
         className={cn('flex', orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col', className)}
         id={id}
         style={style}
-      />
+      >
+        {children}
+      </div>
     </div>
   );
 };
@@ -197,9 +200,20 @@ const CarouselPrevious = ({
   className,
   variant = 'outline',
   size = 'icon',
+  label = 'Previous slide',
   ref,
-  ...props
-}: React.ComponentProps<typeof FlowButton> & { ref?: React.Ref<HTMLButtonElement> }) => {
+  disabled,
+  onClick,
+  type,
+  title,
+  style,
+  id,
+  tabIndex,
+  'aria-label': ariaLabel,
+}: React.ComponentProps<typeof FlowButton> & {
+  ref?: React.Ref<HTMLButtonElement>;
+  label?: string;
+}) => {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
 
   return (
@@ -214,12 +228,17 @@ const CarouselPrevious = ({
           : '-top-12 left-1/2 -translate-x-1/2 rotate-90',
         className
       )}
-      disabled={!canScrollPrev}
-      onClick={scrollPrev}
-      {...props}
+      disabled={disabled ?? !canScrollPrev}
+      onClick={onClick ?? scrollPrev}
+      type={type}
+      title={title}
+      style={style}
+      id={id}
+      tabIndex={tabIndex}
+      aria-label={ariaLabel}
     >
       <ArrowLeft className="size-4" />
-      <span className="sr-only">Previous slide</span>
+      <span className="sr-only">{label}</span>
     </FlowButton>
   );
 };
@@ -228,9 +247,20 @@ const CarouselNext = ({
   className,
   variant = 'outline',
   size = 'icon',
+  label = 'Next slide',
   ref,
-  ...props
-}: React.ComponentProps<typeof FlowButton> & { ref?: React.Ref<HTMLButtonElement> }) => {
+  disabled,
+  onClick,
+  type,
+  title,
+  style,
+  id,
+  tabIndex,
+  'aria-label': ariaLabel,
+}: React.ComponentProps<typeof FlowButton> & {
+  ref?: React.Ref<HTMLButtonElement>;
+  label?: string;
+}) => {
   const { orientation, scrollNext, canScrollNext } = useCarousel();
 
   return (
@@ -245,12 +275,17 @@ const CarouselNext = ({
           : '-bottom-12 left-1/2 -translate-x-1/2 rotate-90',
         className
       )}
-      disabled={!canScrollNext}
-      onClick={scrollNext}
-      {...props}
+      disabled={disabled ?? !canScrollNext}
+      onClick={onClick ?? scrollNext}
+      type={type}
+      title={title}
+      style={style}
+      id={id}
+      tabIndex={tabIndex}
+      aria-label={ariaLabel}
     >
       <ArrowRight className="size-4" />
-      <span className="sr-only">Next slide</span>
+      <span className="sr-only">{label}</span>
     </FlowButton>
   );
 };
