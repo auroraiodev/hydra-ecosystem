@@ -52,6 +52,16 @@ interface CartItemsCardProps {
   getItemPrice: (item: CartItem) => number;
 }
 
+const TEXTS = {
+  cartItems: 'Cart Items',
+  cartEmpty: 'Cart is empty. Search and add products above.',
+  foil: 'FOIL',
+  product: 'Product',
+  qty: 'Qty',
+  price: 'Price',
+  total: 'Total',
+};
+
 export function CartItemsCard({
   isLoadingCart,
   cartItems,
@@ -65,7 +75,7 @@ export function CartItemsCard({
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="text-base">Cart Items ({totalItems})</CardTitle>
+        <CardTitle className="text-base">{TEXTS.cartItems} ({totalItems})</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoadingCart ? (
@@ -83,7 +93,7 @@ export function CartItemsCard({
         ) : cartItems.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Cart24Regular className="size-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">Cart is empty. Search and add products above.</p>
+            <p className="text-sm">{TEXTS.cartEmpty}</p>
           </div>
         ) : (
           <>
@@ -99,16 +109,21 @@ export function CartItemsCard({
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{getItemName(item)}</p>
+                      {(item.productData?.expansion || item.expansion) && (
+                        <p className="text-[11px] text-muted-foreground truncate">
+                          {item.productData?.expansion || item.expansion}
+                        </p>
+                      )}
                       <div className="text-xs text-muted-foreground flex items-center gap-1 flex-wrap">
                         <span>${getItemPrice(item).toFixed(2)} each</span>
                         <div className="flex items-center gap-1">
                           {(item.productData?.isFoil || item.isFoil) && (
                             <Badge className="text-[10px] px-1 py-0 bg-yellow-400 text-yellow-950 border-none font-bold">
-                              FOIL
+                              {TEXTS.foil}
                             </Badge>
                           )}
                           <Badge variant="outline" className="text-[10px] px-1 py-0">
-                            {resolveLanguageName(item.productData?.language || item.productData?.lang || item.language)}
+                            {resolveLanguageName(item.productData?.language || item.productData?.lang || item.language) || '—'}
                           </Badge>
                         </div>
                       </div>
@@ -156,10 +171,10 @@ export function CartItemsCard({
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-muted-foreground text-left text-xs uppercase font-black tracking-wider">
-                    <th className="pb-2 font-medium">Product</th>
-                    <th className="pb-2 font-medium text-center">Qty</th>
-                    <th className="pb-2 font-medium text-right">Price</th>
-                    <th className="pb-2 font-medium text-right">Total</th>
+                    <th className="pb-2 font-medium">{TEXTS.product}</th>
+                    <th className="pb-2 font-medium text-center">{TEXTS.qty}</th>
+                    <th className="pb-2 font-medium text-right">{TEXTS.price}</th>
+                    <th className="pb-2 font-medium text-right">{TEXTS.total}</th>
                     <th className="pb-2"></th>
                   </tr>
                 </thead>
@@ -175,14 +190,19 @@ export function CartItemsCard({
                           />
                           <div className="min-w-0">
                             <p className="font-medium truncate max-w-[200px]">{getItemName(item)}</p>
+                            {(item.productData?.expansion || item.expansion) && (
+                              <p className="text-[10px] text-muted-foreground truncate max-w-[200px]">
+                                {item.productData?.expansion || item.expansion}
+                              </p>
+                            )}
                             <div className="flex items-center gap-1.5 mt-0.5">
                               {(item.productData?.isFoil || item.isFoil) && (
                                 <Badge className="text-[9px] px-1 py-0 bg-yellow-400 text-yellow-950 border-none font-bold">
-                                  FOIL
+                                  {TEXTS.foil}
                                 </Badge>
                               )}
                               <span className="text-[10px] text-muted-foreground font-bold">
-                                {resolveLanguageName(item.productData?.language || item.productData?.lang || item.language)}
+                                {resolveLanguageName(item.productData?.language || item.productData?.lang || item.language) || '—'}
                               </span>
                             </div>
                           </div>
@@ -227,7 +247,7 @@ export function CartItemsCard({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="size-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="size-8 text-destructive"
                           onClick={() => onRemoveItem(item.id)}
                         >
                           <Delete24Regular className="size-4" />
