@@ -3,8 +3,17 @@ app/node_modules
 app/.next
 backend/node_modules
 backend/dist
+backend/src
+backend/apps
+backend/libs
+backend/prisma
+theme/node_modules
+theme/.storybook
 .git
 .env
 .env.local
 .env.*.local
 *.md
+*.txt
+*.postman_collection.json
+*.postman_environment.json

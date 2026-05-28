@@ -1,32 +1,25 @@
 /**
- * Lightweight reverse proxy — single public entry point for the FE container.
+ * Lightweight reverse proxy — single public entry point for the Admin container.
  *
  * Port layout:
- *   PORT (3000)      — this proxy, exposed to Traefik / the internet
- *   NEXT_PORT (3009) — Next.js standalone (internal only)
- *   NEST_PORT (3002) — NestJS REST API (internal only)
+ *   PORT (3001)      — this proxy, exposed to Traefik / the internet
+ *   NEXT_PORT (3010) — Next.js standalone (internal only)
  *
  * Routing:
  *   WebSocket upgrades              → hydra-chat (CHAT_HOST:CHAT_PORT)
  *   GET|POST /socket.io/* (polling) → hydra-chat (CHAT_HOST:CHAT_PORT)
  *   Everything else                 → Next.js
- *
- * hydra-chat runs as a sidecar on the same Docker network.
- * CHAT_SERVICE_URL=http://hydra-chat:3007  (default for production)
- * In local dev set CHAT_SERVICE_URL=http://localhost:3007
  */
 
 import http from 'http';
 import net from 'net';
 import { URL } from 'url';
 
-const PORT      = parseInt(process.env.PORT         || '3000', 10);
-const NEXT_PORT = parseInt(process.env.NEXT_PORT     || '3009', 10);
-const NEST_PORT = parseInt(process.env.BACKEND_PORT  || '3002', 10);
+const PORT      = parseInt(process.env.PORT      || '3001', 10);
+const NEXT_PORT = parseInt(process.env.NEXT_PORT || '3010', 10);
 
-// Resolve hydra-chat host/port from CHAT_SERVICE_URL or fall back to NEST_PORT
-const _chatUrl = process.env.CHAT_SERVICE_URL || `http://127.0.0.1:${NEST_PORT}`;
-const _parsed  = new URL(_chatUrl);
+const _chatUrl  = process.env.CHAT_SERVICE_URL || 'http://127.0.0.1:3007';
+const _parsed   = new URL(_chatUrl);
 const CHAT_HOST = _parsed.hostname;
 const CHAT_PORT = parseInt(_parsed.port || '3007', 10);
 
@@ -70,5 +63,5 @@ server.on('upgrade', (req, socket, head) => {
 });
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`[ws-proxy] :${PORT} → Next.js :${NEXT_PORT}, NestJS :${NEST_PORT}, Chat WS: ${CHAT_HOST}:${CHAT_PORT}`);
+  console.log(`[ws-proxy-admin] :${PORT} → Next.js :${NEXT_PORT}, Chat WS: ${CHAT_HOST}:${CHAT_PORT}`);
 });

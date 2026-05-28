@@ -29,8 +29,6 @@ import { AssistantModule } from './assistant/assistant.module.js';
 import { WalletModule } from './wallet/wallet.module.js';
 import { ReviewsModule } from './reviews/reviews.module.js';
 import { NotificationsModule } from './notifications/notifications.module.js';
-import { ChatModule } from './chat/chat.module.js';
-import { PresenceModule } from './presence/presence.module.js';
 import { NotifyClientModule } from './notify-client/notify-client.module.js';
 import { FeatureFlagsModule } from './feature-flags/feature-flags.module.js';
 import { MaintenanceGuard } from './feature-flags/maintenance.guard.js';
@@ -76,8 +74,6 @@ import { ImagesModule } from './images/images.module.js';
     WalletModule,
     ReviewsModule,
     NotificationsModule,
-    ChatModule,
-    PresenceModule,
     FeatureFlagsModule,
     // Catalog microservice modules integrated for monolithic fallback
     ProductsModule,

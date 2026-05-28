@@ -177,29 +177,16 @@ interface UseChatAdminReturn {
 
 function getWsUrl(): string {
   if (typeof window === 'undefined') {
-    return (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3002').replace(/\/api$/, '');
+    return 'http://localhost:3007';
   }
 
   const { hostname, protocol } = window.location;
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return `http://${hostname}:3002`;
+    return `http://${hostname}:3007`;
   }
 
-  const wsProtocol = protocol === 'https:' ? 'https:' : 'http:';
-
-  if (hostname.endsWith('hydracollect.com')) {
-    if (hostname.startsWith('qa.')) {
-      return `${wsProtocol}//qa-api.hydracollect.com`;
-    }
-    return `${wsProtocol}//api.hydracollect.com`;
-  }
-
-  const envUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (envUrl && envUrl.startsWith('http')) {
-    return envUrl.replace(/\/api$/, '');
-  }
-
-  return window.location.origin;
+  // admin.hydracollect.com — ws-proxy on the same container forwards to hydra-chat
+  return `${protocol}//${hostname}`;
 }
 
 /** Fetch the real JWT from the httpOnly cookie via server-side route */
