@@ -117,54 +117,10 @@ export class CartService {
     try {
       const cart = await this.getOrCreateCart(userId);
       this.logger.log(`Getting cart for user ${userId}, items count: ${cart.items.length}`);
-      // Batch fetch fresh prices for all items in the cart that have an importation ID
-      // Only for Magic: The Gathering (tcg_id match)
-      const itemsToRefetch = cart.items
-        .map((i) => {
-          // Check if it's MTG (either stored in tcg_id or in the linked single)
-          const tcgId = i.tcg_id || i.singles?.tcg_id;
-          if (tcgId && tcgId !== this.MTG_TCG_ID) return null;
 
-          // Normalize importationId lookup from either cart_item or linked single
-          const importationId = i.importation_id || i.singles?.importationId;
-          if (!importationId) return null;
-
-          return {
-            importationId: importationId,
-            name: String(
-              (i.product_data as Record<string, string>)?.name ||
-                (i.product_data as Record<string, string>)?.cardName ||
-                i.singles?.cardName ||
-                'Producto',
-            ),
-          };
-        })
-        .filter((i): i is { importationId: string; name: string } => i !== null);
-
-      this.logger.debug(`Refetching prices for ${itemsToRefetch.length} importation items`);
-
-      const freshPricingMap = new Map();
-      if (itemsToRefetch.length > 0) {
-        try {
-          const freshPrices = await this.importationService.getBatchPrices(itemsToRefetch);
-          freshPrices.forEach((p) => {
-            if (p.importationId) {
-              freshPricingMap.set(p.importationId, p);
-            }
-          });
-          this.logger.log(`Fetched fresh pricing for ${freshPricingMap.size} importation items`);
-        } catch (priceError) {
-          this.logger.warn(`Failed to fetch fresh pricing for cart items: ${(priceError as Error).message}`);
-        }
-      }
-
-      const transformedItems = await this.transformCartItemsWithDetails(
-        cart.items,
-        freshPricingMap,
-      );
+      const transformedItems = await this.transformCartItemsWithDetails(cart.items);
       this.logger.log(`Successfully transformed ${transformedItems.length} cart items`);
 
-      // Recalculate and persist unit_price for every item so stored prices stay current
       await this.recalculatePrices(cart.items, transformedItems);
 
       return transformedItems;
