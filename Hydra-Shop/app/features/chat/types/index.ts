@@ -22,6 +22,7 @@ export interface UseChatSocketReturn {
   messages: ChatMessage[];
   sendMessage: (content: string) => void;
   isConnected: boolean;
+  isAvailable: boolean;
   isLoading: boolean;
   unreadCount: number;
   clearUnread: () => void;

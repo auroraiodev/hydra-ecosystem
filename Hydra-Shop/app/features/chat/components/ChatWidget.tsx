@@ -21,7 +21,7 @@ export function ChatWidget() {
   const [atQuery, setAtQuery] = useState<string | null>(null);
 
   const { user, isAuthenticated } = useAppSelector((s) => s.auth);
-  const { messages, sendMessage, isConnected, isLoading, unreadCount, clearUnread } =
+  const { messages, sendMessage, isConnected, isAvailable, isLoading, unreadCount, clearUnread } =
     useChatSocket(open);
 
   const {
@@ -86,6 +86,7 @@ export function ChatWidget() {
   };
 
   if (chatEnabled === false) return null;
+  if (isAuthenticated && !isAvailable) return null;
 
   const isFloatingBarPage = ['/cart', '/wishlist', '/checkout'].includes(pathname);
 

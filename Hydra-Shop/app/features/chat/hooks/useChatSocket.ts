@@ -64,12 +64,14 @@ function getWsUrl(): string {
 interface ChatState {
   messages: ChatMessage[];
   isConnected: boolean;
+  isAvailable: boolean;
   isLoading: boolean;
   unreadCount: number;
 }
 
 type ChatAction =
   | { type: 'SET_CONNECTED'; payload: boolean }
+  | { type: 'SET_AVAILABLE'; payload: boolean }
   | { type: 'SET_MESSAGES'; payload: ChatMessage[] }
   | { type: 'ADD_MESSAGE'; payload: ChatMessage }
   | { type: 'SET_LOADING'; payload: boolean }
@@ -80,6 +82,8 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
   switch (action.type) {
     case 'SET_CONNECTED':
       return { ...state, isConnected: action.payload };
+    case 'SET_AVAILABLE':
+      return { ...state, isAvailable: action.payload };
     case 'SET_MESSAGES':
       return { ...state, messages: action.payload };
     case 'ADD_MESSAGE':
@@ -106,10 +110,11 @@ export function useChatSocket(open: boolean): UseChatSocketReturn {
   const [chatState, chatDispatch] = useReducer(chatReducer, {
     messages: [],
     isConnected: false,
+    isAvailable: true,
     isLoading: false,
     unreadCount: 0,
   });
-  const { messages, isConnected, isLoading, unreadCount } = chatState;
+  const { messages, isConnected, isAvailable, isLoading, unreadCount } = chatState;
   const historyLoadedRef = useRef(false);
   const toast = useToastContext();
   const openRef = useRef(open);
@@ -195,8 +200,12 @@ export function useChatSocket(open: boolean): UseChatSocketReturn {
 
       socket.on('connect', () => {
         chatDispatch({ type: 'SET_CONNECTED', payload: true });
+        chatDispatch({ type: 'SET_AVAILABLE', payload: true });
       });
       socket.on('disconnect', () => chatDispatch({ type: 'SET_CONNECTED', payload: false }));
+      socket.io.on('reconnect_failed', () => {
+        chatDispatch({ type: 'SET_AVAILABLE', payload: false });
+      });
 
       // Real-time cache invalidation for categories
       socket.on('invalidate_cache', (data: { type?: string; tcgId?: string }) => {
@@ -207,7 +216,7 @@ export function useChatSocket(open: boolean): UseChatSocketReturn {
           });
         }
       });
-      socket.on('connect_error', (err) => console.error('[Chat] connect_error', err.message));
+      socket.on('connect_error', () => { /* suppress — reconnect_failed handles permanent failure */ });
 
       socket.on('message', (msg: ChatMessage) => {
         chatDispatch({ type: 'ADD_MESSAGE', payload: msg });
@@ -285,5 +294,5 @@ export function useChatSocket(open: boolean): UseChatSocketReturn {
 
   const clearUnread = useCallback(() => chatDispatch({ type: 'CLEAR_UNREAD' }), []);
 
-  return { messages, sendMessage, isConnected, isLoading, unreadCount, clearUnread };
+  return { messages, sendMessage, isConnected, isAvailable, isLoading, unreadCount, clearUnread };
 }
