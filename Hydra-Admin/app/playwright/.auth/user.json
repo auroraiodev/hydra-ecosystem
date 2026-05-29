@@ -2,10 +2,10 @@
   "cookies": [
     {
       "name": "__sid",
-      "value": "5feXV9CgJgdDhKVh.DDJnCiGEU_FC238XpPSJLw.Hal7XLsG4dzPWJubY1C6EvO9xlYb8N_KwfYyLBWYuoACRNNnqEreELAEx7MJYQpvUgQzHFBh-9yiTCEvfaaBXaoMP6sKe3m0K4Kb2AWExtkFfVjWB1WWTaxykzaWkafvCh5by6dgjOXfrrXAhv0MN6rlCaiDKcB1zi2ApQyny9Hxx0vvFP6u0NC7zNUx-Dem4Z1e4LVKoIx6NocqjFXsrWMLFcBLnvQ",
+      "value": "s7TljUOi0PPOZfSz.hcmQc1IBV8c8izD80v9ZHw.rvmaSRH7VMirPJPQcXskrei4IKPVpIUHzrfGeyRh1r3cFicc1XuVp83ge5ium-iT8v3ifhEv23CgVLZ2BofIS3V3PevgxMBxUT0Q9yvQBQoj0JtVRF1N0mBx5Y8KOaOlmjiUx_W_Ttkq0FJ-cy47enjDDYMrUQ-1tNdsfrB4f-hA3_M1U3Vz7qdf_ROGySAKb1uP-uCnfEtOkl15pyd0o6wV2XGVqe4",
       "domain": "localhost",
       "path": "/",
-      "expires": 1780647088.204038,
+      "expires": 1780673200.728748,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Strict"
@@ -15,7 +15,7 @@
       "value": "ADMIN",
       "domain": "localhost",
       "path": "/",
-      "expires": 1780647088.204939,
+      "expires": 1780673200.729539,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Strict"
@@ -25,7 +25,7 @@
       "value": "refresh-token-123",
       "domain": "localhost",
       "path": "/",
-      "expires": 1780647088.204971,
+      "expires": 1780673200.729582,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Strict"
