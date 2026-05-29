@@ -77,8 +77,7 @@ export function LoginPageContentInner() {
                     alt="Hydra Admin"
                     width={80}
                     height={80}
-                    className="w-20 object-contain"
-                    style={{ height: 'auto' }}
+                    className="object-contain"
                     priority
                   />
                 </div>
