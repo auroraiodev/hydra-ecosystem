@@ -1,5 +1,6 @@
 import { API_URL } from '../constants/api';
 import { store } from '@/lib/store';
+import { api } from './client';
 import type { LoginResponse } from '../types';
 
 export interface Address {
@@ -38,22 +39,18 @@ function getAuthHeader() {
   };
 }
 
+function unwrap<T>(json: unknown): T {
+  if (json && typeof json === 'object' && 'data' in json) {
+    return (json as { data: T }).data;
+  }
+  return json as T;
+}
+
 export async function getAddresses(): Promise<Address[]> {
   try {
-    const response = await fetch(`${API_URL}/users/addresses`, {
-      method: 'GET',
-      headers: getAuthHeader(),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('getAddresses failed:', response.status, errorText);
-
-      if (response.status === 401) throw new Error('Unauthorized');
-      throw new Error(`Failed to fetch addresses: ${response.status} ${errorText}`);
-    }
-
-    return response.json();
+    const json = await api.request<unknown>('/users/addresses');
+    const data = unwrap<Address[]>(json);
+    return Array.isArray(data) ? data : [];
   } catch (error) {
     console.error('Error fetching addresses:', error);
     return [];
@@ -61,21 +58,11 @@ export async function getAddresses(): Promise<Address[]> {
 }
 
 export async function addAddress(addressData: CreateAddressData): Promise<Address> {
-  const response = await fetch(`${API_URL}/users/addresses`, {
+  const json = await api.request<unknown>('/users/addresses', {
     method: 'POST',
-    headers: getAuthHeader(),
     body: JSON.stringify(addressData),
   });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch((err) => {
-      console.error('[users/addAddress] JSON parse error:', err);
-      return {};
-    });
-    throw new Error(errorData.message || 'Failed to add address');
-  }
-
-  return response.json();
+  return unwrap<Address>(json);
 }
 
 
