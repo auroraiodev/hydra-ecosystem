@@ -96,7 +96,10 @@ const orders = [
     status: 'PENDING',
     createdAt: new Date().toISOString(),
     total: 1250,
+    customer: 'Juan Perez',
+    email: 'juan@example.com',
     user: { id: 'user-1', name: 'Juan Perez', email: 'juan@example.com' },
+    users: { id: 'user-1', first_name: 'Juan', last_name: 'Perez', email: 'juan@example.com' },
     items: [
       {
         id: 'item-1',
@@ -117,7 +120,10 @@ const orders = [
     status: 'PAID',
     createdAt: new Date(Date.now() - 3600000).toISOString(),
     total: 850,
+    customer: 'Maria Gomez',
+    email: 'maria@example.com',
     user: { id: 'user-2', name: 'Maria Gomez', email: 'maria@example.com' },
+    users: { id: 'user-2', first_name: 'Maria', last_name: 'Gomez', email: 'maria@example.com' },
     items: [
       {
         id: 'item-2',

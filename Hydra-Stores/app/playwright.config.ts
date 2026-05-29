@@ -1,32 +1,54 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const baseURL = process.env.NEXT_PUBLIC_SELLER_URL || 'http://localhost:3003';
+// In CI load .env.ci; locally load .env
+const IS_CI = !!process.env.CI;
+dotenv.config({
+  path: path.resolve(__dirname, IS_CI ? '.env.ci' : '.env'),
+});
 
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : 4,
-  reporter: 'html',
+  forbidOnly: IS_CI,
+  retries: IS_CI ? 2 : 0,
+  workers: IS_CI ? 2 : 4,
+
+  reporter: IS_CI
+    ? [['github'], ['html', { open: 'never' }], ['list']]
+    : [['html', { open: 'on-failure' }]],
+
   use: {
-    baseURL,
+    baseURL: 'http://localhost:3003',
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'on-first-retry',
+    headless: IS_CI,
+    actionTimeout: 15_000,
+    navigationTimeout: 30_000,
   },
+
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
   ],
+
   webServer: {
-    command: 'bun run dev',
+    // CI: build once then serve via `next start` (stable, production-like).
+    // Local dev: use dev server (fast, HMR).
+    command: IS_CI ? 'bun run build && bun run start' : 'bun run dev',
     url: 'http://localhost:3003',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
+    reuseExistingServer: !IS_CI,
+    // CI needs longer timeout because `next build` runs first
+    timeout: IS_CI ? 300_000 : 120_000,
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
 });

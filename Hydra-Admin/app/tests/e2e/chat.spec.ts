@@ -30,7 +30,7 @@ test.describe('Admin Dashboard - Chat (Soporte)', () => {
     await messageInput.fill('Hola Juan, claro, dime en qué te puedo ayudar');
 
     // Click the send button
-    const sendButton = page.locator('button:has-text("Enviar"), button:has-text("Send"), button:has([class*="Send"]), button:has(svg)').first();
+    const sendButton = messageInput.locator('xpath=..').locator('button');
     await expect(sendButton).toBeVisible();
     await sendButton.click();
 

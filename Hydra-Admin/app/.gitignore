@@ -16,9 +16,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files — block all, allow only .env.example
+# env files — block all except .env.example (docs) and .env.ci (safe CI placeholders)
 .env*
 !.env.example
+!.env.ci
 
 # vercel
 .vercel

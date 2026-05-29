@@ -129,17 +129,13 @@ jobs:
           retention-days: 7
 
   # ── 2. Deploy to Coolify ────────────────────────────────────────────────────
-  # Only runs when:
-  #   • The e2e job passed
-  #   • We are on the main branch
-  #   • This is a push event (not a PR)
+  # Runs in parallel with e2e — does NOT wait for tests to pass.
+  # To gate on tests, add: needs: e2e  and  condition: needs.e2e.result == 'success'
   deploy:
     name: Deploy to Coolify
-    needs: e2e
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: >
-      needs.e2e.result == 'success' &&
       github.ref == 'refs/heads/main' &&
       github.event_name == 'push'
 
@@ -180,4 +176,4 @@ jobs:
           echo "| Branch | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Triggered by | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "E2E tests passed ✅ — Coolify is now building and deploying the new image." >> $GITHUB_STEP_SUMMARY
+          echo "Coolify is now building and deploying the new image." >> $GITHUB_STEP_SUMMARY

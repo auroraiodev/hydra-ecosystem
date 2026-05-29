@@ -10,8 +10,8 @@ test.describe('Admin Dashboard - Orders (Pedidos)', () => {
     await expect(title).toBeVisible();
 
     // Check if the mock orders are listed
-    await expect(page.locator('text=order-1')).toBeVisible();
-    await expect(page.locator('text=order-2')).toBeVisible();
+    await expect(page.locator('text=order-1').first()).toBeVisible();
+    await expect(page.locator('text=order-2').first()).toBeVisible();
   });
 
   test('should navigate to order details page and show customer information', async ({ page }) => {
