@@ -95,6 +95,20 @@ async function proxyRequest(
   throw lastError ?? new Error('Proxy fetch failed');
 }
 
+async function checkHealthAndLog() {
+  try {
+    const resp = await fetch(`${BACKEND_BASE_URL}/health`, { signal: AbortSignal.timeout(3000) });
+    if (!resp.ok) console.warn(`[PROXY] Backend health check failed: ${resp.status}`);
+  } catch {
+    console.warn(`[PROXY] Backend unreachable at ${BACKEND_BASE_URL}/health — is NestJS running?`);
+  }
+}
+
+// Run health check once at startup
+if (typeof globalThis !== 'undefined' && process.env.NODE_ENV === 'production') {
+  setTimeout(checkHealthAndLog, 5000);
+}
+
 type RouteContext = { params: Promise<{ path: string[] }> };
 
 const handler = async (request: NextRequest, context: RouteContext) => {
@@ -103,9 +117,13 @@ const handler = async (request: NextRequest, context: RouteContext) => {
     return await proxyRequest(request, params);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
+    const path = request.nextUrl.pathname.replace(/^\/api\/proxy\//, '');
+    const baseUrl = path.startsWith('uploads/') ? BACKEND_ROOT_URL : BACKEND_BASE_URL;
     console.error('Proxy Error:', {
       url: request.url,
       method: request.method,
+      backendUrl: `${baseUrl}/${path}${request.nextUrl.search}`,
+      backendBase: BACKEND_BASE_URL,
       error: error?.message || error,
     });
 

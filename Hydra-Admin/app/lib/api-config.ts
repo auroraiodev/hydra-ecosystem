@@ -4,11 +4,19 @@
  */
 
 const getBackendBaseUrl = () => {
+  const isServer = typeof window === 'undefined';
+
   const base =
+    // 1. Internal URL (Docker — same container or docker-compose network)
     process.env.API_URL_INTERNAL ||
+    process.env.INTERNAL_API_URL ||
+    // 2. Public URL (baked at build-time via NEXT_PUBLIC_*)
     process.env.NEXT_PUBLIC_BACKEND_API_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
-    (process.env.NODE_ENV === 'production' ? 'http://hydra-admin-api:3002/api' : 'http://127.0.0.1:3002/api');
+    // 3. Server-side default: NestJS is co-located in the same container on :3002
+    (isServer ? 'http://127.0.0.1:3002/api' :
+     // 4. Client-side fallback (unlikely — all API calls go through /api/proxy)
+     process.env.NODE_ENV === 'production' ? '/api' : 'http://127.0.0.1:3002/api');
 
   const normalized = base.trim().replace(/\/+$/, '').replace('localhost', '127.0.0.1');
 
