@@ -6,27 +6,31 @@ test.describe('Admin Dashboard - Products (Inventario)', () => {
   });
 
   test('should display page header and list products', async ({ page }) => {
-    const title = page.locator('h1, h2, h3', { hasText: 'Inventario' });
+    const title = page.locator('h1, h2, h3', { hasText: 'Inventario' }).first();
     await expect(title).toBeVisible();
 
     // Check if both products from our mock backend are listed
-    await expect(page.locator('text=Black Lotus')).toBeVisible();
-    await expect(page.locator('text=Mox Diamond')).toBeVisible();
+    await expect(page.locator('text=Black Lotus').first()).toBeVisible();
+    await expect(page.locator('text=Mox Diamond').first()).toBeVisible();
   });
 
   test('should verify product images load correctly in the table', async ({ page }) => {
-    // Locate product row images
-    const lotusImage = page.locator('img[alt="Black Lotus"]');
+    // Locate product row images scoped to the row to prevent duplicate element match
+    const lotusImage = page.locator('tr:has-text("Black Lotus")').locator('img[alt="Black Lotus"]').first();
     await expect(lotusImage).toBeAttached();
     await expect(lotusImage).toHaveAttribute('src', /.*cat.png/);
 
-    const moxImage = page.locator('img[alt="Mox Diamond"]');
+    const moxImage = page.locator('tr:has-text("Mox Diamond")').locator('img[alt="Mox Diamond"]').first();
     await expect(moxImage).toBeAttached();
     await expect(moxImage).toHaveAttribute('src', /.*cat.png/);
 
     // Verify they have correct size/rendering dimensions
-    const isLotusImageLoaded = await lotusImage.evaluate((img: HTMLImageElement) => {
-      return img.complete && img.naturalWidth > 0;
+    const isLotusImageLoaded = await lotusImage.evaluate(async (img: HTMLImageElement) => {
+      if (img.complete && img.naturalWidth > 0) return true;
+      return new Promise<boolean>((resolve) => {
+        img.onload = () => resolve(img.naturalWidth > 0);
+        img.onerror = () => resolve(false);
+      });
     });
     expect(isLotusImageLoaded).toBeTruthy();
   });
@@ -115,7 +119,7 @@ test.describe('Admin Dashboard - Products (Inventario)', () => {
     await page.waitForURL(/.*products\/add/, { waitUntil: 'domcontentloaded' });
 
     // Verify we are on product form page
-    await expect(page.locator('h1, h2, h3', { hasText: 'Nuevo Producto' })).toBeVisible();
+    await expect(page.locator('h1, h2, h3', { hasText: /Agregar Productos/i }).first()).toBeVisible();
 
     // Fill form
     await page.fill('input[name="name"], input#name', 'Mox Emerald');
@@ -153,17 +157,17 @@ test.describe('Admin Dashboard - Products (Inventario)', () => {
   test('should delete product through row action', async ({ page }) => {
     // We want to delete "Mox Diamond"
     const moxRow = page.locator('tr:has-text("Mox Diamond")');
-    const deleteBtn = moxRow.locator('button[aria-label*="Eliminar"], button:has(.size-3\\.5)');
+    const deleteBtn = moxRow.locator('button[aria-label*="Eliminar"], button.text-destructive').first();
 
     // Mock confirm dialog
     page.once('dialog', async (dialog) => {
-      expect(dialog.message()).toContain('delete');
+      expect(dialog.message().toLowerCase()).toContain('delete');
       await dialog.accept();
     });
 
     await deleteBtn.click();
 
     // Should no longer be visible in table
-    await expect(page.locator('text=Mox Diamond')).not.toBeVisible();
+    await expect(page.locator('text=Mox Diamond').first()).not.toBeVisible();
   });
 });

@@ -18,8 +18,12 @@ test.describe('Admin Dashboard - Banners', () => {
     await expect(bannerImg).toBeAttached();
 
     // Confirm that naturalWidth is valid
-    const isImgLoaded = await bannerImg.evaluate((img: HTMLImageElement) => {
-      return img.complete && img.naturalWidth > 0;
+    const isImgLoaded = await bannerImg.evaluate(async (img: HTMLImageElement) => {
+      if (img.complete && img.naturalWidth > 0) return true;
+      return new Promise<boolean>((resolve) => {
+        img.onload = () => resolve(img.naturalWidth > 0);
+        img.onerror = () => resolve(false);
+      });
     });
     expect(isImgLoaded).toBeTruthy();
   });

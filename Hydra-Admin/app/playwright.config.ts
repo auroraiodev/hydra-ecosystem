@@ -5,6 +5,7 @@ import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
 
+dotenv.config({ path: path.resolve(__dirname, '.env.local') });
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const baseURL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3001';

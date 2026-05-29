@@ -8,8 +8,6 @@
  * Usage: All data API calls in lib/api.ts use `/api/proxy/` as the base URL.
  */
 import { type NextRequest, NextResponse } from 'next/server';
-import { appendFileSync } from 'fs';
-import { join } from 'path';
 import { decryptCookie, COOKIE_NAME } from '@/lib/cookie-crypto';
 import { BACKEND_BASE_URL, BACKEND_ROOT_URL } from '@/lib/api-config';
 
@@ -24,12 +22,6 @@ async function proxyRequest(
   // If the path starts with 'uploads', use the root backend URL (no /api/v1 prefix)
   const baseUrl = path.startsWith('uploads/') ? BACKEND_ROOT_URL : BACKEND_BASE_URL;
   const backendUrl = `${baseUrl}/${path}${request.nextUrl.search}`;
-
-  // DEBUG BACKEND URL
-  try {
-    const log = `[PROXY FETCH] ${new Date().toISOString()} | Fetching: ${backendUrl}\n`;
-    appendFileSync(join(process.cwd(), 'proxy_debug.log'), log);
-  } catch {}
 
   const forwardHeaders: Record<string, string> = {};
 
@@ -108,14 +100,6 @@ type RouteContext = { params: Promise<{ path: string[] }> };
 const handler = async (request: NextRequest, context: RouteContext) => {
   try {
     const params = await context.params;
-
-    // DEBUG LOGGING
-    try {
-      const path = params.path.join('/');
-      const logMessage = `[PROXY IN] ${new Date().toISOString()} | ${request.method} ${request.url} | path: ${path}\n`;
-      appendFileSync(join(process.cwd(), 'proxy_debug.log'), logMessage);
-    } catch {}
-
     return await proxyRequest(request, params);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -124,12 +108,6 @@ const handler = async (request: NextRequest, context: RouteContext) => {
       method: request.method,
       error: error?.message || error,
     });
-
-    // DEBUG ERROR LOGGING
-    try {
-      const log = `[PROXY ERROR] ${new Date().toISOString()} | ${request.url} | ${error?.message || error}\n`;
-      appendFileSync(join(process.cwd(), 'proxy_debug.log'), log);
-    } catch {}
 
     return NextResponse.json(
       {

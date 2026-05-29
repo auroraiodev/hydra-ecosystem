@@ -6,7 +6,7 @@ test.describe('Admin Dashboard - Settings & Maintenance (Configuración)', () =>
   });
 
   test('should display settings page header and load parameters', async ({ page }) => {
-    const title = page.locator('h1, h2, h3', { hasText: /Configuración|Settings/i });
+    const title = page.locator('h1, h2, h3', { hasText: /Configuración|Settings/i }).first();
     await expect(title).toBeVisible();
 
     // Verify system parameter inputs are visible

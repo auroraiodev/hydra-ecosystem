@@ -432,8 +432,8 @@ const server = createServer(async (req, res) => {
 
     if (path.startsWith('/api/v1/singles/') && req.method === 'PATCH') {
       const parts = path.split('/');
-      const id = parts[3]; // format is /api/v1/singles/:id or singles/:id/tags etc.
-      const subAction = parts[4];
+      const id = parts[4]; // format is /api/v1/singles/:id or singles/:id/tags etc.
+      const subAction = parts[5];
       
       const productIndex = products.findIndex((p) => p.id === id);
       if (productIndex >= 0) {
@@ -625,6 +625,55 @@ const server = createServer(async (req, res) => {
           totalPages: 1,
         })
       );
+      return;
+    }
+
+    if (path === '/api/v1/admin/wallet/users' && req.method === 'GET') {
+      res.writeHead(200);
+      res.end(
+        JSON.stringify([
+          { id: 'user-1', name: 'Juan Perez', email: 'juan@example.com', balance: 1250, transactionCount: 2 },
+          { id: 'user-2', name: 'Maria Gomez', email: 'maria@example.com', balance: 0, transactionCount: 0 }
+        ])
+      );
+      return;
+    }
+
+    if (path.startsWith('/api/v1/admin/wallet/users/') && req.method === 'GET') {
+      const parts = path.split('/');
+      const id = parts[parts.length - 1];
+      if (id === 'user-1') {
+        res.writeHead(200);
+        res.end(
+          JSON.stringify({
+            id: 'user-1',
+            name: 'Juan Perez',
+            email: 'juan@example.com',
+            balance: 1250,
+            transactions: [
+              { id: 'tx-1', amount: 1250, type: 'DEPOSIT', description: 'Deposit for order-1', created_at: new Date().toISOString() },
+              { id: 'tx-2', amount: -500, type: 'WITHDRAWAL', description: 'Withdrawal to bank', created_at: new Date().toISOString() }
+            ]
+          })
+        );
+      } else {
+        res.writeHead(200);
+        res.end(
+          JSON.stringify({
+            id: 'user-2',
+            name: 'Maria Gomez',
+            email: 'maria@example.com',
+            balance: 0,
+            transactions: []
+          })
+        );
+      }
+      return;
+    }
+
+    if (path === '/api/v1/admin/wallet/verify-access' && req.method === 'POST') {
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true }));
       return;
     }
 

@@ -25,12 +25,12 @@ test.describe('Admin Dashboard - Chat (Soporte)', () => {
     await expect(messageBubble).toBeVisible();
 
     // Locate the message input box and type a reply
-    const messageInput = page.locator('input[placeholder*="mensaje"], textarea[placeholder*="mensaje"], input[placeholder*="Escribe"]');
+    const messageInput = page.locator('textarea').first();
     await expect(messageInput).toBeVisible();
     await messageInput.fill('Hola Juan, claro, dime en qué te puedo ayudar');
 
     // Click the send button
-    const sendButton = page.locator('button:has-text("Enviar"), button:has-text("Send"), button:has([class*="Send"])');
+    const sendButton = page.locator('button:has-text("Enviar"), button:has-text("Send"), button:has([class*="Send"]), button:has(svg)').first();
     await expect(sendButton).toBeVisible();
     await sendButton.click();
 

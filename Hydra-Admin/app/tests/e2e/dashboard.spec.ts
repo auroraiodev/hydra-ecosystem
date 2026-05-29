@@ -50,8 +50,12 @@ test.describe('Admin Dashboard - Main Page', () => {
     await expect(catImage).toHaveAttribute('src', /.*cat.png/);
 
     // Verify image is successfully loaded by checking naturalWidth
-    const isImageLoaded = await catImage.evaluate((img: HTMLImageElement) => {
-      return img.complete && img.naturalWidth > 0;
+    const isImageLoaded = await catImage.evaluate(async (img: HTMLImageElement) => {
+      if (img.complete && img.naturalWidth > 0) return true;
+      return new Promise<boolean>((resolve) => {
+        img.onload = () => resolve(img.naturalWidth > 0);
+        img.onerror = () => resolve(false);
+      });
     });
     expect(isImageLoaded).toBeTruthy();
   });

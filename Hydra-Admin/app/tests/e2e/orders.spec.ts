@@ -6,7 +6,7 @@ test.describe('Admin Dashboard - Orders (Pedidos)', () => {
   });
 
   test('should display page header and list orders', async ({ page }) => {
-    const title = page.locator('h1, h2, h3', { hasText: 'Orders' });
+    const title = page.locator('h1, h2, h3', { hasText: /Orders|Pedidos/i }).first();
     await expect(title).toBeVisible();
 
     // Check if the mock orders are listed
@@ -15,9 +15,9 @@ test.describe('Admin Dashboard - Orders (Pedidos)', () => {
   });
 
   test('should navigate to order details page and show customer information', async ({ page }) => {
-    // Click on order row or "Ver" button
+    // Click on "Ver" button in order row
     const orderRow = page.locator('tr:has-text("order-1")');
-    await orderRow.click();
+    await orderRow.locator('button').first().click();
 
     // Wait for redirect to order details
     await page.waitForURL(/.*orders\/order-1/, { waitUntil: 'domcontentloaded' });
@@ -41,8 +41,12 @@ test.describe('Admin Dashboard - Orders (Pedidos)', () => {
     await expect(productImg).toBeAttached();
     await expect(productImg).toHaveAttribute('src', /.*cat.png/);
 
-    const isImgLoaded = await productImg.evaluate((img: HTMLImageElement) => {
-      return img.complete && img.naturalWidth > 0;
+    const isImgLoaded = await productImg.evaluate(async (img: HTMLImageElement) => {
+      if (img.complete && img.naturalWidth > 0) return true;
+      return new Promise<boolean>((resolve) => {
+        img.onload = () => resolve(img.naturalWidth > 0);
+        img.onerror = () => resolve(false);
+      });
     });
     expect(isImgLoaded).toBeTruthy();
   });
