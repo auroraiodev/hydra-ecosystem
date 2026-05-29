@@ -16,10 +16,7 @@ function getWsUrl(): string {
   const wsProtocol = protocol === 'https:' ? 'https:' : 'http:';
 
   if (hostname.endsWith('hydracollect.com')) {
-    if (hostname.startsWith('qa.')) {
-      return `${wsProtocol}//qa-api.hydracollect.com`;
-    }
-    return `${wsProtocol}//api.hydracollect.com`;
+    return `${wsProtocol}//${hostname}`;
   }
 
   const envUrl = process.env.NEXT_PUBLIC_API_URL;

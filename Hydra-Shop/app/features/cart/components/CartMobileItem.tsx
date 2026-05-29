@@ -9,6 +9,7 @@ import { ShaderAnimation } from '@/features/shared/ui/shader-animation';
 import { VaultProductBadges } from '@/features/shared/ui';
 import { resolveLanguageName } from '@/lib/utils/transformers';
 import type { CardData } from '@/features/products/types';
+import { computeFinalHref } from '@/features/products/utils';
 
 interface CartItemData {
   id: string;
@@ -25,6 +26,8 @@ interface CartItemData {
   stock?: number;
   quantity: number;
   cardNumber?: string;
+  condition?: string;
+  isImportation?: boolean;
 }
 
 interface CartItemProps {
@@ -59,6 +62,21 @@ export const CartMobileItem = memo(function CartMobileItem({
 
   const outOfStock = item.stock !== undefined && item.stock <= 0;
 
+  const itemHref = `/singles/${item.importationId || item.id}`;
+  const finalHref = computeFinalHref({
+    id: item.importationId || item.id,
+    title: displayTitle,
+    cardName: item.cardName || item.title,
+    price: String(item.price),
+    imageUrl: item.imageUrl || '',
+    href: itemHref,
+    language: item.language,
+    foil: item.foil,
+    expansion: item.expansion,
+    condition: item.condition,
+    isLocalInventory: !item.importationId,
+  }) || itemHref;
+
   const handleQuantityChange = useCallback((delta: number) => {
     updateQuantity(item.id, item.quantity + delta);
   }, [item.id, item.quantity, updateQuantity]);
@@ -68,7 +86,7 @@ export const CartMobileItem = memo(function CartMobileItem({
       <div className="p-4">
         <div className="flex gap-4">
           <Link
-            href={`/singles/${item.id}`}
+            href={finalHref}
             className="relative w-20 aspect-[3/4] bg-vault-surface-low rounded-xl overflow-hidden flex-shrink-0 group"
           >
             {item.imageUrl ? (
@@ -93,7 +111,7 @@ export const CartMobileItem = memo(function CartMobileItem({
 
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2 mb-1">
-              <Link href={`/singles/${item.id}`} className="hover:text-teal transition-colors">
+              <Link href={finalHref} className="hover:text-teal transition-colors">
                 <h3 className="font-semibold text-sm text-vault-text line-clamp-2 leading-tight">
                   {displayTitle}
                 </h3>

@@ -9,6 +9,7 @@ import { ShaderAnimation } from '@/features/shared/ui/shader-animation';
 import { VaultProductBadges, FlowButton } from '@/features/shared/ui';
 import { resolveLanguageName } from '@/lib/utils/transformers';
 import type { CardData as CardDataType } from '@/features/products/types';
+import { computeFinalHref } from '@/features/products/utils';
 
 interface CartItemData {
   id: string;
@@ -25,6 +26,8 @@ interface CartItemData {
   stock?: number;
   quantity: number;
   cardNumber?: string;
+  condition?: string;
+  isImportation?: boolean;
 }
 
 interface CartItemProps {
@@ -59,6 +62,21 @@ export const CartDesktopItem = memo(function CartDesktopItem({
 
   const outOfStock = item.stock !== undefined && item.stock <= 0;
 
+  const itemHref = `/singles/${item.importationId || item.id}`;
+  const finalHref = computeFinalHref({
+    id: item.importationId || item.id,
+    title: displayTitle,
+    cardName: item.cardName || item.title,
+    price: String(item.price),
+    imageUrl: item.imageUrl || '',
+    href: itemHref,
+    language: item.language,
+    foil: item.foil,
+    expansion: item.expansion,
+    condition: item.condition,
+    isLocalInventory: !item.importationId,
+  }) || itemHref;
+
   const handleQuantityChange = useCallback((delta: number) => {
     updateQuantity(item.id, item.quantity + delta);
   }, [item.id, item.quantity, updateQuantity]);
@@ -67,7 +85,7 @@ export const CartDesktopItem = memo(function CartDesktopItem({
     <div className="bg-vault-surface rounded-xl border border-vault-border p-5 hover:border-teal/20 transition-colors">
       <div className="flex gap-5">
         <Link
-          href={`/singles/${item.id}`}
+          href={finalHref}
           className="relative w-28 h-36 bg-vault-surface-low rounded-lg overflow-hidden flex-shrink-0 group"
         >
           {item.imageUrl ? (
@@ -93,7 +111,7 @@ export const CartDesktopItem = memo(function CartDesktopItem({
         <div className="flex-1 flex flex-col">
           <div className="flex items-start justify-between gap-4 mb-2">
             <div className="flex-1">
-              <Link href={`/singles/${item.id}`} className="hover:text-teal transition-colors">
+              <Link href={finalHref} className="hover:text-teal transition-colors">
                 <h3 className="font-semibold text-lg text-vault-text leading-tight mb-1">
                   {displayTitle}
                 </h3>

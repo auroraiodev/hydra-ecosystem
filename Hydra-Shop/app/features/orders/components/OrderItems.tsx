@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { resolveImageUrl } from '@/lib/utils/imageUrl';
 import { CheckCircle2, Package } from 'lucide-react';
 import { ShaderAnimation } from '@/features/shared/ui/shader-animation';
@@ -50,8 +51,8 @@ export function OrderItems({
           const rawCondition = productData.condition;
           const condition = rawCondition ? (CONDITION_MAP[rawCondition] ?? rawCondition) : null;
 
-          return (
-            <div key={item.id} className="flex gap-4 items-start group">
+          const itemContent = (
+            <>
               <div className="relative w-24 h-32 bg-surface-low rounded-xl overflow-hidden border border-border-subtle shrink-0 shadow-sm group-hover:border-primary/30 transition-colors">
                 {imageUrl ? (
                   <>
@@ -95,6 +96,20 @@ export function OrderItems({
                   {formatPrice(item.unitPrice)}
                 </p>
               </div>
+            </>
+          );
+
+          return item.singleId ? (
+            <Link
+              key={item.id}
+              href={`/singles/${item.singleId}`}
+              className="flex gap-4 items-start group"
+            >
+              {itemContent}
+            </Link>
+          ) : (
+            <div key={item.id} className="flex gap-4 items-start group">
+              {itemContent}
             </div>
           );
         })}
