@@ -275,7 +275,9 @@ class CartManager {
     token: string | null,
     syncGuestCartToUser: () => Promise<void>
   ) {
-    this.isLoaded = false;
+    // Reset state markers but keep isLoaded=true to avoid skeleton flash during background refresh.
+    // The loadCart guard checks lastAuthState — setting it to null forces a re-fetch even when
+    // isLoaded is true.
     this.lastAuthState = null;
     this.lastLoadTime = 0;
     await this.loadCart(isAuthenticated, token, syncGuestCartToUser);

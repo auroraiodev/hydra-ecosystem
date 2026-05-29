@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShoppingCart, Trash2, Heart } from 'lucide-react';
 import { useCart } from '@/features/cart';
@@ -32,15 +33,26 @@ export default function CartPage() {
     getTotalItems,
     clearCart,
     addToCart,
-    isLoading,
     isLoaded,
+    refreshCart,
   } = useCart();
+
+  // Force a fresh stock check each time the cart page is opened.
+  // refreshCart no longer resets isLoaded, so existing items remain visible
+  // while the background fetch updates stock status.
+  const hasRefreshed = useRef(false);
+  useEffect(() => {
+    if (!hasRefreshed.current) {
+      hasRefreshed.current = true;
+      void refreshCart();
+    }
+  }, [refreshCart]);
   const { addToWishlist, isInWishlist } = useWishlist();
   const { success } = useToastContext();
   const { isAuthenticated } = useAuth();
   const { push } = useRouter();
 
-  if (isLoading || !isLoaded) {
+  if (!isLoaded) {
     return <CartSkeleton />;
   }
 
