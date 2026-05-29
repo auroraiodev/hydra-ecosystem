@@ -62,19 +62,19 @@ test.describe('Admin Dashboard - Login', () => {
     await passwordInput.fill('adminpassword');
     await submitButton.click();
 
-    await page.waitForURL(/.*dashboard/);
+    await page.waitForURL(/.*dashboard/, { waitUntil: 'domcontentloaded' });
     await expect(page.url()).toContain('dashboard');
   });
 
   test('should redirect to login when accessing dashboard without auth', async ({ page }) => {
     await page.goto('/dashboard');
-    await page.waitForURL(/login/);
+    await page.waitForURL(/login/, { waitUntil: 'domcontentloaded' });
     expect(page.url()).toContain('login');
   });
 
   test('should preserve redirect parameter', async ({ page }) => {
     await page.goto('/dashboard/orders');
-    await page.waitForURL(/login/);
+    await page.waitForURL(/login/, { waitUntil: 'domcontentloaded' });
     expect(page.url()).toContain('redirect');
   });
 });

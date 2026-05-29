@@ -33,7 +33,7 @@ setup('authenticate', async ({ page }) => {
 
   // Wait for dashboard redirection and check layout is loaded
   writeLog('Waiting for URL redirection to dashboard...');
-  await page.waitForURL(/.*dashboard/);
+  await page.waitForURL(/.*dashboard/, { waitUntil: 'domcontentloaded' });
   writeLog('Redirected! Checking main layout...');
   await expect(page.locator('main')).toBeAttached();
 

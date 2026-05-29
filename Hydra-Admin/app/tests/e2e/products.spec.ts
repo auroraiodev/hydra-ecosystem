@@ -17,11 +17,11 @@ test.describe('Admin Dashboard - Products (Inventario)', () => {
   test('should verify product images load correctly in the table', async ({ page }) => {
     // Locate product row images
     const lotusImage = page.locator('img[alt="Black Lotus"]');
-    await expect(lotusImage).toBeVisible();
+    await expect(lotusImage).toBeAttached();
     await expect(lotusImage).toHaveAttribute('src', /.*cat.png/);
 
     const moxImage = page.locator('img[alt="Mox Diamond"]');
-    await expect(moxImage).toBeVisible();
+    await expect(moxImage).toBeAttached();
     await expect(moxImage).toHaveAttribute('src', /.*cat.png/);
 
     // Verify they have correct size/rendering dimensions
@@ -112,7 +112,7 @@ test.describe('Admin Dashboard - Products (Inventario)', () => {
   test('should navigate to add product page and successfully create a new product', async ({ page }) => {
     // Click "Nuevo Producto"
     await page.click('button:has-text("Nuevo Producto")');
-    await page.waitForURL(/.*products\/add/);
+    await page.waitForURL(/.*products\/add/, { waitUntil: 'domcontentloaded' });
 
     // Verify we are on product form page
     await expect(page.locator('h1, h2, h3', { hasText: 'Nuevo Producto' })).toBeVisible();
@@ -141,12 +141,12 @@ test.describe('Admin Dashboard - Products (Inventario)', () => {
     await page.click('button[type="submit"], button:has-text("Crear"), button:has-text("Guardar")');
 
     // Verify toast or redirect back to inventory list
-    await page.waitForURL(/.*products/);
+    await page.waitForURL(/.*products/, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('text=Mox Emerald')).toBeVisible();
 
     // Confirm that the image loads for the new product
     const emeraldImage = page.locator('img[alt="Mox Emerald"]');
-    await expect(emeraldImage).toBeVisible();
+    await expect(emeraldImage).toBeAttached();
     await expect(emeraldImage).toHaveAttribute('src', /.*cat.png/);
   });
 

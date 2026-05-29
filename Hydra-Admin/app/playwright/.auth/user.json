@@ -1,0 +1,35 @@
+{
+  "cookies": [
+    {
+      "name": "__sid",
+      "value": "5feXV9CgJgdDhKVh.DDJnCiGEU_FC238XpPSJLw.Hal7XLsG4dzPWJubY1C6EvO9xlYb8N_KwfYyLBWYuoACRNNnqEreELAEx7MJYQpvUgQzHFBh-9yiTCEvfaaBXaoMP6sKe3m0K4Kb2AWExtkFfVjWB1WWTaxykzaWkafvCh5by6dgjOXfrrXAhv0MN6rlCaiDKcB1zi2ApQyny9Hxx0vvFP6u0NC7zNUx-Dem4Z1e4LVKoIx6NocqjFXsrWMLFcBLnvQ",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1780647088.204038,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "__role",
+      "value": "ADMIN",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1780647088.204939,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "refresh-token",
+      "value": "refresh-token-123",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1780647088.204971,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Strict"
+    }
+  ],
+  "origins": []
+}

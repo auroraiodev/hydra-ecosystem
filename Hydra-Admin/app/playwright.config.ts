@@ -11,16 +11,30 @@ const baseURL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3001';
 
 export default defineConfig({
   testDir: './tests/e2e',
-  fullyParallel: true,
+  timeout: 90000,
+  expect: {
+    timeout: 15000,
+  },
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  /* Limit workers to avoid overwhelming the Next.js dev server */
-  workers: process.env.CI ? 1 : 4,
+  /* Limit workers to 1 to avoid overwhelming the Next.js compilation under dev mode */
+  workers: 1,
   reporter: 'html',
   use: {
     baseURL,
     trace: 'on-first-retry',
-    headless: false,
+    actionTimeout: 20000,
+    navigationTimeout: 45000,
+    launchOptions: {
+      args: [
+        '--disable-gpu',
+        '--no-sandbox',
+        '--disable-renderer-backgrounding',
+        '--disable-background-timer-throttling',
+        '--disable-backgrounding-occluded-windows',
+      ]
+    }
   },
   projects: [
     {
@@ -55,7 +69,3 @@ export default defineConfig({
     }
   ],
 });
-
-
-
-

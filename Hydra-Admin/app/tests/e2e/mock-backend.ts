@@ -59,7 +59,10 @@ const products = [
     price: 25000,
     stock: 1,
     language_id: 'lang-en',
-    tags: ['Commander', 'Personal'],
+    tags: [
+      { id: 'tag-1', name: 'Commander' },
+      { id: 'tag-2', name: 'Personal' }
+    ],
     foil: false,
     img: '/cat.png',
     owner_id: 'admin-id-123',
@@ -77,7 +80,9 @@ const products = [
     price: 12000,
     stock: 3,
     language_id: 'lang-en',
-    tags: ['Commander'],
+    tags: [
+      { id: 'tag-1', name: 'Commander' }
+    ],
     foil: true,
     img: '/cat.png',
     owner_id: 'user-2',
@@ -87,6 +92,7 @@ const products = [
 const orders = [
   {
     id: 'order-1',
+    order_number: 'order-1',
     status: 'PENDING',
     createdAt: new Date().toISOString(),
     total: 1250,
@@ -98,7 +104,7 @@ const orders = [
         quantity: 1,
         price: 250,
         singleId: 'prod-1',
-        productData: { img: '/cat.png', cardSet: 'Commander' },
+        productData: { name: 'Sol Ring', img: '/cat.png', cardSet: 'Commander' },
       },
     ],
     trackingNumber: null,
@@ -107,6 +113,7 @@ const orders = [
   },
   {
     id: 'order-2',
+    order_number: 'order-2',
     status: 'PAID',
     createdAt: new Date(Date.now() - 3600000).toISOString(),
     total: 850,
@@ -118,7 +125,7 @@ const orders = [
         quantity: 2,
         price: 300,
         singleId: 'prod-2',
-        productData: { img: '/cat.png', cardSet: 'Commander' },
+        productData: { name: 'Command Tower', img: '/cat.png', cardSet: 'Commander' },
       },
     ],
     trackingNumber: 'TRACK-123',
@@ -130,11 +137,12 @@ const orders = [
 const banners = [
   {
     id: 'banner-1',
-    name: 'MTG Modern Horizons 3',
-    image_url: '/cat.png',
-    target_url: '/dashboard/products',
+    title: 'MTG Modern Horizons 3',
+    desktop_image: '/cat.png',
+    button_link: '/dashboard/products',
     is_active: true,
     order: 1,
+    tcg_id: 'tcg-mtg',
   },
 ];
 
@@ -563,11 +571,12 @@ const server = createServer(async (req, res) => {
       const body = JSON.parse(await readBody(req));
       const newBanner = {
         id: `banner-${Date.now()}`,
-        name: body.name || 'Nuevo Banner',
-        image_url: body.image_url || '/cat.png',
-        target_url: body.target_url || '/dashboard',
+        title: body.title || 'Nuevo Banner',
+        desktop_image: body.desktop_image || '/cat.png',
+        button_link: body.button_link || '/dashboard',
         is_active: body.is_active !== false,
         order: Number(body.order) || 1,
+        tcg_id: body.tcg_id || null,
       };
       banners.push(newBanner);
       res.writeHead(201);
@@ -680,8 +689,15 @@ const server = createServer(async (req, res) => {
     if (path === '/api/v1/chat/history/user' && req.method === 'GET') {
       const userId = String(query.userId || '');
       const messages = chatMessages[userId] || [];
+      const mappedMessages = messages.map(m => ({
+        id: m.id,
+        user_id: m.userId || m.user_id,
+        content: m.content,
+        sender: m.sender,
+        created_at: m.createdAt || m.created_at,
+      }));
       res.writeHead(200);
-      res.end(JSON.stringify({ data: messages }));
+      res.end(JSON.stringify({ data: mappedMessages }));
       return;
     }
 

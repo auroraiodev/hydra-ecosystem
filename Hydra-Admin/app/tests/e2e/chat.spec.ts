@@ -7,7 +7,7 @@ test.describe('Admin Dashboard - Chat (Soporte)', () => {
   });
 
   test('should display chat layout and active conversations list', async ({ page }) => {
-    const chatTitle = page.locator('h1, h2, h3, span', { hasText: /Chat|Soporte/i }).first();
+    const chatTitle = page.locator('h2', { hasText: /Soporte/i }).first();
     await expect(chatTitle).toBeVisible();
 
     // Verify Juan Perez is loaded in conversation list in sidebar

@@ -24,7 +24,7 @@ test.describe('Admin Dashboard - Protected Routes', () => {
   for (const path of protectedPaths) {
     test(`should redirect ${path} to login when unauthenticated`, async ({ page }) => {
       await page.goto(path);
-      await page.waitForURL(/login/);
+      await page.waitForURL(/login/, { waitUntil: 'domcontentloaded' });
       expect(page.url()).toContain('login');
     });
   }

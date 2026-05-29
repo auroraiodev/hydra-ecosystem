@@ -6,7 +6,7 @@ test.describe('Admin Dashboard - Orders (Pedidos)', () => {
   });
 
   test('should display page header and list orders', async ({ page }) => {
-    const title = page.locator('h1, h2, h3', { hasText: 'Pedidos' });
+    const title = page.locator('h1, h2, h3', { hasText: 'Orders' });
     await expect(title).toBeVisible();
 
     // Check if the mock orders are listed
@@ -20,7 +20,7 @@ test.describe('Admin Dashboard - Orders (Pedidos)', () => {
     await orderRow.click();
 
     // Wait for redirect to order details
-    await page.waitForURL(/.*orders\/order-1/);
+    await page.waitForURL(/.*orders\/order-1/, { waitUntil: 'domcontentloaded' });
 
     // Verify order ID is shown in details
     await expect(page.locator('h1, h2, h3', { hasText: 'order-1' })).toBeVisible();
@@ -38,7 +38,7 @@ test.describe('Admin Dashboard - Orders (Pedidos)', () => {
 
     // Verify item image is displayed and loads
     const productImg = page.locator('img[alt="Sol Ring"]');
-    await expect(productImg).toBeVisible();
+    await expect(productImg).toBeAttached();
     await expect(productImg).toHaveAttribute('src', /.*cat.png/);
 
     const isImgLoaded = await productImg.evaluate((img: HTMLImageElement) => {

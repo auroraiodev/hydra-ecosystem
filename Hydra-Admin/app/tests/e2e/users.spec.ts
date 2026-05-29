@@ -6,7 +6,7 @@ test.describe('Admin Dashboard - Users (Usuarios)', () => {
   });
 
   test('should display page header and list users', async ({ page }) => {
-    const title = page.locator('h1, h2, h3', { hasText: 'Usuarios' });
+    const title = page.locator('h1, h2, h3', { hasText: 'Users' });
     await expect(title).toBeVisible();
 
     // Check if the mock users are visible

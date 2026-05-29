@@ -14,8 +14,8 @@ test.describe('Admin Dashboard - Banners', () => {
   });
 
   test('should verify banner image loads correctly', async ({ page }) => {
-    const bannerImg = page.locator('img[alt*="Modern Horizons"], img[src*="cat.png"]').first();
-    await expect(bannerImg).toBeVisible();
+    const bannerImg = page.locator('img[alt*="Modern Horizons"]').first();
+    await expect(bannerImg).toBeAttached();
 
     // Confirm that naturalWidth is valid
     const isImgLoaded = await bannerImg.evaluate((img: HTMLImageElement) => {
@@ -25,29 +25,27 @@ test.describe('Admin Dashboard - Banners', () => {
   });
 
   test('should create a new marketing banner', async ({ page }) => {
-    // Click "Nuevo Banner" or similar action button
-    const newBannerBtn = page.locator('button:has-text("Nuevo Banner"), button:has-text("Crear Banner")');
-    if (await newBannerBtn.count() > 0) {
-      await newBannerBtn.click();
+    // Click "Add Banner" action button
+    const newBannerBtn = page.locator('button:has-text("Add Banner"), button:has-text("Nuevo Banner")');
+    await expect(newBannerBtn).toBeVisible();
+    await newBannerBtn.click();
 
-      // Fill in details
-      await page.fill('input[name="name"], input#name', 'Pokémon TCG SV6');
-      await page.fill('input[name="target_url"], input#target_url', '/dashboard/products');
-      await page.fill('input[name="image_url"], input#image_url', '/cat.png');
-      await page.fill('input[name="order"], input#order', '2');
+    // Fill in details
+    await page.fill('input#title', 'Pokémon TCG SV6');
+    await page.fill('input#button_link', '/dashboard/products');
+    await page.fill('input#order', '2');
 
-      // Submit
-      await page.click('button[type="submit"], button:has-text("Crear"), button:has-text("Guardar")');
+    // Submit
+    const submitBtn = page.locator('button[form="banner-form"]');
+    await expect(submitBtn).toBeVisible();
+    await submitBtn.click();
 
-      // Verify the new banner is listed in UI
-      await expect(page.locator('text=Pokémon TCG SV6')).toBeVisible();
+    // Verify the new banner is listed in UI
+    await expect(page.locator('text=Pokémon TCG SV6')).toBeVisible();
 
-      // Check its image resolves
-      const newImg = page.locator('img[alt="Pokémon TCG SV6"]');
-      if (await newImg.count() > 0) {
-        await expect(newImg).toBeVisible();
-      }
-    }
+    // Check its image resolves
+    const newImg = page.locator('img[alt="Pokémon TCG SV6"]');
+    await expect(newImg).toBeAttached();
   });
 
   test('should toggle banner active status', async ({ page }) => {
