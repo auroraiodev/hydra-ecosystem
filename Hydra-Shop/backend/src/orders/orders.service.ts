@@ -2690,6 +2690,28 @@ export class OrdersService {
   }
 
   /**
+   * Cancel a PENDING order initiated by the user (e.g. abandoned MP payment).
+   * Validates ownership, then delegates to handleOrderPaymentUpdate for wallet refunds.
+   */
+  async cancelPendingOrder(orderId: string, userId: string): Promise<{ success: boolean }> {
+    const order = await (this.prisma as any).orders.findUnique({
+      where: { id: orderId },
+      select: { id: true, user_id: true, status: true },
+    });
+
+    if (!order || order.user_id !== userId) {
+      throw new NotFoundException('Orden no encontrada');
+    }
+
+    if (order.status !== 'PENDING') {
+      throw new BadRequestException('Solo se pueden cancelar órdenes pendientes de pago');
+    }
+
+    await this.handleOrderPaymentUpdate(orderId, 'CANCELLED');
+    return { success: true };
+  }
+
+  /**
    * Restore stock for order items
    */
   private async restoreOrderStock(orderId: string, tx: Prisma.TransactionClient = this.prisma) {
