@@ -37,7 +37,14 @@ const getBackendRootUrl = () => {
 };
 
 const getAuthServiceUrl = () => {
-  return process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || 'http://127.0.0.1:3002/api/v1';
+  const base =
+    process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || 'http://127.0.0.1:3002';
+
+  const normalized = base.trim().replace(/\/+$/, '');
+
+  if (normalized.endsWith('/api/v1')) return normalized;
+  if (normalized.endsWith('/api')) return `${normalized}/v1`;
+  return `${normalized}/api/v1`;
 };
 
 export const BACKEND_BASE_URL = getBackendBaseUrl();
