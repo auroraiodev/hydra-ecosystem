@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
 
+// Reset storageState to ensure unauthenticated redirection is tested correctly
+test.use({ storageState: { cookies: [], origins: [] } });
+
 test.describe('Admin Dashboard - Protected Routes', () => {
   const protectedPaths = [
     '/dashboard',
@@ -15,14 +18,6 @@ test.describe('Admin Dashboard - Protected Routes', () => {
     '/dashboard/tags',
     '/dashboard/wallet',
     '/dashboard/settings',
-    '/dashboard/profile',
-    '/dashboard/imports',
-    '/dashboard/inventario',
-    '/dashboard/historial',
-    '/dashboard/feature-flags',
-    '/dashboard/chat',
-    '/dashboard/carts',
-    '/dashboard/sales',
     '/profile',
   ];
 

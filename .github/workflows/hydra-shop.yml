@@ -1,0 +1,183 @@
+name: Hydra-Shop — E2E Tests & Deploy
+
+# ─── Triggers ──────────────────────────────────────────────────────────────────
+# • Every push to main  → run tests, then deploy if passing
+# • Every PR into main  → run tests only (no deploy)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Hydra-Shop/**'
+      - '.github/workflows/hydra-shop.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Hydra-Shop/**'
+      - '.github/workflows/hydra-shop.yml'
+
+# Cancel in-flight runs for the same branch when a newer push arrives
+concurrency:
+  group: hydra-shop-${{ github.ref }}
+  cancel-in-progress: true
+
+# ─── Jobs ──────────────────────────────────────────────────────────────────────
+jobs:
+
+  # ── 1. Playwright E2E tests ─────────────────────────────────────────────────
+  e2e:
+    name: E2E Tests (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    defaults:
+      run:
+        working-directory: Hydra-Shop/app
+
+    steps:
+      # ── Checkout ─────────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Runtime ──────────────────────────────────────────────────────────────
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # ── Dependency cache ─────────────────────────────────────────────────────
+      - name: Cache bun modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            Hydra-Shop/app/node_modules
+          key: bun-hydra-shop-${{ hashFiles('Hydra-Shop/app/bun.lockb', 'Hydra-Shop/app/package.json') }}
+          restore-keys: |
+            bun-hydra-shop-
+
+      # ── Install dependencies ─────────────────────────────────────────────────
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # ── Playwright browser cache ─────────────────────────────────────────────
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('Hydra-Shop/app/package.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright browsers (Chromium only)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: bunx playwright install --with-deps chromium
+
+      - name: Install Playwright system dependencies only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: bunx playwright install-deps chromium
+
+      # ── CI environment ───────────────────────────────────────────────────────
+      # Creates the minimal .env.ci file the Next.js build needs.
+      # All NEXT_PUBLIC_* vars are baked at build time; we use localhost values
+      # because every API call in the test suite is intercepted via page.route().
+      - name: Create CI environment file
+        run: |
+          cat > .env.ci << 'ENVEOF'
+          NEXT_PUBLIC_API_URL=http://localhost:3002
+          NEXT_PUBLIC_APP_URL=http://localhost:3000
+          NEXT_PUBLIC_ADMIN_URL=http://localhost:3001
+          NEXT_PUBLIC_SELLER_URL=http://localhost:3003
+          NODE_ENV=production
+          PORT=3002
+          REVALIDATE_SECRET=ci-placeholder-secret
+          ENVEOF
+
+      # ── Next.js build cache ──────────────────────────────────────────────────
+      - name: Cache Next.js build output
+        uses: actions/cache@v4
+        with:
+          path: Hydra-Shop/app/.next/cache
+          key: nextjs-hydra-shop-${{ runner.os }}-${{ hashFiles('Hydra-Shop/app/**/*.ts', 'Hydra-Shop/app/**/*.tsx', 'Hydra-Shop/app/package.json') }}
+          restore-keys: |
+            nextjs-hydra-shop-${{ runner.os }}-
+
+      # ── Run E2E tests ────────────────────────────────────────────────────────
+      # playwright.config.ts detects CI=true and uses `next build && next start`
+      - name: Run Playwright E2E tests
+        run: bun run test:e2e
+        env:
+          CI: true
+          # Extend default timeout budget for build + test
+          PLAYWRIGHT_TIMEOUT: '60000'
+
+      # ── Artifacts ───────────────────────────────────────────────────────────
+      - name: Upload Playwright HTML report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ github.run_id }}-${{ github.run_attempt }}
+          path: Hydra-Shop/app/playwright-report/
+          retention-days: 14
+
+      - name: Upload test traces (failures only)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces-${{ github.run_id }}
+          path: Hydra-Shop/app/test-results/
+          retention-days: 7
+
+  # ── 2. Deploy to Coolify ────────────────────────────────────────────────────
+  # Only runs when:
+  #   • The e2e job passed
+  #   • We are on the main branch
+  #   • This is a push event (not a PR)
+  deploy:
+    name: Deploy to Coolify
+    needs: e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: >
+      needs.e2e.result == 'success' &&
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push'
+
+    steps:
+      - name: Trigger Coolify deployment — Hydra-Shop
+        # COOLIFY_HYDRA_SHOP_WEBHOOK  →  The "Deploy Webhook" URL from Coolify
+        #   (Coolify → Application → Settings → Deploy Webhook)
+        #   Format: https://<coolify-host>/webhooks/deploy?token=<token>
+        #
+        # COOLIFY_TOKEN  →  Coolify API token
+        #   (Coolify → Profile → API Tokens → Create token)
+        #
+        # Both must be stored as GitHub repository secrets:
+        #   Settings → Secrets and variables → Actions → New repository secret
+        run: |
+          HTTP_STATUS=$(curl --silent --output /dev/null --write-out "%{http_code}" \
+            --max-time 30 \
+            -X GET "${{ secrets.COOLIFY_HYDRA_SHOP_WEBHOOK }}")
+
+          echo "Coolify webhook response status: $HTTP_STATUS"
+
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+            echo "❌ Coolify webhook returned HTTP $HTTP_STATUS — deployment failed"
+            exit 1
+          fi
+
+          echo "✅ Coolify deployment triggered successfully"
+
+      - name: Post deployment summary
+        if: success()
+        run: |
+          echo "## 🚀 Deployment triggered" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| App | Hydra-Shop |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Triggered by | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "E2E tests passed ✅ — Coolify is now building and deploying the new image." >> $GITHUB_STEP_SUMMARY
