@@ -62,6 +62,13 @@ const server = http.createServer((req, res) => {
   if (url.startsWith('/socket.io')) {
     // WebSocket and Socket.IO traffic → NestJS chat service
     proxyHttp(req, res, CHAT_HOST, CHAT_PORT);
+  } else if (
+    url.startsWith('/api/auth/') ||
+    url.startsWith('/api/proxy/') ||
+    url.startsWith('/api/health')
+  ) {
+    // Auth, Proxy, and Health endpoints managed by Next.js frontend (port 3010)
+    proxyHttp(req, res, '127.0.0.1', NEXT_PORT);
   } else if (url.startsWith('/api/')) {
     // API traffic → NestJS backend (port 3002) with /v1 versioning
     proxyHttp(req, res, '127.0.0.1', API_PORT, true);
