@@ -27,13 +27,20 @@ export class CartService {
   private extractPriceFromProductData(productData: any): number {
     if (!productData) return 0;
 
+    const isLocal =
+      productData.isLocalInventory === true ||
+      productData.immediateDelivery === true ||
+      productData.isLocal === true;
+
     // Try numeric fields first (must be > 0)
     const numericPrice =
       Number(productData.finalPrice) ||
+      (isLocal ? Number(productData.price_mxn_local) : Number(productData.price_mxn_importation)) ||
+      Number(productData.price_mxn) ||
+      Number(productData.price_mxn_local) ||
       Number(productData.price_mxn_importation) ||
       Number(productData.unitPrice) ||
       Number(productData.unit_price) ||
-      Number(productData.price_mxn) ||
       0;
 
     if (numericPrice > 0) return numericPrice;
@@ -640,7 +647,7 @@ export class CartService {
             cleanTransformed.basePriceMXN ||
             discountedPrice ||
             0
-          : cleanTransformed.price_mxn_local || discountedPrice || 0;
+          : cleanTransformed.price_mxn_local ?? discountedPrice ??0;
       } else {
         selectedPrice = cleanTransformed.price_mxn_local || discountedPrice || 0;
       }

@@ -39,20 +39,53 @@ export class OrdersService {
   ) {}
 
   calculateLocalItemUnitPrice(single: any): number {
-    let unitPrice = Number(single.price);
-    if (single.conditions && single.conditions.discount) {
-      const discountPercent = single.conditions.discount;
-      unitPrice = Math.round(unitPrice * (1 - discountPercent / 100) * 100) / 100;
+    const MTG_TCG_ID = 'bd789d3f-5569-4971-890e-e261e145e42c';
+    const priceMxnLocal = single.priceMxnLocal !== null && single.priceMxnLocal !== undefined
+      ? Number(single.priceMxnLocal)
+      : null;
+    const priceMxnImportation = single.priceMxnImportation !== null && single.priceMxnImportation !== undefined
+      ? Number(single.priceMxnImportation)
+      : null;
+
+    const basePrice = Number(single.price);
+    const discountPercent = single.conditions?.discount || 0;
+    const discountedPrice = Math.round(basePrice * (1 - discountPercent / 100) * 100) / 100;
+
+    if (single.tcg_id === MTG_TCG_ID) {
+      const isImportationImport =
+        !!single.importationId && !single.isLocalInventory && single.stock === 0;
+
+      const metadata = Array.isArray(single.metadata) ? single.metadata : [];
+      const tags = Array.isArray(single.tags) ? single.tags : [];
+      const hasPersonalMetadata =
+        metadata.includes('Personal') ||
+        tags.some((t: string) => t === 'Personal' || t === 'personal');
+
+      const useImportPrice = isImportationImport || hasPersonalMetadata;
+
+      if (useImportPrice) {
+        return priceMxnImportation ?? discountedPrice ?? 0;
+      } else {
+        return priceMxnLocal ?? discountedPrice ?? 0;
+      }
+    } else {
+      return priceMxnLocal || discountedPrice || 0;
     }
-    return unitPrice;
   }
 
   calculateImportationItemUnitPrice(itemOrProductData: any): number {
     const productData =
       itemOrProductData.product_data || itemOrProductData.productData || itemOrProductData;
 
+    const isLocal =
+      productData?.isLocalInventory === true ||
+      productData?.immediateDelivery === true ||
+      productData?.isLocal === true;
+
     const rawPrice =
       productData?.finalPrice ||
+      (isLocal ? productData?.price_mxn_local : productData?.price_mxn_importation) ||
+      productData?.price_mxn ||
       productData?.price ||
       productData?.unitPrice ||
       productData?.unit_price;
@@ -432,7 +465,9 @@ export class OrdersService {
           }
 
           const unitPrice =
-            Number((cartItem as any).unit_price) || this.calculateLocalItemUnitPrice(single);
+            (cartItem as any).unit_price !== undefined && (cartItem as any).unit_price !== null
+              ? Number((cartItem as any).unit_price)
+              : this.calculateLocalItemUnitPrice(single);
 
           await tx.order_items.create({
             data: {
@@ -451,8 +486,9 @@ export class OrdersService {
       if (importationItemsToCreate.length > 0) {
         for (const cartItem of importationItemsToCreate) {
           const price =
-            Number((cartItem as any).unit_price) ||
-            this.calculateImportationItemUnitPrice(cartItem);
+            (cartItem as any).unit_price !== undefined && (cartItem as any).unit_price !== null
+              ? Number((cartItem as any).unit_price)
+              : this.calculateImportationItemUnitPrice(cartItem);
 
           await tx.order_items_importation.create({
             data: {

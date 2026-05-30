@@ -26,12 +26,19 @@ export class CartService {
   private extractPriceFromProductData(productData: any): number {
     if (!productData) return 0;
 
+    const isLocal =
+      productData.isLocalInventory === true ||
+      productData.immediateDelivery === true ||
+      productData.isLocal === true;
+
     const numericPrice =
       Number(productData.finalPrice) ||
+      (isLocal ? Number(productData.price_mxn_local) : Number(productData.price_mxn_importation)) ||
+      Number(productData.price_mxn) ||
+      Number(productData.price_mxn_local) ||
       Number(productData.price_mxn_importation) ||
       Number(productData.unitPrice) ||
       Number(productData.unit_price) ||
-      Number(productData.price_mxn) ||
       0;
 
     if (numericPrice > 0) return numericPrice;
@@ -171,7 +178,10 @@ export class CartService {
       const transformed = transformedItems[i];
       if (!transformed?.productData) continue;
 
-      let unitPrice = this.extractPriceFromProductData(transformed.productData);
+      let unitPrice =
+        Number(transformed.productData.finalPrice) ||
+        Number(transformed.productData.price_mxn) ||
+        0;
 
       if (unitPrice === 0 && !raw.is_importation && raw.singles) {
         const single = raw.singles;
@@ -502,9 +512,9 @@ export class CartService {
         cardName,
         price: priceString,
         price_mxn: finalPrice,
+        finalPrice,
         price_mxn_importation,
         price_mxn_local,
-        finalPrice,
 
         isLocalInventory: !!localStockMatch,
         source: localStockMatch ? 'hybrid' : 'importation',
@@ -670,7 +680,7 @@ export class CartService {
             cleanTransformed.basePriceMXN ||
             discountedPrice ||
             0
-          : cleanTransformed.price_mxn_local || discountedPrice || 0;
+          : cleanTransformed.price_mxn_local ?? discountedPrice ??0;
       } else {
         selectedPrice = cleanTransformed.price_mxn_local || discountedPrice || 0;
       }

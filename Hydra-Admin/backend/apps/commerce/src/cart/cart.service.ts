@@ -26,12 +26,19 @@ export class CartService {
   private extractPriceFromProductData(productData: any): number {
     if (!productData) return 0;
 
+    const isLocal =
+      productData.isLocalInventory === true ||
+      productData.immediateDelivery === true ||
+      productData.isLocal === true;
+
     const numericPrice =
       Number(productData.finalPrice) ||
+      (isLocal ? Number(productData.price_mxn_local) : Number(productData.price_mxn_importation)) ||
+      Number(productData.price_mxn) ||
+      Number(productData.price_mxn_local) ||
       Number(productData.price_mxn_importation) ||
       Number(productData.unitPrice) ||
       Number(productData.unit_price) ||
-      Number(productData.price_mxn) ||
       0;
 
     if (numericPrice > 0) return numericPrice;
@@ -171,7 +178,10 @@ export class CartService {
       const transformed = transformedItems[i];
       if (!transformed?.productData) continue;
 
-      let unitPrice = Number(transformed.productData.finalPrice) || 0;
+      let unitPrice =
+        Number(transformed.productData.finalPrice) ||
+        Number(transformed.productData.price_mxn) ||
+        0;
 
       if (unitPrice === 0 && !raw.is_importation && raw.singles) {
         const single = raw.singles;
@@ -502,6 +512,7 @@ export class CartService {
         cardName,
         price: priceString,
         price_mxn: finalPrice,
+        finalPrice,
         price_mxn_importation,
         price_mxn_local,
 
