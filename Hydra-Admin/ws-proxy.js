@@ -25,9 +25,14 @@ const _parsed   = new URL(_chatUrl);
 const CHAT_HOST = _parsed.hostname;
 const CHAT_PORT = parseInt(_parsed.port || '3002', 10);
 
-function proxyHttp(req, res, targetHost, targetPort) {
+function proxyHttp(req, res, targetHost, targetPort, addV1Prefix = false) {
+  let path = req.url || '';
+  if (addV1Prefix && path.startsWith('/api/')) {
+    // Insert /v1 after /api to satisfy NestJS URI versioning
+    path = path.replace('/api/', '/api/v1/');
+  }
   const upstream = http.request(
-    { hostname: targetHost, port: targetPort, path: req.url, method: req.method, headers: req.headers },
+    { hostname: targetHost, port: targetPort, path, method: req.method, headers: req.headers },
     (upRes) => {
       res.writeHead(upRes.statusCode, upRes.headers);
       upRes.pipe(res, { end: true });
@@ -58,8 +63,8 @@ const server = http.createServer((req, res) => {
     // WebSocket and Socket.IO traffic → NestJS chat service
     proxyHttp(req, res, CHAT_HOST, CHAT_PORT);
   } else if (url.startsWith('/api/')) {
-    // API traffic → NestJS backend (port 3002)
-    proxyHttp(req, res, '127.0.0.1', API_PORT);
+    // API traffic → NestJS backend (port 3002) with /v1 versioning
+    proxyHttp(req, res, '127.0.0.1', API_PORT, true);
   } else {
     // Everything else → Next.js frontend (port 3010)
     proxyHttp(req, res, '127.0.0.1', NEXT_PORT);
