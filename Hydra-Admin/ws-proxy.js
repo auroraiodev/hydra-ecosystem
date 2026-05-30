@@ -27,7 +27,7 @@ const CHAT_PORT = parseInt(_parsed.port || '3002', 10);
 
 function proxyHttp(req, res, targetHost, targetPort, addV1Prefix = false) {
   let path = req.url || '';
-  if (addV1Prefix && path.startsWith('/api/')) {
+  if (addV1Prefix && path.startsWith('/api/') && !path.startsWith('/api/v1/')) {
     // Insert /v1 after /api to satisfy NestJS URI versioning
     path = path.replace('/api/', '/api/v1/');
   }

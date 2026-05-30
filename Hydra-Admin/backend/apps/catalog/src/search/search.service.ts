@@ -761,7 +761,11 @@ export class SearchService {
       const updatePromises = priceUpdates.map((u) =>
         (this.prisma as any).singles.update({
           where: { id: u.id },
-          data: { price: u.price },
+          data: {
+            price: u.price,
+            priceMxnLocal: (u as any).priceMxnLocal,
+            priceMxnImportation: (u as any).priceMxnImportation,
+          },
         }),
       );
       (this.prisma as any)

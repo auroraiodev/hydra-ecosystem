@@ -87,13 +87,15 @@ export class ProductsService {
 
     let priceValue = finalPrice || 0;
 
-    // Price Protection: If importationId is present, fetch the REAL price from Importation
+    // Price Protection: If importationId is present, fetch the correct price from Importation
+    // For local inventory items, use the local price (base + profit, no import fee)
     if (importationId) {
       const importationPrice = await this.importationService.getPriceForSingle({
         importationId: importationId,
         is_foil: foil || false,
         language: null,
         name: cardName,
+        isLocalInventory: isLocalInventory ?? true,
       });
       if (importationPrice !== null) {
         priceValue = importationPrice;
