@@ -70,7 +70,7 @@ export function useAddProduct(): AddProductState & AddProductActions {
       setIsLoadingData(true);
 
       // Role check via session endpoint instead of localStorage
-      const sessionRes = await fetch('/api/auth/session', { credentials: 'include' });
+      const sessionRes = await fetch('/auth-session', { credentials: 'include' });
       if (sessionRes.ok) {
         const sessionData = await sessionRes.json();
         const u = sessionData.user as {

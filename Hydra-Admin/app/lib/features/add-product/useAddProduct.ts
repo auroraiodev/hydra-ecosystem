@@ -72,7 +72,7 @@ export function useAddProduct(): AddProductState & AddProductActions {
   const loadOwners = useCallback(async () => {
     try {
       // Role check via session endpoint instead of localStorage
-      const sessionRes = await fetch('/api/auth/session', { credentials: 'include' });
+      const sessionRes = await fetch('/auth-session', { credentials: 'include' });
       if (sessionRes.ok) {
         const sessionData = await sessionRes.json();
         setIsAdmin(sessionData.user?.role === 'ADMIN');

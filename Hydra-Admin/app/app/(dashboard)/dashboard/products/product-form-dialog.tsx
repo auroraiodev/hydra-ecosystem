@@ -98,7 +98,7 @@ export function ProductFormDialog({ open, onOpenChange, product, onSuccess, defa
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const sessionRes = await fetch('/api/auth/session', { credentials: 'include' });
+      const sessionRes = await fetch('/auth-session', { credentials: 'include' });
       let owner_id = '';
       if (sessionRes.ok) {
         const sessionData = await sessionRes.json();

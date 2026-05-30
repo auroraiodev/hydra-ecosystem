@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import type React from 'react';
 
@@ -84,7 +84,7 @@ export function ProductsContent() {
 
   // Get current user ID on mount
   useEffect(() => {
-    fetch('/api/auth/session', { credentials: 'include' })
+    fetch('/auth-session', { credentials: 'include' })
       .then((res) => res.json())
       .then((data) => {
         if (data.authenticated && data.user?.id) setOwnerFilter(data.user.id);

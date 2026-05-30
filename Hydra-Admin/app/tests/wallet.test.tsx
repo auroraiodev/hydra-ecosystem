@@ -68,7 +68,7 @@ function mockSessionUser(id: string) {
   const prevImpl = vi.mocked(fetch).getMockImplementation();
   vi.mocked(fetch).mockImplementation((url: RequestInfo | URL) => {
     const urlStr = url.toString();
-    if (urlStr.includes('/api/auth/session')) {
+    if (urlStr.includes('/auth-session')) {
       return Promise.resolve(
         new Response(
           JSON.stringify({
@@ -87,7 +87,7 @@ function mockSessionAuth(id: string | null) {
   if (id) {
     vi.mocked(fetch).mockImplementation((url: RequestInfo | URL) => {
       const urlStr = url.toString();
-      if (urlStr.includes('/api/auth/session')) {
+      if (urlStr.includes('/auth-session')) {
         return Promise.resolve(
           new Response(JSON.stringify({ authenticated: true, user: { id, email: 'admin@example.com', role: 'ADMIN' } }), { status: 200 })
         );
@@ -248,7 +248,7 @@ describe('WalletPage — access code dialog', () => {
     vi.clearAllMocks();
     vi.mocked(fetch).mockImplementation((url: RequestInfo | URL) => {
       const urlStr = url.toString();
-      if (urlStr.includes('/api/auth/session')) {
+      if (urlStr.includes('/auth-session')) {
         return Promise.resolve(
           new Response(
             JSON.stringify({

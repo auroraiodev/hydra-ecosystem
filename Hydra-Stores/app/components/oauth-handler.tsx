@@ -148,7 +148,7 @@ export function OAuthHandler() {
       // Fallback: check session via cookie
       activeTimeouts.push(
         setTimeout(() => {
-          fetch('/api/auth/session', { credentials: 'include' })
+          fetch('/auth-session', { credentials: 'include' })
             .then((response) => response.json())
             .then((data) => {
               if (data.authenticated) {

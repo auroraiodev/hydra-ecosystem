@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
@@ -143,7 +143,7 @@ export function ProductFormDialog({
     setIsSubmitting(true);
 
     try {
-      const sessionRes = await fetch('/api/auth/session', { credentials: 'include' });
+      const sessionRes = await fetch('/auth-session', { credentials: 'include' });
       let owner_id = '';
       if (sessionRes.ok) {
         const sessionData = await sessionRes.json();
