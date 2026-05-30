@@ -81,7 +81,7 @@ Lives at `c:\Users\demis\Code\mtgsrc` (separate directory, not inside this monor
 
 - Proxies card search queries to Hareruya, converts JPY→MXN, parses card metadata.
 - Required by all three backends for `/search/hybrid` and the Importation import flow.
-- Endpoint: `/mtgsrc/search?cardName=X&tax=0.191&profit=0.20` — `tax` and `profit` are **required**.
+- Endpoint: `/search?cardName=X&tax=0.191&profit=0.20` — `tax` and `profit` are **required query parameters**.
 - All three production `.env` files must set: `MTGSRC_SERVICE_URL=http://hydra-mtgsrc:3006`
 - In Coolify, the mtgsrc container must have the Docker network alias `hydra-mtgsrc` set so it resolves on the `coolify` network.
 - Local dev: `MTGSRC_SERVICE_URL=http://localhost:3006`
@@ -102,13 +102,26 @@ Each project has a `theme/` directory containing the `arcane-vault-ui` component
 
 - All three apps deploy as Docker containers on a Coolify-managed Ubuntu server (`87.99.141.73`).
 - Containers join the `coolify` Docker network and resolve each other by container name.
-- **`NEXT_PUBLIC_*` env vars are baked at Docker build time** (passed as `ARG` in the Dockerfile). Changing them requires a full rebuild, not just a container restart.
+- **`NEXT_PUBLIC_*` env vars are baked at Docker build time** (passed as `ARG` in the Dockerfile). Changing them requires a full rebuild, not just a container restart. This is critical: if `NEXT_PUBLIC_AUTH_SERVICE_URL` is wrong in the build args, OAuth redirects will go to the wrong URL.
 - Each app exposes a `/api/v1/health` endpoint for Coolify health checks.
 - Each app's `docker-compose.yml` is used for local reference; Coolify manages the production deployment directly.
+
+## OAuth Flow Architecture
+
+The admin app uses a proxy middleware (`app/proxy.ts`) that intercepts `/auth/google` and `/auth/google/callback` routes and rewrites them to the NestJS backend. Key points:
+
+- `getAuthServiceUrl()` in `app/lib/api-config.ts` **automatically appends `/api/v1`** to `NEXT_PUBLIC_AUTH_SERVICE_URL`
+- The `use-google-auth.ts` hook constructs: `${AUTH_SERVICE_URL}/auth/google?redirect_to=...`
+- Session cookie is `__sid` (httpOnly, set on `.hydracollect.com` in production)
+- On OAuth success, the backend redirects to `redirect_to` URL with `oauth_success=true` and `auth=<base64>` params
 
 ## Local Environment Setup
 
 Each project uses a root-level `.env.local` for local dev (ignored by git). Copy from `.env` and adjust URLs to `localhost`. The `.env` file at each project root is the **production** configuration deployed to Coolify.
+
+**Important URL distinction:**
+- `NEXT_PUBLIC_AUTH_SERVICE_URL` — public URL for OAuth (baked into Docker image). Must be `https://admin.hydracollect.com` for admin, `https://hydracollect.com` for shop, etc.
+- `AUTH_SERVICE_URL` (backend-only) — internal NestJS URL (`http://127.0.0.1:3002`)
 
 Key local ports to know:
 | Service | Port |

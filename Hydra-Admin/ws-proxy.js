@@ -4,11 +4,12 @@
  * Port layout:
  *   PORT (3001)      — this proxy, exposed to Traefik / the internet
  *   NEXT_PORT (3010) — Next.js standalone (internal only)
+ *   API_PORT (3002)  — NestJS backend (internal only)
  *
  * Routing:
- *   WebSocket upgrades              → hydra-chat (CHAT_HOST:CHAT_PORT)
- *   GET|POST /socket.io/* (polling) → hydra-chat (CHAT_HOST:CHAT_PORT)
- *   Everything else                 → Next.js
+ *   /socket.io/*                       → NestJS chat service (CHAT_HOST:CHAT_PORT)
+ *   /api/*                             → NestJS backend (:API_PORT)
+ *   Everything else                     → Next.js (:NEXT_PORT)
  */
 
 import http from 'http';
@@ -17,6 +18,7 @@ import { URL } from 'url';
 
 const PORT      = parseInt(process.env.PORT      || '3001', 10);
 const NEXT_PORT = parseInt(process.env.NEXT_PORT || '3010', 10);
+const API_PORT  = parseInt(process.env.API_PORT  || '3002', 10);
 
 const _chatUrl  = process.env.CHAT_SERVICE_URL || (process.env.NODE_ENV === 'production' ? 'http://hydra-admin-api:3002' : 'http://127.0.0.1:3002');
 const _parsed   = new URL(_chatUrl);
@@ -51,9 +53,15 @@ function proxyWs(req, socket, head, targetHost, targetPort) {
 }
 
 const server = http.createServer((req, res) => {
-  if (req.url?.startsWith('/socket.io')) {
+  const url = req.url || '';
+  if (url.startsWith('/socket.io')) {
+    // WebSocket and Socket.IO traffic → NestJS chat service
     proxyHttp(req, res, CHAT_HOST, CHAT_PORT);
+  } else if (url.startsWith('/api/')) {
+    // API traffic → NestJS backend (port 3002)
+    proxyHttp(req, res, '127.0.0.1', API_PORT);
   } else {
+    // Everything else → Next.js frontend (port 3010)
     proxyHttp(req, res, '127.0.0.1', NEXT_PORT);
   }
 });
@@ -63,5 +71,5 @@ server.on('upgrade', (req, socket, head) => {
 });
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`[ws-proxy-admin] :${PORT} → Next.js :${NEXT_PORT}, Chat WS: ${CHAT_HOST}:${CHAT_PORT}`);
+  console.log(`[ws-proxy-admin] :${PORT} → Next.js :${NEXT_PORT}, API :${API_PORT}, Chat WS: ${CHAT_HOST}:${CHAT_PORT}`);
 });
